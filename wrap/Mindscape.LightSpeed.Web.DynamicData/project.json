@@ -1,0 +1,14 @@
+{
+  "version": "1.0.0-*",
+  "frameworks": {
+    "net451": {
+      "bin": {
+        "assembly": "../../lib/LightSpeed/Mindscape.LightSpeed.Web.DynamicData.dll"
+      },
+      "dependencies": {
+        "Mindscape.LightSpeed": "1.0.0-*",
+        "Mindscape.LightSpeed.Web": "1.0.0-*"
+      }
+    }
+  }
+}

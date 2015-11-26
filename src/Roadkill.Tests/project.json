@@ -1,0 +1,73 @@
+﻿{
+	"version": "1.0.0-*",
+	"description": "Roadkill.Tests Class Library",
+	"authors": [ "Chris" ],
+	"tags": [ "" ],
+	"projectUrl": "",
+	"licenseUrl": "",
+
+	"frameworks": {
+		"net451": {
+			"dependencies": {
+				"Microsoft.CSharp": "4.0.1-beta-23516",
+				"System.Collections": "4.0.11-beta-23516",
+				"System.Linq": "4.0.1-beta-23516",
+				"System.Runtime": "4.0.21-beta-23516",
+				"System.Threading": "4.0.11-beta-23516",
+				"System.Xml.XmlSerializer": "4.0.11-beta-23516",
+				"Microsoft.Web.Administration": "7.0.0",
+				"Mindscape.LightSpeed": "1.0.0-*",
+				"Mindscape.LightSpeed.Linq": "1.0.0-*",
+				"Mindscape.LightSpeed.MetaData": "1.0.0-*",
+				"Mindscape.LightSpeed.ServiceModel": "1.0.0-*",
+				"Mindscape.LightSpeed.ServiceModel.DomainServices": "1.0.0-*",
+				"Mindscape.LightSpeed.Web": "1.0.0-*",
+				"Mindscape.LightSpeed.Web.DynamicData": "1.0.0-*",
+				"System.Data.SqlServerCe": "1.0.0-*",
+				"Mono.Security": "1.0.0-*"
+			},
+			"frameworkAssemblies": {
+				"System.Runtime.Caching": "4.0.0.0",
+				"System.Web": "4.0.0.0",
+				"System.XML": "4.0.0.0",
+				"System.Xml.Serialization": "4.0.0.0",
+				"System.DirectoryServices": "4.0.0.0",
+				"System.DirectoryServices.AccountManagement": "4.0.0.0",
+				"System.Configuration": "4.0.0.0",
+				"System.ComponentModel.Annotations": "4.0.0.0",
+				"System.ComponentModel.DataAnnotations": "4.0.0.0"
+			}
+		}
+	},
+	"dependencies": {
+		"coveralls.io": "1.3.4",
+		"EntityFramework": "6.1.3",
+		"Fizzler": "1.0.0",
+		"HtmlAgilityPack": "1.4.9",
+		"IisConfiguration": "1.0.5710.23613",
+		"Lucene.Net": "3.0.3",
+		"Microsoft.AspNet.Mvc": "5.2.3",
+		"Microsoft.AspNet.Razor": "3.2.3",
+		"Microsoft.AspNet.WebApi.Client": "5.2.3",
+		"Microsoft.AspNet.WebApi.Core": "5.2.3",
+		"Microsoft.AspNet.WebPages": "3.2.3",
+		"Microsoft.Web.Administration": "7.0.0.0",
+		"Microsoft.Web.Infrastructure": "1.0.0.0",
+		"Moq": "4.2.1510.2205",
+		"MvcContrib.Mvc3.TestHelper-ci": "3.0.100.0",
+		"MySql.Data": "6.9.8",
+		"Newtonsoft.Json": "7.0.1",
+		"NUnit": "2.6.4",
+		"NUnit.Runners": "2.6.4",
+		"OpenCover": "4.6.166",
+		"qunit.TypeScript.DefinitelyTyped": "0.1.8",
+		"RestSharp": "105.2.3",
+		"RhinoMocks": "3.6.1",
+		"Roadkill.Core": "1.0.0-*",
+		"Selenium.RC": "2.48.1",
+		"Selenium.Support": "2.48.1",
+		"Selenium.WebDriver": "2.48.1",
+		"SharpZipLib": "0.86.0",
+		"structuremap": "2.6.4.1"
+	}
+}

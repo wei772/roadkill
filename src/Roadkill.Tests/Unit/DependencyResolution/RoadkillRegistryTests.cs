@@ -76,7 +76,7 @@ namespace Roadkill.Tests.Unit.DependencyResolution
 			IContainer container = CreateContainer();
 
 			// Act
-			ConfigReaderWriter configReader = container.GetInstance<ConfigReaderWriter>();
+			IConfigReaderWriter configReader = container.GetInstance<IConfigReaderWriter>();
 			ApplicationSettings settings = container.GetInstance<ApplicationSettings>();
 
 			// Assert

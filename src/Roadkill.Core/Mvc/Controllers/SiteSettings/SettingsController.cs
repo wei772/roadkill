@@ -17,10 +17,10 @@ namespace Roadkill.Core.Mvc.Controllers
 	{
 		private SettingsService _settingsService;
 		private SiteCache _siteCache;
-		private ConfigReaderWriter _configReaderWriter;
+		private IConfigReaderWriter _configReaderWriter;
 
 		public SettingsController(ApplicationSettings settings, UserServiceBase userManager, SettingsService settingsService, 
-			IUserContext context, SiteCache siteCache, ConfigReaderWriter configReaderWriter)
+			IUserContext context, SiteCache siteCache, IConfigReaderWriter configReaderWriter)
 			: base(settings, userManager, context, settingsService) 
 		{
 			_settingsService = settingsService;

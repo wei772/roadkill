@@ -11,7 +11,7 @@ using Roadkill.Core.Mvc.ViewModels;
 namespace Roadkill.Tests.Integration.Configuration
 {
 	[TestFixture]
-	[Description("Tests writing and reading .config files.")]
+	[Description("Tests writing and reading of XML based .config files.")]
 	[Category("Integration")]
 	public class FullTrustConfigReaderWriterTests
 	{
@@ -37,7 +37,7 @@ namespace Roadkill.Tests.Integration.Configuration
 
 			// Act
 			FullTrustConfigReaderWriter configManager = new FullTrustConfigReaderWriter(configFilePath);
-			RoadkillSection appSettings = configManager.Load();
+			RoadkillSection appSettings = configManager.Load() as RoadkillSection;
 
 			// Assert
 			Assert.That(appSettings.AdminRoleName, Is.EqualTo("Admin-test"), "AdminRoleName"); // basic check
@@ -72,7 +72,7 @@ namespace Roadkill.Tests.Integration.Configuration
 			configManager.ResetInstalledState();
 
 			// Assert
-			RoadkillSection section = configManager.Load();
+			RoadkillSection section = configManager.Load() as RoadkillSection;
 			Assert.That(section.Installed, Is.False);
 		}
 

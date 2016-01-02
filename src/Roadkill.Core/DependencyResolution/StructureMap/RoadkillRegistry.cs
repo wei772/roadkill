@@ -50,7 +50,7 @@ namespace Roadkill.Core.DependencyResolution.StructureMap
 
 		public ApplicationSettings ApplicationSettings { get; set; }
 
-		public RoadkillRegistry(ConfigReaderWriter configReader)
+		public RoadkillRegistry(IConfigReaderWriter configReader)
 		{
 			ApplicationSettings = configReader.GetApplicationSettings();
 
@@ -136,13 +136,13 @@ namespace Roadkill.Core.DependencyResolution.StructureMap
 			scanner.AddAllTypesOf<ConfigurationTesterController>();
 		}
 
-		private void ConfigureInstances(ConfigReaderWriter configReader)
+		private void ConfigureInstances(IConfigReaderWriter configReader)
 		{
 			// Appsettings and reader - these need to go first
-			For<ConfigReaderWriter>().HybridHttpOrThreadLocalScoped().Use(configReader);
+			For<IConfigReaderWriter>().HybridHttpOrThreadLocalScoped().Use(configReader);
 			For<ApplicationSettings>()
 				.HybridHttpOrThreadLocalScoped()
-				.Use(x => x.TryGetInstance<ConfigReaderWriter>().GetApplicationSettings());
+				.Use(x => x.TryGetInstance<IConfigReaderWriter>().GetApplicationSettings());
 
 			// Repositories
 			ConfigureRepositories();

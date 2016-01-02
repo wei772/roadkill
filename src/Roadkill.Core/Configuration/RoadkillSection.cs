@@ -5,6 +5,7 @@ using System.Text;
 using System.Configuration;
 using System.Xml;
 using System.Xml.XPath;
+using Roadkill.Core.Configuration;
 using Roadkill.Core.Security;
 
 // Don't change the namespace to "Roadkill.Core.Configuration" it will break older web.config files
@@ -13,7 +14,7 @@ namespace Roadkill.Core
 	/// <summary>
 	/// Config file settings - represents a &lt;roadkill&gt; section inside a configuration file.
 	/// </summary>
-	public class RoadkillSection : ConfigurationSection
+	public class RoadkillSection : ConfigurationSection, IRoadkillConfiguration
 	{
 		/// <summary>
 		/// Gets or sets the name of the admin role.
@@ -203,7 +204,7 @@ namespace Roadkill.Core
 		/// The database type for Roadkill. This defaults to SQLServer2008 (MongoDB on Mono) if empty.
 		/// </summary>
 		[ConfigurationProperty("databaseName", IsRequired = false)]
-		internal string DatabaseName
+		public string DatabaseName
 		{
 			get { return (string)this["databaseName"]; }
 			set { this["databaseName"] = value; }

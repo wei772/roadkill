@@ -23,7 +23,7 @@ namespace Roadkill.Core.Mvc.Controllers
 	/// this controller redirect to the homepage</remarks>
 	public class InstallController : Controller, IRoadkillController
 	{
-		private readonly ConfigReaderWriter _configReaderWriter;
+		private readonly IConfigReaderWriter _configReaderWriter;
 		private readonly IInstallationService _installationService;
 		private readonly IDatabaseTester _databaseTester;
 		private static string _uiLanguageCode = "en";
@@ -37,7 +37,7 @@ namespace Roadkill.Core.Mvc.Controllers
 		/// 
 		/// </summary>
 		/// <param name="applicationSettings">Use solely to detect whether Roadkill is already installed.</param>
-		public InstallController(ApplicationSettings applicationSettings, ConfigReaderWriter configReaderWriter, IInstallationService installationService, IDatabaseTester databaseTester)
+		public InstallController(ApplicationSettings applicationSettings, IConfigReaderWriter configReaderWriter, IInstallationService installationService, IDatabaseTester databaseTester)
 		{
 			_configReaderWriter = configReaderWriter;
 			_installationService = installationService;

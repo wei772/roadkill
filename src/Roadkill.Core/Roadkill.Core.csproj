@@ -360,6 +360,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\IRoadkillConfiguration.cs" />
     <Compile Include="Database\IRepositoryFactory.cs" />
     <Compile Include="Database\Repositories\IDatabaseTester.cs" />
     <Compile Include="Database\Repositories\IInstallerRepository.cs" />
@@ -612,7 +613,9 @@
   <ItemGroup>
     <Content Include="Localization\readme.txt" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Configuration\Json\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

@@ -121,7 +121,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 
 	internal class InstallControllerStub : InstallController
 	{
-		public InstallControllerStub(ApplicationSettings settings, ConfigReaderWriter configReaderWriter, IInstallationService installationService, IDatabaseTester databaseTester)
+		public InstallControllerStub(ApplicationSettings settings, IConfigReaderWriter configReaderWriter, IInstallationService installationService, IDatabaseTester databaseTester)
 			: base(settings, configReaderWriter, installationService, databaseTester)
 		{
 

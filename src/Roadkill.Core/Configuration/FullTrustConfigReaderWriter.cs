@@ -12,7 +12,7 @@ namespace Roadkill.Core.Configuration
 	/// <summary>
 	/// Reads and write the application configuration settings, from a web.config or app.config file.
 	/// </summary>
-	public class FullTrustConfigReaderWriter : ConfigReaderWriter
+	public class FullTrustConfigReaderWriter : IConfigReaderWriter
 	{
 		private System.Configuration.Configuration _config;
 		private bool _isWebConfig;
@@ -85,7 +85,7 @@ namespace Roadkill.Core.Configuration
 		/// </summary>
 		/// <param name="uiLanguageCode">The UI language code, e.g. fr for French.</param>
 		/// <exception cref="System.Configuration.ConfigurationException">An exception occurred while updating the UI language in the web.config</exception>
-		public override void UpdateLanguage(string uiLanguageCode)
+		public virtual void UpdateLanguage(string uiLanguageCode)
 		{
 			try
 			{
@@ -105,7 +105,7 @@ namespace Roadkill.Core.Configuration
 		/// <returns>
 		/// A <see cref="RoadkillSection" /> instance with the settings.
 		/// </returns>
-		public override RoadkillSection Load()
+		public virtual IRoadkillConfiguration Load()
 		{
 			return _section;
 		}
@@ -116,7 +116,7 @@ namespace Roadkill.Core.Configuration
 		/// </summary>
 		/// <param name="settings">The application settings.</param>
 		/// <exception cref="InstallerException">An exception occurred while updating the settings to the web.config</exception>
-		public override void Save(SettingsViewModel settings)
+		public virtual void Save(SettingsViewModel settings)
 		{
 			try
 			{
@@ -194,7 +194,7 @@ namespace Roadkill.Core.Configuration
 		/// Resets the state the configuration file/store so the 'installed' property is false.
 		/// </summary>
 		/// <exception cref="InstallerException">An exception occurred while resetting web.config install state to false.</exception>
-		public override void ResetInstalledState()
+		public virtual void ResetInstalledState()
 		{
 			try
 			{
@@ -213,7 +213,7 @@ namespace Roadkill.Core.Configuration
 		/// <returns>
 		/// A new <see cref="ApplicationSettings" /> instance
 		/// </returns>
-		public override ApplicationSettings GetApplicationSettings()
+		public virtual ApplicationSettings GetApplicationSettings()
 		{
 			ApplicationSettings appSettings = new ApplicationSettings();
 
@@ -279,7 +279,7 @@ namespace Roadkill.Core.Configuration
 		/// <returns>
 		/// An empty string if no error occurred; otherwise the error message.
 		/// </returns>
-		public override string TestSaveWebConfig()
+		public virtual string TestSaveWebConfig()
 		{
 			try
 			{

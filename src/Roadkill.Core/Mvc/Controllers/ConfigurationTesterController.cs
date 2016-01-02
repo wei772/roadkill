@@ -17,12 +17,12 @@ namespace Roadkill.Core.Mvc.Controllers
 	{
 		private readonly ApplicationSettings _applicationSettings;
 		private readonly IUserContext _userContext;
-		private readonly ConfigReaderWriter _configReaderWriter;
+		private readonly IConfigReaderWriter _configReaderWriter;
 		private readonly IActiveDirectoryProvider _activeDirectoryProvider;
 		private readonly UserServiceBase _userService;
 		private readonly IDatabaseTester _databaseTester;
 
-		public ConfigurationTesterController(ApplicationSettings appSettings, IUserContext userContext, ConfigReaderWriter configReaderWriter, 
+		public ConfigurationTesterController(ApplicationSettings appSettings, IUserContext userContext, IConfigReaderWriter configReaderWriter, 
 			IActiveDirectoryProvider activeDirectoryProvider, UserServiceBase userService, IDatabaseTester databaseTester) 
 		{
 			_applicationSettings = appSettings;

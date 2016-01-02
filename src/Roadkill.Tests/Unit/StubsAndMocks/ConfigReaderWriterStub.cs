@@ -4,7 +4,7 @@ using Roadkill.Core.Mvc.ViewModels;
 
 namespace Roadkill.Tests.Unit.StubsAndMocks
 {
-	public class ConfigReaderWriterStub : ConfigReaderWriter
+	public class ConfigReaderWriterStub : IConfigReaderWriter
 	{
 		public ApplicationSettings ApplicationSettings { get; set; }
 		public string UILanguageCode { get; set; }
@@ -19,12 +19,12 @@ namespace Roadkill.Tests.Unit.StubsAndMocks
 			TestWebConfigResult = "OK";
 		}
 
-		public override void UpdateLanguage(string uiLanguageCode)
+		public virtual void UpdateLanguage(string uiLanguageCode)
 		{
 			UILanguageCode = uiLanguageCode;
 		}
 
-		public override void Save(SettingsViewModel settings)
+		public virtual void Save(SettingsViewModel settings)
 		{
 			Saved = true;
 
@@ -35,22 +35,22 @@ namespace Roadkill.Tests.Unit.StubsAndMocks
 			ApplicationSettings.UseObjectCache = settings.UseObjectCache;
 		}
 
-		public override RoadkillSection Load()
+		public virtual IRoadkillConfiguration Load()
 		{
 			return new RoadkillSection();
 		}
 
-		public override ApplicationSettings GetApplicationSettings()
+		public virtual ApplicationSettings GetApplicationSettings()
 		{
 			return ApplicationSettings;
 		}
 
-		public override void ResetInstalledState()
+		public virtual void ResetInstalledState()
 		{
 			InstallStateReset = true;
 		}
 
-		public override string TestSaveWebConfig()
+		public virtual string TestSaveWebConfig()
 		{
 			return TestWebConfigResult;
 		}

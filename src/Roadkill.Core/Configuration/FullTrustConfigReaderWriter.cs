@@ -31,7 +31,7 @@ namespace Roadkill.Core.Configuration
 		{
 		}
 
-		internal FullTrustConfigReaderWriter(string configFilePath)
+		public FullTrustConfigReaderWriter(string configFilePath)
 		{
 			if (!_isConfigLoaded)
 			{
@@ -78,6 +78,9 @@ namespace Roadkill.Core.Configuration
 
 				throw new InvalidOperationException(errorMessage);
 			}
+
+			// For the JSON refactor, the property isn't used.
+			_section.ConnectionString = "";
 		}
 
 		/// <summary>
@@ -215,60 +218,21 @@ namespace Roadkill.Core.Configuration
 		/// </returns>
 		public virtual ApplicationSettings GetApplicationSettings()
 		{
-			ApplicationSettings appSettings = new ApplicationSettings();
+			var converter = new RoadkillConfigurationConverter();
+			ApplicationSettings appSettings = converter.ToApplicationSettings(_section);
 
-			appSettings.AdminRoleName = _section.AdminRoleName;
-			appSettings.AttachmentsFolder = _section.AttachmentsFolder;
-			appSettings.AttachmentsRoutePath = _section.AttachmentsRoutePath;
-			appSettings.ApiKeys = ParseApiKeys(_section.ApiKeys);
-			appSettings.AzureConnectionString = _section.AzureConnectionString;
-			appSettings.AzureContainer = _section.AzureContainer;
-
-			appSettings.ConnectionStringName = _section.ConnectionStringName;
 			appSettings.ConnectionString = _config.ConnectionStrings.ConnectionStrings[_section.ConnectionStringName].ConnectionString;
 			if (string.IsNullOrEmpty(appSettings.ConnectionString))
 				appSettings.ConnectionString = ConfigurationManager.ConnectionStrings[_section.ConnectionStringName].ConnectionString;
 
-			appSettings.UseObjectCache = _section.UseObjectCache;
-			appSettings.UseBrowserCache = _section.UseBrowserCache;
-			appSettings.DatabaseName = string.IsNullOrEmpty(_section.DatabaseName) ? "SqlServer2008" : _section.DatabaseName;
-			appSettings.ConnectionStringName = _section.ConnectionStringName;
-			appSettings.EditorRoleName = _section.EditorRoleName;
-			appSettings.IgnoreSearchIndexErrors = _section.IgnoreSearchIndexErrors;
-			appSettings.IsPublicSite = _section.IsPublicSite;
-			appSettings.Installed = _section.Installed;
-			appSettings.LdapConnectionString = _section.LdapConnectionString;
-			appSettings.LdapUsername = _section.LdapUsername;
-			appSettings.LdapPassword = _section.LdapPassword;
-			appSettings.UseAzureFileStorage = _section.UseAzureFileStorage;
-			appSettings.UseHtmlWhiteList = _section.UseHtmlWhiteList;
-			appSettings.UserServiceType = _section.UserServiceType;
-			appSettings.UseWindowsAuthentication = _section.UseWindowsAuthentication;
-
 			return appSettings;
-		}
-
-		private IEnumerable<string> ParseApiKeys(string apiKeys)
-		{
-			if (string.IsNullOrEmpty(apiKeys))
-				return new List<string>();
-
-			var keyList = new List<string>();
-
-			string[] keys = apiKeys.Split(',');
-			foreach (string item in keys)
-			{
-				keyList.Add(item.Trim());
-			}
-
-			return keyList;
 		}
 
 		/// <summary>
 		/// Gets the curent <see cref="System.Configuration.Configuration"/>.
 		/// </summary>
 		/// <returns></returns>
-		public System.Configuration.Configuration GetConfiguration()
+		internal System.Configuration.Configuration GetConfiguration()
 		{
 			return _config;
 		}

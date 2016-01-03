@@ -11,7 +11,8 @@ using System.Web;
 namespace Roadkill.Core.Configuration
 {
 	/// <summary>
-	/// Contains all settings that require an application (appdomain) restart when changed - typically stored in a .config file.
+	/// Contains all settings that require an application (appdomain) restart when changed - mostl of which are stored in a .config file,
+	/// and others can only be altered programmatically.
 	/// </summary>
 	public class ApplicationSettings
 	{
@@ -136,11 +137,6 @@ namespace Roadkill.Core.Configuration
 		/// The connection string to the Roadkill database.
 		/// </summary>
 		public string ConnectionString { get; set; }
-
-		/// <summary>
-		/// The connection string name (held in the connection strings section of the config file) for the Roadkill database.
-		/// </summary>
-		public string ConnectionStringName { get; set; }
 
 		/// <summary>
 		/// The file path for the custom tokens file.
@@ -315,17 +311,17 @@ namespace Roadkill.Core.Configuration
 			AppDataPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App_Data");
 			AppDataInternalPath = Path.Combine(AppDataPath, "Internal");
 			ApiKeys = new List<string>();
+			AttachmentsRoutePath = "Attachments";
+			AttachmentsFolder = "~/App_Data/Attachments";
+			DatabaseName = SupportedDatabases.SqlServer2008.Id;
 			CustomTokensPath = Path.Combine(AppDataPath, "customvariables.xml");
 			EmailTemplateFolder = Path.Combine(AppDataPath, "EmailTemplates");
 			HtmlElementWhiteListPath = Path.Combine(AppDataInternalPath, "htmlwhitelist.xml");
 			MinimumPasswordLength = 6;
 			NLogConfigFilePath = "~/App_Data/NLog.config";
-			DatabaseName = SupportedDatabases.SqlServer2008.Id;
-			AttachmentsRoutePath = "Attachments";
-			AttachmentsFolder = "~/App_Data/Attachments";
-			SearchIndexPath = Path.Combine(AppDataInternalPath, "Search");
 			PluginsBinPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "bin", "Plugins");
 			PluginsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins");
+			SearchIndexPath = Path.Combine(AppDataInternalPath, "Search");
 		}
 
 		/// <summary>

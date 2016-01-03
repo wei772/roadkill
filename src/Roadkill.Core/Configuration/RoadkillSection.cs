@@ -67,6 +67,8 @@ namespace Roadkill.Core
 			set { this["connectionStringName"] = value; }
 		}
 
+		public string ConnectionString { get; set; }
+
 		/// <summary>
 		/// Gets or sets the name of the editor role.
 		/// </summary>

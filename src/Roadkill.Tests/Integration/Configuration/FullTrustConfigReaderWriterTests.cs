@@ -19,8 +19,8 @@ namespace Roadkill.Tests.Integration.Configuration
 		public void Setup()
 		{
 			// Copy the config files so they're fresh before each test
-			string source = Path.Combine(TestConstants.ROOT_FOLDER, "src", "Roadkill.Tests", "Integration", "Configuration", "TestConfigs");
-			string destination = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Integration", "Configuration", "TestConfigs");
+			string source = Path.Combine(TestConstants.ROOT_FOLDER, "src", "Roadkill.Tests", "Integration", "Configuration", "TestConfigs", "XML");
+			string destination = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Integration", "Configuration", "TestConfigs", "XML");
 
 			foreach (string filename in Directory.GetFiles(source))
 			{
@@ -37,10 +37,10 @@ namespace Roadkill.Tests.Integration.Configuration
 
 			// Act
 			FullTrustConfigReaderWriter configManager = new FullTrustConfigReaderWriter(configFilePath);
-			RoadkillSection appSettings = configManager.Load() as RoadkillSection;
+			IRoadkillConfiguration config = configManager.Load();
 
 			// Assert
-			Assert.That(appSettings.AdminRoleName, Is.EqualTo("Admin-test"), "AdminRoleName"); // basic check
+			Assert.That(config.AdminRoleName, Is.EqualTo("Admin-test"), "AdminRoleName"); // basic check
 		}
 
 		[Test]
@@ -150,78 +150,6 @@ namespace Roadkill.Tests.Integration.Configuration
 		}
 
 		[Test]
-		public void getapplicationsettings_should_have_correct_key_mappings_and_values()
-		{
-			// Arrange
-			string configFilePath = GetConfigPath("test.config");
-
-			// Act
-			FullTrustConfigReaderWriter configManager = new FullTrustConfigReaderWriter(configFilePath);
-			ApplicationSettings appSettings = configManager.GetApplicationSettings();
-
-			// Assert
-			Assert.That(appSettings.AdminRoleName, Is.EqualTo("Admin-test"), "AdminRoleName");
-			Assert.That(appSettings.ApiKeys.Count(), Is.EqualTo(3), "ApiKeys");
-			Assert.That(appSettings.AttachmentsRoutePath, Is.EqualTo("AttachmentsRoutePathTest"), "AttachmentsRoutePath"); 
-			Assert.That(appSettings.AttachmentsFolder, Is.EqualTo("/Attachments-test"), "AttachmentsFolder");
-			Assert.That(appSettings.UseObjectCache, Is.True, "UseObjectCache");
-			Assert.That(appSettings.UseBrowserCache, Is.True, "UseBrowserCache");
-			Assert.That(appSettings.ConnectionStringName, Is.EqualTo("Roadkill-test"), "ConnectionStringName");
-			Assert.That(appSettings.DatabaseName, Is.EqualTo("SqlServer2008"), "DatabaseType");
-			Assert.That(appSettings.EditorRoleName, Is.EqualTo("Editor-test"), "EditorRoleName");
-			Assert.That(appSettings.IgnoreSearchIndexErrors, Is.True, "IgnoreSearchIndexErrors");
-			Assert.That(appSettings.Installed, Is.True, "Installed");
-			Assert.That(appSettings.IsPublicSite, Is.False, "IsPublicSite");
-			Assert.That(appSettings.LdapConnectionString, Is.EqualTo("ldapstring-test"), "LdapConnectionString");
-			Assert.That(appSettings.LdapPassword, Is.EqualTo("ldappassword-test"), "LdapPassword");
-			Assert.That(appSettings.LdapUsername, Is.EqualTo("ldapusername-test"), "LdapUsername");
-			Assert.That(appSettings.UseHtmlWhiteList, Is.EqualTo(false), "UseHtmlWhiteList");
-			Assert.That(appSettings.UserServiceType, Is.EqualTo("DefaultUserManager-test"), "DefaultUserManager");
-			Assert.That(appSettings.UseWindowsAuthentication, Is.False, "UseWindowsAuthentication");
-		}
-
-		[Test]
-		public void getapplicationsettings_should_parse_api_keys()
-		{
-			// Arrange
-			string configFilePath = GetConfigPath("test.config");
-
-			// Act
-			FullTrustConfigReaderWriter configManager = new FullTrustConfigReaderWriter(configFilePath);
-			ApplicationSettings appSettings = configManager.GetApplicationSettings();
-
-			// Assert
-			Assert.That(appSettings.ApiKeys, Is.Not.Null, "ApiKeys");
-			Assert.That(appSettings.ApiKeys.Count(), Is.EqualTo(3), "ApiKeys");
-			Assert.That(appSettings.ApiKeys, Contains.Item("apikey1"), "Doesn't contain 'apikey1'");
-			Assert.That(appSettings.ApiKeys, Contains.Item("apikey2"), "Doesn't contain 'apikey2'");
-			Assert.That(appSettings.ApiKeys, Contains.Item("apikey3"), "Doesn't contain 'apikey3'");
-		}
-
-		[Test]
-		public void getapplicationsettings_should_use_default_values_when_optional_settings_have_missing_values()
-		{
-			// Arrange
-			string configFilePath = GetConfigPath("test-optional-values.config");
-
-			// Act
-			FullTrustConfigReaderWriter configManager = new FullTrustConfigReaderWriter(configFilePath);
-			ApplicationSettings appSettings = configManager.GetApplicationSettings();
-
-			// Assert
-			Assert.That(appSettings.AttachmentsRoutePath, Is.EqualTo("Attachments"), "AttachmentsRoutePath");
-			Assert.That(appSettings.ApiKeys, Is.Not.Null.And.Empty, "ApiKeys");
-			Assert.That(appSettings.DatabaseName, Is.EqualTo("SqlServer2008"), "DatabaseName");
-			Assert.That(appSettings.IgnoreSearchIndexErrors, Is.False, "IgnoreSearchIndexErrors");
-			Assert.That(appSettings.IsPublicSite, Is.True, "IsPublicSite");
-			Assert.That(appSettings.LdapConnectionString, Is.EqualTo(""), "LdapConnectionString");
-			Assert.That(appSettings.LdapPassword, Is.EqualTo(""), "LdapPassword");
-			Assert.That(appSettings.LdapUsername, Is.EqualTo(""), "LdapUsername");
-			Assert.That(appSettings.UseHtmlWhiteList, Is.EqualTo(true), "UseHtmlWhiteList");
-			Assert.That(appSettings.UserServiceType, Is.EqualTo(""), "DefaultUserManager");
-		}
-
-		[Test]
 		public void getapplicationsettings_should_find_connection_value_from_connection_setting()
 		{
 			// Arrange
@@ -296,7 +224,7 @@ namespace Roadkill.Tests.Integration.Configuration
 
 		private string GetConfigPath(string filename)
 		{
-			return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Integration", "Configuration", "TestConfigs", filename);
+			return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Integration", "Configuration", "TestConfigs", "XML", filename);
 		}
 	}
 }

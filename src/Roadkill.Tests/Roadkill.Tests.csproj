@@ -305,6 +305,8 @@
     <Compile Include="Acceptance\Headless\RestApi\UserControllerTests.cs" />
     <Compile Include="Acceptance\Headless\RestApi\WebApiTestBase.cs" />
     <Compile Include="Integration\Configuration\ApplicationSettingsTests.cs" />
+    <Compile Include="Unit\Configuration\RoadkillConfigurationConverterTests.cs" />
+    <Compile Include="Integration\Configuration\JsonConfigReaderWriterTests.cs" />
     <Compile Include="Integration\Repository\LightSpeed\LightSpeedPageRepositoryTests.cs" />
     <Compile Include="Integration\Repository\LightSpeed\LightSpeedInstallerRepositoryTests.cs" />
     <Compile Include="Integration\Repository\LightSpeed\LightSpeedSettingsRepositoryTests.cs" />
@@ -444,6 +446,12 @@
     <Content Include="chromedriver.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Integration\Configuration\TestConfigs\JSON\test-missing-values.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Integration\Configuration\TestConfigs\JSON\test-no-keys.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Integration\Import\screwturn3.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -462,30 +470,32 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <Content Include="Integration\Configuration\TestConfigs\test.config">
+    <Content Include="Integration\Configuration\TestConfigs\XML\test.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Integration\Configuration\TestConfigs\test-optional-values.config">
+    <Content Include="Integration\Configuration\TestConfigs\XML\test-missing-values.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Integration\Configuration\TestConfigs\test-missing-values.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Integration\Configuration\TestConfigs\test-mongodb.config">
+    <Content Include="Integration\Configuration\TestConfigs\XML\test-mongodb.config">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Integration\Configuration\TestConfigs\test-no-roadkillsection.config">
+    <Content Include="Integration\Configuration\TestConfigs\XML\test-no-roadkillsection.config">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Integration\Configuration\TestConfigs\test-empty.config">
+    <Content Include="Integration\Configuration\TestConfigs\XML\test-empty.config">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Integration\Configuration\TestConfigs\test-empty-defaults.config">
-      <SubType>Designer</SubType>
+    <Content Include="Integration\Configuration\TestConfigs\JSON\test-empty.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Integration\Configuration\TestConfigs\JSON\test-mongodb.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Integration\Configuration\TestConfigs\JSON\test.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="packages.config">
@@ -512,6 +522,7 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ProjectExtensions />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

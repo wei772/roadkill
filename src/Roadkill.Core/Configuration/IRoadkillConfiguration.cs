@@ -1,4 +1,6 @@
-﻿using Roadkill.Core.Security;
+﻿using System.ComponentModel;
+using Newtonsoft.Json;
+using Roadkill.Core.Security;
 
 namespace Roadkill.Core.Configuration
 {
@@ -24,10 +26,7 @@ namespace Roadkill.Core.Configuration
 		/// </summary>
 		string AttachmentsRoutePath { get; set; }
 
-		/// <summary>
-		/// Gets or sets the name of the connection string in the connectionstrings section.
-		/// </summary>
-		string ConnectionStringName { get; set; }
+		string ConnectionString { get; set; }
 
 		/// <summary>
 		/// Gets or sets the name of the editor role.
@@ -45,30 +44,39 @@ namespace Roadkill.Core.Configuration
 		bool Installed { get; set; }
 
 		/// <summary>
-		/// Whether the site is public, i.e. all pages are visible by default. The default is true,
-		/// and this is optional.
+		/// Whether the site is public, i.e. all pages are visible by default. The default is true, and this is optional.
 		/// </summary>
+		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+		[DefaultValue(true)]
 		bool IsPublicSite { get; set; }
 
 		/// <summary>
 		/// For example: LDAP://mydc01.company.internal
 		/// </summary>
+		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+		[DefaultValue("")]
 		string LdapConnectionString { get; set; }
 
 		/// <summary>
 		/// The username to authenticate against the AD with
 		/// </summary>
+		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+		[DefaultValue("")]
 		string LdapUsername { get; set; }
 
 		/// <summary>
 		/// The password to authenticate against the AD with
 		/// </summary>
+		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+		[DefaultValue("")]
 		string LdapPassword { get; set; }
 
 		/// <summary>
 		/// Whether to remove all HTML tags from the markup except those found in the whitelist.xml file,
 		/// inside the App_Data folder.
 		/// </summary>
+		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+		[DefaultValue(true)]
 		bool UseHtmlWhiteList { get; set; }
 
 		/// <summary>

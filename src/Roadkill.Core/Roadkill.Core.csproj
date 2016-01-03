@@ -361,6 +361,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\IRoadkillConfiguration.cs" />
+    <Compile Include="Configuration\JsonConfigReaderWriter.cs" />
+    <Compile Include="Configuration\RoadkillConfiguration.cs" />
+    <Compile Include="Configuration\RoadkillConfigurationConverter.cs" />
     <Compile Include="Database\IRepositoryFactory.cs" />
     <Compile Include="Database\Repositories\IDatabaseTester.cs" />
     <Compile Include="Database\Repositories\IInstallerRepository.cs" />
@@ -390,7 +393,7 @@
     <Compile Include="Email\IEmailClient.cs" />
     <Compile Include="Exceptions\FileException.cs" />
     <Compile Include="Extensions\BootstrapHtmlExtensions.cs" />
-    <Compile Include="Configuration\ConfigReaderWriter.cs" />
+    <Compile Include="Configuration\IConfigReaderWriter.cs" />
     <Compile Include="Configuration\FullTrustConfigReaderWriter.cs" />
     <Compile Include="Database\Export\SqlExportBuilder.cs" />
     <Compile Include="Database\Repositories\LightSpeed\DatabaseLogger.cs" />
@@ -613,9 +616,7 @@
   <ItemGroup>
     <Content Include="Localization\readme.txt" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Configuration\Json\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

@@ -1,0 +1,23 @@
+{
+  "AdminRoleName": "empty",
+  "ApiKeys": "",
+  "AttachmentsFolder": "empty",
+  "AttachmentsRoutePath": "empty",
+  "ConnectionString": "empty",
+  "EditorRoleName": "empty",
+  "IgnoreSearchIndexErrors": false,
+  "Installed": false,
+  "IsPublicSite": false,
+  "LdapConnectionString": "empty",
+  "LdapUsername": "empty",
+  "LdapPassword": "empty",
+  "UseHtmlWhiteList": false,
+  "UseWindowsAuthentication": false,
+  "UserServiceType": "empty",
+  "UseObjectCache": false,
+  "UseBrowserCache": false,
+  "DatabaseName": "empty",
+  "UseAzureFileStorage": false,
+  "AzureConnectionString": "Attachments",
+  "AzureContainer": "Attachments"
+}

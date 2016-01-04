@@ -20,17 +20,17 @@ namespace Roadkill.Tests.Integration.Configuration
 			ApplicationSettings appSettings = new ApplicationSettings();
 
 			// Assert
-			Assert.That(appSettings.AppDataPath,               Is.EqualTo(GetFullPath(@"App_Data")), "AppDataPath");
-			Assert.That(appSettings.AppDataInternalPath,       Is.EqualTo(GetFullPath(@"App_Data\Internal")), "AppDataInternalPath");
-			Assert.That(appSettings.CustomTokensPath,          Is.EqualTo(GetFullPath(@"App_Data\customvariables.xml")), "CustomTokensPath");
-			Assert.That(appSettings.EmailTemplateFolder,       Is.EqualTo(GetFullPath(@"App_Data\EmailTemplates")), "EmailTemplateFolder");
-			Assert.That(appSettings.HtmlElementWhiteListPath,  Is.EqualTo(GetFullPath(@"App_Data\Internal\htmlwhitelist.xml")), "HtmlElementWhiteListPath");
-			Assert.That(appSettings.SearchIndexPath,           Is.EqualTo(GetFullPath(@"App_Data\Internal\Search")), "SearchIndexPath");
-			Assert.That(appSettings.PluginsBinPath,            Is.EqualTo(GetFullPath(@"bin\Plugins")), "PluginsBinPath");
-			Assert.That(appSettings.PluginsPath,               Is.EqualTo(GetFullPath(@"Plugins")), "PluginsPath");
+			Assert.That(appSettings.NonConfigurableSettings.AppDataPath,               Is.EqualTo(GetFullPath(@"App_Data")), "AppDataPath");
+			Assert.That(appSettings.NonConfigurableSettings.AppDataInternalPath,       Is.EqualTo(GetFullPath(@"App_Data\Internal")), "AppDataInternalPath");
+			Assert.That(appSettings.NonConfigurableSettings.CustomTokensPath,          Is.EqualTo(GetFullPath(@"App_Data\customvariables.xml")), "CustomTokensPath");
+			Assert.That(appSettings.NonConfigurableSettings.EmailTemplateFolder,       Is.EqualTo(GetFullPath(@"App_Data\EmailTemplates")), "EmailTemplateFolder");
+			Assert.That(appSettings.NonConfigurableSettings.HtmlElementWhiteListPath,  Is.EqualTo(GetFullPath(@"App_Data\Internal\htmlwhitelist.xml")), "HtmlElementWhiteListPath");
+			Assert.That(appSettings.NonConfigurableSettings.SearchIndexPath,           Is.EqualTo(GetFullPath(@"App_Data\Internal\Search")), "SearchIndexPath");
+			Assert.That(appSettings.NonConfigurableSettings.PluginsBinPath,            Is.EqualTo(GetFullPath(@"bin\Plugins")), "PluginsBinPath");
+			Assert.That(appSettings.NonConfigurableSettings.PluginsPath,               Is.EqualTo(GetFullPath(@"Plugins")), "PluginsPath");
 
-			Assert.That(appSettings.NLogConfigFilePath, Is.EqualTo("~/App_Data/NLog.config"), "NLogConfigFilePath");
-			Assert.That(appSettings.MinimumPasswordLength, Is.EqualTo(6), "MinimumPasswordLength");
+			Assert.That(appSettings.NonConfigurableSettings.NLogConfigFilePath, Is.EqualTo("~/App_Data/NLog.config"), "NLogConfigFilePath");
+			Assert.That(appSettings.NonConfigurableSettings.MinimumPasswordLength, Is.EqualTo(6), "MinimumPasswordLength");
 			Assert.That(appSettings.DatabaseName == SupportedDatabases.SqlServer2008, "DatabaseName");
 			Assert.That(appSettings.AttachmentsRoutePath, Is.EqualTo("Attachments"), "AttachmentsRoutePath");
 			Assert.That(appSettings.AttachmentsFolder, Is.EqualTo("~/App_Data/Attachments"), "AttachmentsFolder");

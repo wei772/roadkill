@@ -171,7 +171,6 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers.Admin
 			Assert.That(result.FileDownloadName, Is.StringStarting("attachments-"));
 			Assert.That(result.FileDownloadName, Is.StringEnding(".zip"));
 			Assert.That(result.ContentType, Is.EqualTo("application/zip"));
-			
 		}
 
 		[Test]

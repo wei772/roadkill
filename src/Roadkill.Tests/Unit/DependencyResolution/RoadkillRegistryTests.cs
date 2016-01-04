@@ -393,7 +393,7 @@ namespace Roadkill.Tests.Unit.DependencyResolution
 			settings.ConnectionString = "none empty connection string";
 			settings.UserServiceType = "Roadkill.Plugins.TestUserService, Roadkill.Plugins";
 			Console.WriteLine(settings.UserServiceType);
-			settings.PluginsBinPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins");
+			settings.NonConfigurableSettings.PluginsBinPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins");
 
 			// Act
 			var registry = new RoadkillRegistry(new ConfigReaderWriterStub() { ApplicationSettings = settings });
@@ -413,7 +413,7 @@ namespace Roadkill.Tests.Unit.DependencyResolution
 			settings.ConnectionString = "none empty connection string";
 			settings.UserServiceType = typeof(Roadkill.Plugins.TestUserService).AssemblyQualifiedName;
 			Console.WriteLine(settings.UserServiceType);
-			settings.PluginsBinPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins");
+			settings.NonConfigurableSettings.PluginsBinPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins");
 
 			// Act
 			var registry = new RoadkillRegistry(new ConfigReaderWriterStub() { ApplicationSettings = settings });

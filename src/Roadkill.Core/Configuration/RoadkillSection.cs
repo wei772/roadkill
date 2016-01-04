@@ -16,6 +16,8 @@ namespace Roadkill.Core
 	/// </summary>
 	public class RoadkillSection : ConfigurationSection, IRoadkillConfiguration
 	{
+		public string ConnectionString { get; set; }
+
 		/// <summary>
 		/// Gets or sets the name of the admin role.
 		/// </summary>
@@ -37,27 +39,6 @@ namespace Roadkill.Core
 		}
 
 		/// <summary>
-		/// Gets or sets the attachments folder, which should begin with "~/".
-		/// </summary>
-		[ConfigurationProperty("attachmentsFolder", IsRequired = true)]
-		public string AttachmentsFolder
-		{
-			get { return (string)this["attachmentsFolder"]; }
-			set { this["attachmentsFolder"] = value; }
-		}
-
-		/// <summary>
-		/// TODO: comments
-		/// </summary>
-		[ConfigurationProperty("attachmentsRoutePath", IsRequired = false, DefaultValue = "Attachments")]
-		public string AttachmentsRoutePath
-		{
-			get { return (string)this["attachmentsRoutePath"]; }
-			set { this["attachmentsRoutePath"] = value; }
-		}
-
-
-		/// <summary>
 		/// Gets or sets the name of the connection string in the connectionstrings section.
 		/// </summary>
 		[ConfigurationProperty("connectionStringName", IsRequired = true)]
@@ -67,8 +48,6 @@ namespace Roadkill.Core
 			set { this["connectionStringName"] = value; }
 		}
 
-		public string ConnectionString { get; set; }
-
 		/// <summary>
 		/// Gets or sets the name of the editor role.
 		/// </summary>
@@ -77,16 +56,6 @@ namespace Roadkill.Core
 		{
 			get { return (string)this["editorRoleName"]; }
 			set { this["editorRoleName"] = value; }
-		}
-
-		/// <summary>
-		/// Whether errors in updating the lucene index throw exceptions or are just ignored.
-		/// </summary>
-		[ConfigurationProperty("ignoreSearchIndexErrors", IsRequired = false)]
-		public bool IgnoreSearchIndexErrors
-		{
-			get { return (bool)this["ignoreSearchIndexErrors"]; }
-			set { this["ignoreSearchIndexErrors"] = value; }
 		}
 
 		/// <summary>
@@ -100,15 +69,76 @@ namespace Roadkill.Core
 		}
 
 		/// <summary>
+		/// Whether to enabled Windows and Active Directory authentication.
+		/// </summary>
+		[ConfigurationProperty("useWindowsAuthentication", IsRequired = true)]
+		public bool UseWindowsAuthentication
+		{
+			get { return (bool)this["useWindowsAuthentication"]; }
+			set { this["useWindowsAuthentication"] = value; }
+		}
+
+		/// <summary>
+		/// Gets a value indicating whether the <see cref="T:System.Configuration.ConfigurationElement"/> object is read-only,
+		/// and can therefore be saved back to disk.
+		/// </summary>
+		/// <returns>This returns true.</returns>
+		public override bool IsReadOnly()
+		{
+			return false;
+		}
+
+		#region Optional parameters
+
+		public bool? UseBrowserCache { get; set; }
+		public bool? UseAzureFileStorage { get; set; }
+		public bool? IsPublicSite { get; set; }
+		public bool? UseHtmlWhiteList { get; set; }
+		public bool? UseObjectCache { get; set; }
+		public bool? IgnoreSearchIndexErrors { get; set; }
+
+		/// <summary>
+		/// The type used for the managing users, in the format "MyNamespace.Type".
+		/// This class should inherit from the <see cref="UserServiceBase"/> class or a one of its derived types.
+		/// </summary>
+		[ConfigurationProperty("userServiceType", IsRequired = false)]
+		public string UserServiceType
+		{
+			get { return (string)this["userServiceType"]; }
+			set { this["userServiceType"] = value; }
+		}
+
+		/// <summary>
+		/// Indicates whether server-based page object caching is enabled.
+		/// </summary>
+		[ConfigurationProperty("useObjectCache", IsRequired = false, DefaultValue = true)]
+		public bool UseObjectCacheInternal
+		{
+			get { return (bool)this["useObjectCache"]; }
+			set { this["useObjectCache"] = value; }
+		}
+
+		/// <summary>
+		/// Indicates whether page content should be cached, if <see cref="UseObjectCache"/> is true.
+		/// </summary>
+		[ConfigurationProperty("useBrowserCache", IsRequired = false, DefaultValue = false)]
+		public bool UseBrowserCacheInternal
+		{
+			get { return (bool)this["useBrowserCache"]; }
+			set { this["useBrowserCache"] = value; }
+		}
+
+		/// <summary>
 		/// Whether the site is public, i.e. all pages are visible by default. The default is true,
 		/// and this is optional.
 		/// </summary>
 		[ConfigurationProperty("isPublicSite", IsRequired = false, DefaultValue = true)]
-		public bool IsPublicSite
+		public bool IsPublicSiteInternal
 		{
 			get { return (bool)this["isPublicSite"]; }
 			set { this["isPublicSite"] = value; }
 		}
+
 
 		/// <summary>
 		/// For example: LDAP://mydc01.company.internal
@@ -145,67 +175,46 @@ namespace Roadkill.Core
 		/// inside the App_Data folder.
 		/// </summary>
 		[ConfigurationProperty("useHtmlWhiteList", IsRequired = false, DefaultValue = true)]
-		public bool UseHtmlWhiteList
+		public bool UseHtmlWhiteListInternal
 		{
 			get { return (bool)this["useHtmlWhiteList"]; }
 			set { this["useHtmlWhiteList"] = value; }
 		}
 
 		/// <summary>
-		/// Whether to enabled Windows and Active Directory authentication.
+		/// Whether errors in updating the lucene index throw exceptions or are just ignored.
 		/// </summary>
-		[ConfigurationProperty("useWindowsAuthentication", IsRequired = true)]
-		public bool UseWindowsAuthentication
+		[ConfigurationProperty("ignoreSearchIndexErrors", IsRequired = false)]
+		public bool IgnoreSearchIndexErrorsInternal
 		{
-			get { return (bool)this["useWindowsAuthentication"]; }
-			set { this["useWindowsAuthentication"] = value; }
+			get { return (bool)this["ignoreSearchIndexErrors"]; }
+			set { this["ignoreSearchIndexErrors"] = value; }
 		}
 
 		/// <summary>
-		/// The type used for the managing users, in the format "MyNamespace.Type".
-		/// This class should inherit from the <see cref="UserServiceBase"/> class or a one of its derived types.
+		/// Gets or sets the attachments folder, which should begin with "~/".
 		/// </summary>
-		[ConfigurationProperty("userServiceType", IsRequired = false)]
-		public string UserServiceType
+		[ConfigurationProperty("attachmentsFolder", IsRequired = true)]
+		public string AttachmentsFolder
 		{
-			get { return (string)this["userServiceType"]; }
-			set { this["userServiceType"] = value; }
+			get { return (string)this["attachmentsFolder"]; }
+			set { this["attachmentsFolder"] = value; }
 		}
 
 		/// <summary>
-		/// Indicates whether server-based page object caching is enabled.
+		/// TODO: comments
 		/// </summary>
-		[ConfigurationProperty("useObjectCache", IsRequired = false, DefaultValue = true)]
-		public bool UseObjectCache
+		[ConfigurationProperty("attachmentsRoutePath", IsRequired = false, DefaultValue = "Attachments")]
+		public string AttachmentsRoutePath
 		{
-			get { return (bool)this["useObjectCache"]; }
-			set { this["useObjectCache"] = value; }
-		}
-
-		/// <summary>
-		/// Indicates whether page content should be cached, if <see cref="UseObjectCache"/> is true.
-		/// </summary>
-		[ConfigurationProperty("useBrowserCache", IsRequired = false, DefaultValue = false)]
-		public bool UseBrowserCache
-		{
-			get { return (bool)this["useBrowserCache"]; }
-			set { this["useBrowserCache"] = value; }
-		}
-
-		/// <summary>
-		/// Gets a value indicating whether the <see cref="T:System.Configuration.ConfigurationElement"/> object is read-only,
-		/// and can therefore be saved back to disk.
-		/// </summary>
-		/// <returns>This returns true.</returns>
-		public override bool IsReadOnly()
-		{
-			return false;
+			get { return (string)this["attachmentsRoutePath"]; }
+			set { this["attachmentsRoutePath"] = value; }
 		}
 
 		/// <summary>
 		/// The database type for Roadkill. This defaults to SQLServer2008 (MongoDB on Mono) if empty.
 		/// </summary>
-		[ConfigurationProperty("databaseName", IsRequired = false)]
+		[ConfigurationProperty("databaseName", IsRequired = false, DefaultValue = "SqlServer2008")]
 		public string DatabaseName
 		{
 			get { return (string)this["databaseName"]; }
@@ -216,7 +225,7 @@ namespace Roadkill.Core
 		/// TODO: comments + tests
 		/// </summary>
 		[ConfigurationProperty("useAzureFileStorage", IsRequired = false, DefaultValue = false)]
-		public bool UseAzureFileStorage
+		public bool UseAzureFileStorageInternal
 		{
 			get { return (bool)this["useAzureFileStorage"]; }
 			set { this["useAzureFileStorage"] = value; }
@@ -241,5 +250,6 @@ namespace Roadkill.Core
 			get { return (string)this["azureContainer"]; }
 			set { this["azureContainer"] = value; }
 		}
+		#endregion
 	}
 }

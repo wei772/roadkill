@@ -8,8 +8,8 @@ namespace Roadkill.Tests.Unit.StubsAndMocks
 {
 	public class EmailTemplateStub : EmailTemplate
 	{
-		public EmailTemplateStub(ApplicationSettings applicationSettings, ISettingsRepository settingsRepository, IEmailClient emailClient)
-			: base(applicationSettings, settingsRepository, emailClient)
+		public EmailTemplateStub(NonConfigurableSettings settings, ISettingsRepository settingsRepository, IEmailClient emailClient)
+			: base(settings, settingsRepository, emailClient)
 		{
 			base.PlainTextView = "plaintextview";
 			base.HtmlView = "htmlview";

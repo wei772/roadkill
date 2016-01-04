@@ -4,6 +4,9 @@ using Roadkill.Core.Security;
 
 namespace Roadkill.Core.Configuration
 {
+	/// <summary>
+	/// Describes all configurable settings stored in a config file that are used by roadkill.
+	/// </summary>
 	public interface IRoadkillConfiguration
 	{
 		/// <summary>
@@ -17,15 +20,8 @@ namespace Roadkill.Core.Configuration
 		string ApiKeys { get; set; }
 
 		/// <summary>
-		/// Gets or sets the attachments folder, which should begin with "~/".
+		/// The database connection string.
 		/// </summary>
-		string AttachmentsFolder { get; set; }
-
-		/// <summary>
-		/// TODO: comments
-		/// </summary>
-		string AttachmentsRoutePath { get; set; }
-
 		string ConnectionString { get; set; }
 
 		/// <summary>
@@ -34,21 +30,50 @@ namespace Roadkill.Core.Configuration
 		string EditorRoleName { get; set; }
 
 		/// <summary>
-		/// Whether errors in updating the lucene index throw exceptions or are just ignored.
-		/// </summary>
-		bool IgnoreSearchIndexErrors { get; set; }
-
-		/// <summary>
 		/// Gets or sets whether this roadkill instance has been installed.
 		/// </summary>
 		bool Installed { get; set; }
+
+		/// <summary>
+		/// Whether to enabled Windows and Active Directory authentication.
+		/// </summary>
+		bool UseWindowsAuthentication { get; set; }
+
+		#region Optional properties
+		/// <summary>
+		/// Whether errors in updating the lucene index throw exceptions or are just ignored.
+		/// </summary>
+		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+		[DefaultValue(true)]
+		bool? IgnoreSearchIndexErrors { get; set; }
+
+		/// <summary>
+		/// Gets or sets the attachments folder, which should begin with "~/".
+		/// </summary>
+		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+		[DefaultValue("~/App_Data/Attachments")]
+		string AttachmentsFolder { get; set; }
+
+		/// <summary>
+		/// TODO: comments
+		/// </summary>
+		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+		[DefaultValue("Attachments")]
+		string AttachmentsRoutePath { get; set; }
+
+		/// <summary>
+		/// The database type for Roadkill. This defaults to SQLServer2008 (MongoDB on Mono) if empty.
+		/// </summary>
+		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+		[DefaultValue("SqlServer2008")]
+		string DatabaseName { get; set; }
 
 		/// <summary>
 		/// Whether the site is public, i.e. all pages are visible by default. The default is true, and this is optional.
 		/// </summary>
 		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
 		[DefaultValue(true)]
-		bool IsPublicSite { get; set; }
+		bool? IsPublicSite { get; set; }
 
 		/// <summary>
 		/// For example: LDAP://mydc01.company.internal
@@ -77,47 +102,50 @@ namespace Roadkill.Core.Configuration
 		/// </summary>
 		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
 		[DefaultValue(true)]
-		bool UseHtmlWhiteList { get; set; }
+		bool? UseHtmlWhiteList { get; set; }
 
 		/// <summary>
-		/// Whether to enabled Windows and Active Directory authentication.
+		/// Indicates whether server-based page object caching is enabled.
 		/// </summary>
-		bool UseWindowsAuthentication { get; set; }
+		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+		[DefaultValue(true)]
+		bool? UseObjectCache { get; set; }
+
+		/// <summary>
+		/// Indicates whether page content should be cached, if <see cref="UseObjectCache"/> is true.
+		/// </summary>
+		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+		[DefaultValue(true)]
+		bool? UseBrowserCache { get; set; }
 
 		/// <summary>
 		/// The type used for the managing users, in the format "MyNamespace.Type".
 		/// This class should inherit from the <see cref="UserServiceBase"/> class or a one of its derived types.
 		/// </summary>
+		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+		[DefaultValue("")]
 		string UserServiceType { get; set; }
 
 		/// <summary>
-		/// Indicates whether server-based page object caching is enabled.
+		/// TODO: comments + tests
 		/// </summary>
-		bool UseObjectCache { get; set; }
-
-		/// <summary>
-		/// Indicates whether page content should be cached, if <see cref="UseObjectCache"/> is true.
-		/// </summary>
-		bool UseBrowserCache { get; set; }
-
-		/// <summary>
-		/// The database type for Roadkill. This defaults to SQLServer2008 (MongoDB on Mono) if empty.
-		/// </summary>
-		string DatabaseName { get; set; }
+		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+		[DefaultValue("")]
+		bool? UseAzureFileStorage { get; set; }
 
 		/// <summary>
 		/// TODO: comments + tests
 		/// </summary>
-		bool UseAzureFileStorage { get; set; }
-
-		/// <summary>
-		/// TODO: comments + tests
-		/// </summary>
+		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+		[DefaultValue("")]
 		string AzureConnectionString { get; set; }
 
 		/// <summary>
 		/// TODO: comments + tests
 		/// </summary>
+		[JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+		[DefaultValue("")]
 		string AzureContainer { get; set; }
+		#endregion
 	}
 }

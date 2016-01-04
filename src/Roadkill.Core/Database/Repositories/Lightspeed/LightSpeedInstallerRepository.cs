@@ -75,7 +75,7 @@ namespace Roadkill.Core.Database
 				{
 					var entity = new Roadkill.Core.Database.LightSpeed.SiteConfigurationEntity();
 					entity.Id = SiteSettings.SiteSettingsId;
-					entity.Version = ApplicationSettings.ProductVersion;
+					entity.Version = NonConfigurableSettings.ProductVersion;
 					entity.Content = siteSettings.GetJson();
 
 					unitOfWork.Add(entity);

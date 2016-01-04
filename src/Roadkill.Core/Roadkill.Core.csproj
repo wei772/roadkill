@@ -129,6 +129,10 @@
       <HintPath>..\..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="AutoMapper, Version=4.1.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\AutoMapper.4.1.1\lib\net45\AutoMapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="CommonMark, Version=0.1.0.0, Culture=neutral, PublicKeyToken=001ef8810438905d, processorArchitecture=MSIL">
       <HintPath>..\..\packages\CommonMark.NET.0.10.0\lib\net45\CommonMark.dll</HintPath>
       <Private>True</Private>
@@ -362,6 +366,7 @@
   <ItemGroup>
     <Compile Include="Configuration\IRoadkillConfiguration.cs" />
     <Compile Include="Configuration\JsonConfigReaderWriter.cs" />
+    <Compile Include="Configuration\NonConfigurableSettings.cs" />
     <Compile Include="Configuration\RoadkillConfiguration.cs" />
     <Compile Include="Configuration\RoadkillConfigurationConverter.cs" />
     <Compile Include="Database\IRepositoryFactory.cs" />

@@ -32,9 +32,9 @@ namespace Roadkill.Tests.Unit.Configuration
 				UseObjectCache = true,
 				UseBrowserCache = true,
 				DatabaseName = "SqlServer2008",
-				UseAzureFileStorage = false,
-				AzureConnectionString = "Attachments",
-				AzureContainer = "Attachments"
+				UseAzureFileStorage = true,
+				AzureConnectionString = "azure connection",
+				AzureContainer = "azure container"
 			};
 
 			// Act
@@ -60,6 +60,10 @@ namespace Roadkill.Tests.Unit.Configuration
 			Assert.That(appSettings.UseHtmlWhiteList, Is.EqualTo(config.UseHtmlWhiteList), "UseHtmlWhiteList");
 			Assert.That(appSettings.UserServiceType, Is.EqualTo(config.UserServiceType), "UserServiceType");
 			Assert.That(appSettings.UseWindowsAuthentication, Is.EqualTo(config.UseWindowsAuthentication), "UseWindowsAuthentication");
+
+			Assert.That(appSettings.UseAzureFileStorage, Is.True, "UseAzureFileStorage");
+			Assert.That(appSettings.AzureConnectionString, Is.EqualTo(config.AzureConnectionString), "UseWindowsAuthentication");
+			Assert.That(appSettings.AzureContainer, Is.EqualTo(config.AzureContainer), "UseWindowsAuthentication");
 		}
 
 		[Test]

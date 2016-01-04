@@ -34,20 +34,6 @@ namespace Roadkill.Core.DependencyResolution.StructureMap
 {
 	public class RoadkillRegistry : Registry
 	{
-		private class AbstractClassConvention<T> : IRegistrationConvention
-		{
-			public void ScanTypes(TypeSet types, Registry registry)
-			{
-				types.FindTypes(TypeClassification.Concretes | TypeClassification.Closed).ForEach(type =>
-				{
-					if (type.CanBeCastTo<T>())
-					{
-						registry.For(typeof(T)).LifecycleIs(new UniquePerRequestLifecycle()).Add(type);
-					}
-				});
-			}
-		}
-
 		public ApplicationSettings ApplicationSettings { get; set; }
 
 		public RoadkillRegistry(IConfigReaderWriter configReader)
@@ -58,13 +44,13 @@ namespace Roadkill.Core.DependencyResolution.StructureMap
 			ConfigureInstances(configReader);
 		}
 
-		private static void CopyPlugins(ApplicationSettings applicationSettings)
+		private static void CopyPlugins(NonConfigurableSettings settings)
 		{
-			string pluginsDestPath = applicationSettings.PluginsBinPath;
+			string pluginsDestPath = settings.PluginsBinPath;
 			if (!Directory.Exists(pluginsDestPath))
 				Directory.CreateDirectory(pluginsDestPath);
 
-			PluginFileManager.CopyPlugins(applicationSettings);
+			PluginFileManager.CopyPlugins(settings);
 		}
 
 		private void ScanTypes(IAssemblyScanner scanner)
@@ -75,8 +61,8 @@ namespace Roadkill.Core.DependencyResolution.StructureMap
 			scanner.WithDefaultConventions();
 
 			// Scan plugins: this includes everything e.g repositories, UserService, FileService TextPlugins
-			CopyPlugins(ApplicationSettings);
-			foreach (string subDirectory in Directory.GetDirectories(ApplicationSettings.PluginsBinPath))
+			CopyPlugins(ApplicationSettings.NonConfigurableSettings);
+			foreach (string subDirectory in Directory.GetDirectories(ApplicationSettings.NonConfigurableSettings.PluginsBinPath))
 			{
 				scanner.AssembliesFromPath(subDirectory);
 			}
@@ -89,6 +75,7 @@ namespace Roadkill.Core.DependencyResolution.StructureMap
 			// Config, context
 			scanner.AddAllTypesOf<ApplicationSettings>();
 			scanner.AddAllTypesOf<IUserContext>();
+			scanner.AddAllTypesOf<NonConfigurableSettings>();
 
 			// Repositories
 			scanner.AddAllTypesOf<ISettingsRepository>();
@@ -296,6 +283,20 @@ namespace Roadkill.Core.DependencyResolution.StructureMap
 				For<UserServiceBase>()
 					.HybridHttpOrThreadLocalScoped()
 					.Use<FormsAuthUserService>();
+			}
+		}
+
+		private class AbstractClassConvention<T> : IRegistrationConvention
+		{
+			public void ScanTypes(TypeSet types, Registry registry)
+			{
+				types.FindTypes(TypeClassification.Concretes | TypeClassification.Closed).ForEach(type =>
+				{
+					if (type.CanBeCastTo<T>())
+					{
+						registry.For(typeof(T)).LifecycleIs(new UniquePerRequestLifecycle()).Add(type);
+					}
+				});
 			}
 		}
 	}

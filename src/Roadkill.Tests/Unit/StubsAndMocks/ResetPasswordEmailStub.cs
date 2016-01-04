@@ -11,8 +11,8 @@ namespace Roadkill.Tests.Unit.StubsAndMocks
 		public bool IsSent { get; set; }
 		public UserViewModel Model { get; set; }
 
-		public ResetPasswordEmailStub(ApplicationSettings applicationSettings, ISettingsRepository settingsRepository, IEmailClient emailClient)
-			: base(applicationSettings, settingsRepository, emailClient)
+		public ResetPasswordEmailStub(NonConfigurableSettings settings, ISettingsRepository settingsRepository, IEmailClient emailClient)
+			: base(settings, settingsRepository, emailClient)
 		{
 		}
 

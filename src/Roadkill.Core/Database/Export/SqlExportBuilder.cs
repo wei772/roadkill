@@ -153,7 +153,7 @@ namespace Roadkill.Core.Database.Export
 			SiteConfigurationRow row = new SiteConfigurationRow()
 			{
 				Id = SiteSettings.SiteSettingsId,
-				Version = ApplicationSettings.FileVersion,
+				Version = NonConfigurableSettings.FileVersion,
 				Json = settings.GetJson()
 			};
 

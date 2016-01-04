@@ -3,7 +3,6 @@ using Roadkill.Core.Security;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -23,20 +22,21 @@ namespace Roadkill.Core.Configuration
 		private readonly HttpContextBase _httpContext;
 
 		/// <summary>
+		/// If this instance is running on the demo site.
+		/// </summary>
+		internal bool IsDemoSite
+		{
+			get
+			{
+				return ConfigurationManager.AppSettings["DemoSite"] == "true";
+			}
+		}
+
+		/// <summary>
 		/// The name of the role or Active Directory security group that users should belong to in order to create,edit,delete pages,
 		/// manage users, manage site settings and use the admin tools.
 		/// </summary>
 		public string AdminRoleName { get; set; }
-
-		/// <summary>
-		/// The path to the App_Data folder.
-		/// </summary>
-		public string AppDataPath { get; set; }
-
-		/// <summary>
-		/// The path to the App_Data/Internal folder (used by roadkill only, no user files are stored here).
-		/// </summary>
-		public string AppDataInternalPath { get; private set; }
 
 		/// <summary>
 		/// Contains a list API keys for the REST api. If this is empty, then the REST api is disabled.
@@ -139,11 +139,6 @@ namespace Roadkill.Core.Configuration
 		public string ConnectionString { get; set; }
 
 		/// <summary>
-		/// The file path for the custom tokens file.
-		/// </summary>
-		public string CustomTokensPath { get; set; }
-
-		/// <summary>
 		/// The database used for storage.
 		/// </summary>
 		public string DatabaseName { get; set; }
@@ -154,16 +149,6 @@ namespace Roadkill.Core.Configuration
 		public string EditorRoleName { get; set; }
 
 		/// <summary>
-		/// The path to the email templates folder, ~/App_Data/EmailTemplates/ by default.
-		/// </summary>
-		public string EmailTemplateFolder { get; set; }
-
-		/// <summary>
-		/// The file path for the html element white list file.
-		/// </summary>
-		public string HtmlElementWhiteListPath { get; set; }
-
-		/// <summary>
 		/// Whether errors in updating the lucene index throw exceptions or are just ignored.
 		/// </summary>
 		public bool IgnoreSearchIndexErrors { get; set; }
@@ -172,17 +157,6 @@ namespace Roadkill.Core.Configuration
 		/// Whether the site is public, i.e. all pages are visible by default. This is optional in the web.config and the default is true.
 		/// </summary>
 		public bool IsPublicSite { get; set; }
-
-		/// <summary>
-		/// If this instance is running on the demo site.
-		/// </summary>
-		internal bool IsDemoSite
-		{
-			get
-			{
-				return ConfigurationManager.AppSettings["DemoSite"] == "true";
-			}
-		}
 
 		/// <summary>
 		/// Whether the REST api is available - if api keys are set in the config.
@@ -215,34 +189,6 @@ namespace Roadkill.Core.Configuration
 		/// The password to authenticate against the Active Directory with, if <see cref="UseWindowsAuthentication"/> is true.
 		/// </summary>
 		public string LdapPassword { get; set; }
-
-		/// <summary>
-		/// The number of characters each password should be.
-		/// </summary>
-		public int MinimumPasswordLength { get; set; }
-
-		/// <summary>
-		/// The full path to the nlog.config file - this defaults to ~/App_Data/NLog.Config (the ~ is replaced with the base web directory).
-		/// </summary>
-		public string NLogConfigFilePath { get; set; }
-
-		/// <summary>
-		/// The full path to the text plugins directory. This is where plugins are stored after 
-		/// download (including their nuget files), and are copied to the bin folder.
-		/// </summary>
-		public string PluginsPath { get; internal set; }
-
-		/// <summary>
-		/// The directory within the /bin folder that the plugins are stored. They are 
-		/// copied here on application start, so they can be loaded into the application domain with shadow 
-		/// copy support and also monitored by the ASP.NET file watcher.
-		/// </summary>
-		public string PluginsBinPath { get; internal set; }
-
-		/// <summary>
-		/// The path to the folder that contains the Lucene index - ~/App_Data/Internal/Search.
-		/// </summary>
-		public string SearchIndexPath { get; set; }
 
 		/// <summary>
 		/// Indicates whether to use Local storage or Azure for attachments
@@ -278,27 +224,7 @@ namespace Roadkill.Core.Configuration
 		/// </summary>
 		public bool UseWindowsAuthentication { get; set; }
 
-		/// <summary>
-		/// The human-friendly current Roadkill product version, e.g. "1.7.0-Beta3".
-		/// </summary>
-		public static string ProductVersion
-		{
-			get
-			{
-				return FileVersionInfo.GetVersionInfo(typeof(ApplicationSettings).Assembly.Location).ProductVersion;
-			}
-		}
-
-		/// <summary>
-		/// The file version of the Roadkill product version, e.g. "1.7.0.0"
-		/// </summary>
-		public static string FileVersion
-		{
-			get
-			{
-				return FileVersionInfo.GetVersionInfo(typeof(ApplicationSettings).Assembly.Location).FileVersion;
-			}
-		}
+		public NonConfigurableSettings NonConfigurableSettings { get; set; }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ApplicationSettings"/> class.
@@ -308,20 +234,20 @@ namespace Roadkill.Core.Configuration
 			if (HttpContext.Current != null)
 				_httpContext = new HttpContextWrapper(HttpContext.Current);
 
-			AppDataPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App_Data");
-			AppDataInternalPath = Path.Combine(AppDataPath, "Internal");
 			ApiKeys = new List<string>();
 			AttachmentsRoutePath = "Attachments";
 			AttachmentsFolder = "~/App_Data/Attachments";
 			DatabaseName = SupportedDatabases.SqlServer2008.Id;
-			CustomTokensPath = Path.Combine(AppDataPath, "customvariables.xml");
-			EmailTemplateFolder = Path.Combine(AppDataPath, "EmailTemplates");
-			HtmlElementWhiteListPath = Path.Combine(AppDataInternalPath, "htmlwhitelist.xml");
-			MinimumPasswordLength = 6;
-			NLogConfigFilePath = "~/App_Data/NLog.config";
-			PluginsBinPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "bin", "Plugins");
-			PluginsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins");
-			SearchIndexPath = Path.Combine(AppDataInternalPath, "Search");
+
+			IsPublicSite = true;
+			UseBrowserCache = true;
+			UseHtmlWhiteList = true;
+			UserServiceType = "";
+			LdapConnectionString = "";
+			LdapUsername = "";
+			LdapPassword = "";
+
+			NonConfigurableSettings = new NonConfigurableSettings();
 		}
 
 		/// <summary>

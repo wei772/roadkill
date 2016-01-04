@@ -178,7 +178,7 @@ namespace Roadkill.Tests.Unit.Mvc.ViewModels
 			SettingsViewModel model = new SettingsViewModel();
 
 			// Act + Assert
-			Assert.That(model.Version, Is.EqualTo(ApplicationSettings.ProductVersion));
+			Assert.That(model.Version, Is.EqualTo(NonConfigurableSettings.ProductVersion));
 		}
 
 		[Test]

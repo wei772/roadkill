@@ -40,7 +40,7 @@ namespace Roadkill.Core.Configuration
 		/// <summary>
 		/// Gets the current application settings, which is usually cached settings from the <see cref="M:Roadkill.Core.Configuration.ConfigReaderWriter.Load" /> method.
 		/// </summary>
-		/// <returns>A new <see cref="T:Roadkill.Core.Configuration.ApplicationSettings" /> instance</returns>
+		/// <returns>A new <see cref="T:Roadkill.Core.Configuration.Settings" /> instance</returns>
 		ApplicationSettings GetApplicationSettings();
 
 		/// <summary>

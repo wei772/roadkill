@@ -102,6 +102,7 @@ namespace Roadkill.Tests.Unit.Text
 
 			ApplicationSettings settings = new ApplicationSettings();
 			settings.Installed = true;
+			settings.UseHtmlWhiteList = false;
 
 			MarkupConverter converter = new MarkupConverter(settings, settingsRepository, pageRepositoryStub, _pluginFactory);
 
@@ -135,6 +136,7 @@ namespace Roadkill.Tests.Unit.Text
 
 			ApplicationSettings settings = new ApplicationSettings();
 			settings.Installed = true;
+			settings.UseHtmlWhiteList = false;
 
 			MarkupConverter converter = new MarkupConverter(settings, settingsRepository, pageRepositoryStub, _pluginFactory);
 

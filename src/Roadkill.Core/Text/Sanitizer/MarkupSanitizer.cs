@@ -22,7 +22,7 @@ namespace Roadkill.Core.Text.Sanitizer
     public class MarkupSanitizer
     {
 		private string[] _encodedCharacters = new string[256];
-		private ApplicationSettings _applicationSettings;
+		private string _htmlElementWhiteListPath;
 		private string _cacheKey;
 		internal static MemoryCache _memoryCache = new MemoryCache("MarkupSanitizer");
 		public bool UseWhiteList { get; set; }
@@ -33,7 +33,7 @@ namespace Roadkill.Core.Text.Sanitizer
 		/// The strict version of the cleaner - uses the whitelist, cleans all attributes, encodes 
 		/// all HTML entities in attributes.
 		/// </summary>
-		public MarkupSanitizer(ApplicationSettings settings) : this(settings, true, true, true)
+		public MarkupSanitizer(string htmlElementWhiteListPath) : this(htmlElementWhiteListPath, true, true, true)
 		{
 
 		}
@@ -42,10 +42,11 @@ namespace Roadkill.Core.Text.Sanitizer
 		/// The customisable/looser version of the cleaner, allows you to customise how strict it is with 
 		/// additional checks like the whitelist, attribute removal, html entity encoding in attributes.
 		/// </summary>
-		public MarkupSanitizer(ApplicationSettings settings, bool useWhiteList, bool cleanAttributes, bool encodeHtmlEntities) 
+		public MarkupSanitizer(string htmlElementWhiteListPath, bool useWhiteList, bool cleanAttributes, bool encodeHtmlEntities) 
 		{
-			_applicationSettings = settings;
+			_htmlElementWhiteListPath = htmlElementWhiteListPath;
 			_cacheKey = "whitelist";
+
 			UseWhiteList = useWhiteList;
 			CleanAttributes = cleanAttributes;
 			EncodeHtmlEntities = encodeHtmlEntities;
@@ -83,7 +84,7 @@ namespace Roadkill.Core.Text.Sanitizer
 
 			if (whiteList == null)
 			{
-				whiteList = HtmlWhiteList.Deserialize(_applicationSettings);
+				whiteList = HtmlWhiteList.Deserialize(_htmlElementWhiteListPath);
 				_memoryCache.Add(_cacheKey, whiteList, new CacheItemPolicy());
 			}
 

@@ -20,8 +20,8 @@ namespace Roadkill.Core.Email
 		private static string _htmlContent;
 		private static string _plainTextContent;
 
-		public ResetPasswordEmail(ApplicationSettings applicationSettings, ISettingsRepository settingsRepository, IEmailClient emailClient)
-			: base(applicationSettings, settingsRepository, emailClient)
+		public ResetPasswordEmail(NonConfigurableSettings settings, ISettingsRepository settingsRepository, IEmailClient emailClient)
+			: base(settings, settingsRepository, emailClient)
 		{
 		}
 

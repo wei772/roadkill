@@ -36,10 +36,10 @@ namespace Roadkill.Core.Services
 		public ISettingsRepository SettingsRepository { get; set; }
 		public IPageRepository PageRepository { get; set; }
 
-		public SearchService(ApplicationSettings settings, ISettingsRepository settingsRepository, IPageRepository pageRepository, IPluginFactory pluginFactory)
+		public SearchService(ApplicationSettings applicationSettings, ISettingsRepository settingsRepository, IPageRepository pageRepository, IPluginFactory pluginFactory)
 		{
-			if (settings == null)
-				throw new ArgumentNullException(nameof(settings));
+			if (applicationSettings == null)
+				throw new ArgumentNullException(nameof(applicationSettings));
 
 			if (settingsRepository == null)
 				throw new ArgumentNullException(nameof(settingsRepository));
@@ -50,12 +50,13 @@ namespace Roadkill.Core.Services
 			if (pluginFactory == null)
 				throw new ArgumentNullException(nameof(pluginFactory));
 
-			_markupConverter = new MarkupConverter(settings, settingsRepository, pageRepository, pluginFactory);
-			IndexPath = settings.SearchIndexPath;
+			_markupConverter = new MarkupConverter(applicationSettings, settingsRepository, pageRepository, pluginFactory);
+			IndexPath = applicationSettings.NonConfigurableSettings.SearchIndexPath;
 
-			ApplicationSettings = settings;
 			SettingsRepository = settingsRepository;
 			PageRepository = pageRepository;
+			ApplicationSettings = applicationSettings;
+
 		}
 
 		/// <summary>

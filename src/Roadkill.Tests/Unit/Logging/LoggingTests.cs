@@ -76,13 +76,13 @@ namespace Roadkill.Tests.Unit.Logging
 		{
 			// Arrange
 			string expectedPath = $"{AppDomain.CurrentDomain.BaseDirectory}\\Roadkill.Tests.dll.config";
-			var appSettings = new ApplicationSettings()
+			var settings = new NonConfigurableSettings()
 			{
 				NLogConfigFilePath = @"~\Roadkill.Tests.dll.config"
 			};
 
 			// Act
-			Log.ConfigureLogging(appSettings);
+			Log.ConfigureLogging(settings);
 
 			// Assert
 			LogManager.Configuration.Reload();
@@ -94,26 +94,26 @@ namespace Roadkill.Tests.Unit.Logging
 		public void ConfigureLogging_should_throw_exception_when_nlog_path_is_empty()
 		{
 			// Arrange
-			var appSettings = new ApplicationSettings()
+			var settings = new NonConfigurableSettings()
 			{
 				NLogConfigFilePath = ""
 			};
 
 			// Act + Assert
-			Assert.Throws<ConfigurationException>(() => Log.ConfigureLogging(appSettings));
+			Assert.Throws<ConfigurationException>(() => Log.ConfigureLogging(settings));
 		}
 
 		[Test]
 		public void ConfigureLogging_should_throw_exception_when_nlog_path_does_not_exist()
 		{
 			// Arrange
-			var appSettings = new ApplicationSettings()
+			var settings = new NonConfigurableSettings()
 			{
 				NLogConfigFilePath = "~/Bob/Loblaw/Config.config"
 			};
 
 			// Act + Assert
-			Assert.Throws<ConfigurationException>(() => Log.ConfigureLogging(appSettings));
+			Assert.Throws<ConfigurationException>(() => Log.ConfigureLogging(settings));
 		}
 	}
 }

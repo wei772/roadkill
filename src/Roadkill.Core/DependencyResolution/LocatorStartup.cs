@@ -58,7 +58,7 @@ namespace Roadkill.Core.DependencyResolution
 			var settings = Locator.GetInstance<ApplicationSettings>();
 			AfterInitializationInternal(Locator.Container, settings);
 
-			Log.ConfigureLogging(settings);
+			Log.ConfigureLogging(settings.NonConfigurableSettings);
 		}
 
 		internal static void AfterInitializationInternal(IContainer container, ApplicationSettings appSettings)

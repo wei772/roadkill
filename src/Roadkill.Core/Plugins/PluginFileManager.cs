@@ -9,7 +9,7 @@ namespace Roadkill.Core.Plugins
 		/// <summary>
 		/// Copies the plugins from the /Plugins directory to the bin folder.
 		/// </summary>
-		public static void CopyPlugins(ApplicationSettings applicationSettings)
+		public static void CopyPlugins(NonConfigurableSettings applicationSettings)
 		{
 			CopyAssemblies(applicationSettings.PluginsPath, applicationSettings.PluginsBinPath);
 		}

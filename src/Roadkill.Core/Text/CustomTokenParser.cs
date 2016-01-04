@@ -30,7 +30,7 @@ namespace Roadkill.Core
 			CacheTokensFile = true;
 		}
 
-		public CustomTokenParser(ApplicationSettings settings)
+		public CustomTokenParser(NonConfigurableSettings settings)
 		{
 			if (CacheTokensFile && !_isTokensFileCached)
 			{
@@ -80,7 +80,7 @@ namespace Roadkill.Core
 			}
 		}
 
-		private static IEnumerable<TextToken> Deserialize(ApplicationSettings settings)
+		private static IEnumerable<TextToken> Deserialize(NonConfigurableSettings settings)
 		{
 			if (string.IsNullOrEmpty(settings.CustomTokensPath) || !File.Exists(settings.CustomTokensPath))
 			{

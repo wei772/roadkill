@@ -45,13 +45,13 @@ namespace Roadkill.Core.Database.LightSpeed
 			{
 				entity = new SiteConfigurationEntity();
 				entity.Id = SiteSettings.SiteSettingsId;
-				entity.Version = ApplicationSettings.ProductVersion.ToString();
+				entity.Version = NonConfigurableSettings.ProductVersion.ToString();
 				entity.Content = siteSettings.GetJson();
 				UnitOfWork.Add(entity);
 			}
 			else
 			{
-				entity.Version = ApplicationSettings.ProductVersion.ToString();
+				entity.Version = NonConfigurableSettings.ProductVersion.ToString();
 				entity.Content = siteSettings.GetJson();
 			}
 

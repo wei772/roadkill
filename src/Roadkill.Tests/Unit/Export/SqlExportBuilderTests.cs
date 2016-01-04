@@ -216,7 +216,7 @@ namespace Roadkill.Tests.Unit.Export
 			builder.IncludePages = false;
 
 			string expectedSql = ReadEmbeddedResource("expected-siteconfiguration-export.sql");
-			expectedSql = expectedSql.Replace("{AppVersion}", ApplicationSettings.ProductVersion);
+			expectedSql = expectedSql.Replace("{AppVersion}", NonConfigurableSettings.ProductVersion);
 
 			// Act
 			string actualSql = builder.Export();

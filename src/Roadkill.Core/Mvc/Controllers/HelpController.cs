@@ -21,7 +21,7 @@ namespace Roadkill.Core.Mvc.Controllers
 		public HelpController(ApplicationSettings settings, UserServiceBase userManager, IUserContext context, SettingsService settingsService, PageService pageService)
 			: base(settings, userManager, context, settingsService) 
 		{
-			_customTokenParser = new CustomTokenParser(settings);
+			_customTokenParser = new CustomTokenParser(settings.NonConfigurableSettings);
 			_pageService = pageService;
 		}
 

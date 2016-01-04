@@ -13,19 +13,19 @@ namespace Roadkill.Core.Text.Sanitizer
 	{
 		public List<HtmlElement> ElementWhiteList { get; set; }
 
-		public static HtmlWhiteList Deserialize(ApplicationSettings settings)
+		public static HtmlWhiteList Deserialize(string htmlElementWhiteListPath)
 		{
-			if (string.IsNullOrEmpty(settings.HtmlElementWhiteListPath) || !File.Exists(settings.HtmlElementWhiteListPath))
+			if (string.IsNullOrEmpty(htmlElementWhiteListPath) || !File.Exists(htmlElementWhiteListPath))
 			{
-				if (!string.IsNullOrEmpty(settings.HtmlElementWhiteListPath))
-					Log.Warn("The custom HTML white list tokens file does not exist in path '{0}' - using Default white list.", settings.HtmlElementWhiteListPath);
+				if (!string.IsNullOrEmpty(htmlElementWhiteListPath))
+					Log.Warn("The custom HTML white list tokens file does not exist in path '{0}' - using Default white list.", htmlElementWhiteListPath);
 
 				return CreateDefaultWhiteList();
 			}
 
 			try
 			{
-				using (FileStream stream = new FileStream(settings.HtmlElementWhiteListPath, FileMode.Open, FileAccess.Read))
+				using (FileStream stream = new FileStream(htmlElementWhiteListPath, FileMode.Open, FileAccess.Read))
 				{
 					XmlSerializer serializer = new XmlSerializer(typeof(HtmlWhiteList));
 					HtmlWhiteList whiteList = (HtmlWhiteList)serializer.Deserialize(stream);
@@ -38,17 +38,17 @@ namespace Roadkill.Core.Text.Sanitizer
 			}
 			catch (IOException e)
 			{
-				Log.Warn(e, "An IO error occurred loading the html element white list file {0}", settings.HtmlElementWhiteListPath);
+				Log.Warn(e, "An IO error occurred loading the html element white list file {0}", htmlElementWhiteListPath);
 				return CreateDefaultWhiteList();
 			}
 			catch (FormatException e)
 			{
-				Log.Warn(e, "A FormatException error occurred loading the html element white list file {0}", settings.HtmlElementWhiteListPath);
+				Log.Warn(e, "A FormatException error occurred loading the html element white list file {0}", htmlElementWhiteListPath);
 				return CreateDefaultWhiteList();
 			}
 			catch (Exception e)
 			{
-				Log.Warn(e, "An unhandled exception error occurred loading the html element white list file {0}", settings.HtmlElementWhiteListPath);
+				Log.Warn(e, "An unhandled exception error occurred loading the html element white list file {0}", htmlElementWhiteListPath);
 				return CreateDefaultWhiteList();
 			}
 		}

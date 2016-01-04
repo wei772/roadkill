@@ -47,7 +47,7 @@ namespace Roadkill.Core.Converters
 		/// markdown format parsers.
 		/// </summary>
 		/// <returns>An <see cref="IMarkupParser"/> for Creole,Markdown or Media wiki formats.</returns>
-		public MarkupConverter(ApplicationSettings settings, ISettingsRepository settingsRepository, IPageRepository pageRepository,  IPluginFactory pluginFactory)
+		public MarkupConverter(ApplicationSettings applicationSettings, ISettingsRepository settingsRepository, IPageRepository pageRepository,  IPluginFactory pluginFactory)
 		{
 			_externalLinkPrefixes = new List<string>()
 			{
@@ -62,7 +62,7 @@ namespace Roadkill.Core.Converters
 			_pluginFactory = pluginFactory;
 			_settingsRepository = settingsRepository;
 			_pageRepository = pageRepository;
-			_applicationSettings = settings;
+			_applicationSettings = applicationSettings;
 
 			// Create the UrlResolver for all wiki urls
 			HttpContextBase httpContext = null;
@@ -125,7 +125,7 @@ namespace Roadkill.Core.Converters
 		/// <returns>The wiki markup converted to HTML.</returns>
 		public PageHtml ToHtml(string text)
 		{
-			CustomTokenParser tokenParser = new CustomTokenParser(_applicationSettings);
+			CustomTokenParser tokenParser = new CustomTokenParser(_applicationSettings.NonConfigurableSettings);
 			PageHtml pageHtml = new PageHtml();
 			TextPluginRunner runner = new TextPluginRunner(_pluginFactory);
 
@@ -293,7 +293,7 @@ namespace Roadkill.Core.Converters
 		{
 			if (_applicationSettings.UseHtmlWhiteList)
 			{
-				MarkupSanitizer sanitizer = new MarkupSanitizer(_applicationSettings, true, false, true);
+				MarkupSanitizer sanitizer = new MarkupSanitizer(_applicationSettings.NonConfigurableSettings.HtmlElementWhiteListPath, true, false, true);
 				return sanitizer.SanitizeHtml(html);
 			}
 			else

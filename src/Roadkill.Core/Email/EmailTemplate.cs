@@ -30,7 +30,7 @@ namespace Roadkill.Core.Email
 	/// </remarks>
 	public abstract class EmailTemplate
 	{
-		protected ApplicationSettings ApplicationSettings;
+		protected NonConfigurableSettings Settings;
 		protected SiteSettings SiteSettings;
 		protected IEmailClient EmailClient;
 		protected ISettingsRepository SettingsRepository;
@@ -48,19 +48,19 @@ namespace Roadkill.Core.Email
 		/// <summary>
 		/// Initializes a new instance of the <see cref="EmailTemplate"/> class.
 		/// </summary>
-		/// <param name="applicationSettings">Application wide settings</param>
+		/// <param name="settings">Application wide settings</param>
 		/// <param name="settingsRepository">The repository retrieve the site settings from</param>
 		/// <param name="emailClient">The <see cref="IEmailClient"/> to send the mail through. If this 
 		/// parameter is null, then <see cref="EmailClient"/> is used</param>
-		protected EmailTemplate(ApplicationSettings applicationSettings, ISettingsRepository settingsRepository, IEmailClient emailClient)
+		protected EmailTemplate(NonConfigurableSettings settings, ISettingsRepository settingsRepository, IEmailClient emailClient)
 		{
-			if (applicationSettings == null)
-				throw new ArgumentNullException(nameof(applicationSettings));
+			if (settings == null)
+				throw new ArgumentNullException(nameof(settings));
 
 			if (settingsRepository == null)
 				throw new ArgumentNullException(nameof(settingsRepository));
 
-			ApplicationSettings = applicationSettings;
+			Settings = settings;
 			SettingsRepository = settingsRepository;
 			
 			EmailClient = emailClient;
@@ -122,7 +122,7 @@ namespace Roadkill.Core.Email
 		/// </summary>
 		protected internal string ReadTemplateFile(string filename)
 		{
-			string templatePath = ApplicationSettings.EmailTemplateFolder;
+			string templatePath = Settings.EmailTemplateFolder;
 			string textfilePath = Path.Combine(templatePath, filename);
 			string culturePath = Path.Combine(templatePath, CultureInfo.CurrentUICulture.Name);
 

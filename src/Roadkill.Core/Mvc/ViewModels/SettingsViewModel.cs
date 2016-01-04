@@ -118,7 +118,7 @@ namespace Roadkill.Core.Mvc.ViewModels
 		{
 			get
 			{
-				return ApplicationSettings.ProductVersion;
+				return NonConfigurableSettings.ProductVersion;
 			}
 		}
 
@@ -142,12 +142,12 @@ namespace Roadkill.Core.Mvc.ViewModels
 		}
 
 		/// <summary>
-		/// Fills this instance of SettingsViewModel using the properties from the ApplicationSettings 
+		/// Fills this instance of SettingsViewModel using the properties from the Settings 
 		/// and the SiteSettings.
 		/// </summary>
 		public SettingsViewModel(ApplicationSettings applicationSettings, SiteSettings siteSettings) : this()
 		{
-			// ApplicationSettings
+			// Settings
 			FillFromApplicationSettings(applicationSettings);
 
 			// SiteSettings

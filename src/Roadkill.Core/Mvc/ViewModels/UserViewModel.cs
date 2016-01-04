@@ -265,10 +265,10 @@ namespace Roadkill.Core.Mvc.ViewModels
 				// Existing user, a blank password indicates no change is occurring.
 				return ValidationResult.Success;
 			}
-			else if (string.IsNullOrEmpty(user.Password) || user.Password.Length < user.Settings.MinimumPasswordLength)
+			else if (string.IsNullOrEmpty(user.Password) || user.Password.Length < user.Settings.NonConfigurableSettings.MinimumPasswordLength)
 			{
 				// New or existing users with invalid passwords
-				return new ValidationResult(string.Format(SiteStrings.User_Validation_PasswordTooShort, user.Settings.MinimumPasswordLength));
+				return new ValidationResult(string.Format(SiteStrings.User_Validation_PasswordTooShort, user.Settings.NonConfigurableSettings.MinimumPasswordLength));
 			}
 
 			return ValidationResult.Success;

@@ -45,7 +45,7 @@ namespace Roadkill.Core.Security.Windows
 				throw new SecurityException("The configuration is null", null);
 
 			if (settings == null)
-				throw new SecurityException("The configuration ApplicationSettings is null", null);
+				throw new SecurityException("The configuration Settings is null", null);
 
 			if (string.IsNullOrEmpty(settings.LdapConnectionString))
 				throw new SecurityException("The LDAP connection string is empty", null);

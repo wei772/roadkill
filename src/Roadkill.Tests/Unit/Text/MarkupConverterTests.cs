@@ -28,7 +28,7 @@ namespace Roadkill.Tests.Unit.Text
 
 			_applicationSettings = _container.ApplicationSettings;
 			_applicationSettings.UseHtmlWhiteList = true;
-			_applicationSettings.CustomTokensPath = Path.Combine(TestConstants.WEB_PATH, "App_Data", "customvariables.xml");
+			_applicationSettings.NonConfigurableSettings.CustomTokensPath = Path.Combine(TestConstants.WEB_PATH, "App_Data", "customvariables.xml");
 
 			_settingsRepository = _container.SettingsRepository;
 			_pageRepository = _container.PageRepository;

@@ -11,8 +11,8 @@ namespace Roadkill.Tests.Unit.StubsAndMocks
 		public bool IsSent { get; set; }
 		public UserViewModel ViewModel { get; set; }
 
-		public SignupEmailStub(ApplicationSettings applicationSettings, ISettingsRepository settingsRepository, IEmailClient emailClient)
-			: base(applicationSettings, settingsRepository, emailClient)
+		public SignupEmailStub(NonConfigurableSettings settings, ISettingsRepository settingsRepository, IEmailClient emailClient)
+			: base(settings, settingsRepository, emailClient)
 		{
 		}
 		

@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Web;
+using Newtonsoft.Json;
 using Roadkill.Core.Database;
 
 namespace Roadkill.Core.Configuration
@@ -62,6 +63,14 @@ namespace Roadkill.Core.Configuration
 		/// The path to the folder that contains the Lucene index - ~/App_Data/Internal/Search.
 		/// </summary>
 		public string SearchIndexPath { get; set; }
+
+		public static bool IsDemoSite
+		{
+			get
+			{
+				return ConfigurationManager.AppSettings["DemoSite"] == "true";
+			}
+		}
 
 		/// <summary>
 		/// The human-friendly current Roadkill product version, e.g. "1.7.0-Beta3".

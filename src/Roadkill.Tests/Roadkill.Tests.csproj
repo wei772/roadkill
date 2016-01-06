@@ -328,7 +328,7 @@
     <Compile Include="Unit\Cache\SiteCacheTests.cs" />
     <Compile Include="Unit\Cache\PageServiceCacheTests.cs" />
     <Compile Include="Unit\Cache\ListCacheTests.cs" />
-    <Compile Include="Unit\Configuration\TempConverter.cs" />
+    <Compile Include="Unit\Configuration\TempTests.cs" />
     <Compile Include="Unit\Database\EntityTests.cs" />
     <Compile Include="Unit\Database\RepositoryFactoryTests.cs" />
     <Compile Include="Unit\Database\RepositoryInfoTests.cs" />

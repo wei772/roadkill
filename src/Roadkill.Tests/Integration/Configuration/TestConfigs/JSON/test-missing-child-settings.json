@@ -1,24 +1,4 @@
 {
-	"SecuritySettings": {
-		"ApiKeys": null,
-		"ApiKeysList": [ ],
-		"AdminRoleName": null,
-		"EditorRoleName": null,
-		"UseWindowsAuthentication": false,
-		"Settings": { }
-	},
-	"AttachmentSettings": {
-		"AttachmentsFolder": "~/App_Data/Attachments",
-		"AttachmentsRoutePath": "Attachments",
-		"AzureConnectionString": null,
-		"AzureContainer": null,
-		"AllowedFileTypes": "jpg, png, gif",
-		"OverwriteExistingFiles": false,
-		"Settings": { }
-	},
-	"Settings": {
-		"Hello": "World"
-	},
 	"AdminRoleName": "Admin",
 	"ConnectionString": "foo",
 	"EditorRoleName": "Editor",

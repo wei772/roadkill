@@ -5,15 +5,15 @@ namespace Roadkill.Core.AmazingConfig
 {
 	internal class AttachmentPathsResolver
 	{
-		private readonly IConfiguration _configuration;
+		private readonly AttachmentSettings _settings;
 		private readonly HttpContextWrapper _httpContext;
 
-		public AttachmentPathsResolver(IConfiguration configuration)
+		public AttachmentPathsResolver(AttachmentSettings settings)
 		{
 			if (HttpContext.Current != null)
 				_httpContext = new HttpContextWrapper(HttpContext.Current);
 
-			_configuration = configuration;
+			_settings = settings;
 		}
 
 		/// <summary>
@@ -25,13 +25,13 @@ namespace Roadkill.Core.AmazingConfig
 		{
 			string path = "";
 
-			if (_configuration.AttachmentsFolder.StartsWith("~") && _httpContext != null)
+			if (_settings.AttachmentsFolder.StartsWith("~") && _httpContext != null)
 			{
-				path = _httpContext.Server.MapPath(_configuration.AttachmentsFolder);
+				path = _httpContext.Server.MapPath(_settings.AttachmentsFolder);
 			}
 			else
 			{
-				path = _configuration.AttachmentsFolder;
+				path = _settings.AttachmentsFolder;
 			}
 
 			if (!path.EndsWith(Path.DirectorySeparatorChar.ToString()))
@@ -46,7 +46,7 @@ namespace Roadkill.Core.AmazingConfig
 		/// </summary>
 		public string GetAttachmentsUrlPath()
 		{
-			string attachmentsPath = "/" + _configuration.AttachmentsRoutePath;
+			string attachmentsPath = "/" + _settings.AttachmentsRoutePath;
 
 			if (_httpContext != null)
 			{

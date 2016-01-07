@@ -328,7 +328,7 @@
     <Compile Include="Unit\Cache\SiteCacheTests.cs" />
     <Compile Include="Unit\Cache\PageServiceCacheTests.cs" />
     <Compile Include="Unit\Cache\ListCacheTests.cs" />
-    <Compile Include="Unit\Configuration\TempTests.cs" />
+    <Compile Include="Integration\Configuration\JsonConfigurationStoreTests.cs" />
     <Compile Include="Unit\Database\EntityTests.cs" />
     <Compile Include="Unit\Database\RepositoryFactoryTests.cs" />
     <Compile Include="Unit\Database\RepositoryInfoTests.cs" />
@@ -447,12 +447,6 @@
     <Content Include="chromedriver.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Integration\Configuration\TestConfigs\JSON\test-missing-values.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Integration\Configuration\TestConfigs\JSON\test-no-keys.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Integration\Import\screwturn3.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -490,13 +484,19 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Integration\Configuration\TestConfigs\JSON\test-empty.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Integration\Configuration\TestConfigs\JSON\test-mongodb.json">
+    <Content Include="Integration\Configuration\TestConfigs\JSON\test-missing-child-settings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Integration\Configuration\TestConfigs\JSON\test.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Integration\Configuration\TestConfigs\JSON\test-optional-values.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Integration\Configuration\TestConfigs\JSON\test-empty-connectionstring-installed.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Integration\Configuration\TestConfigs\JSON\test-empty-connectionstring-not-installed.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="packages.config">

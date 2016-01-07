@@ -365,9 +365,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AmazingConfig\AttachmentPathsResolver.cs" />
-    <Compile Include="AmazingConfig\IConfigStore.cs" />
+    <Compile Include="AmazingConfig\AttachmentSettings.cs" />
+    <Compile Include="AmazingConfig\JsonConfigurationStore.cs" />
+    <Compile Include="AmazingConfig\IConfigurationStore.cs" />
     <Compile Include="AmazingConfig\IConfiguration.cs" />
     <Compile Include="AmazingConfig\JsonConfiguration.cs" />
+    <Compile Include="AmazingConfig\InternalSettings.cs" />
+    <Compile Include="AmazingConfig\SecuritySettings.cs" />
     <Compile Include="Configuration\IRoadkillConfiguration.cs" />
     <Compile Include="Configuration\JsonConfigReaderWriter.cs" />
     <Compile Include="Configuration\NonConfigurableSettings.cs" />

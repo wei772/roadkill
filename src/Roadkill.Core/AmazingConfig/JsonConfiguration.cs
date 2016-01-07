@@ -14,31 +14,20 @@ namespace Roadkill.Core.AmazingConfig
 	public class JsonConfiguration : IConfiguration
 	{
 		#region Required
-		[JsonIgnore]
-		public NonConfigurableSettings NonConfigurableSettings { get; set; }
-		public Dictionary<string, string> Settings { get; set; }
-
-		public string AdminRoleName { get; set; }
-		public string ConnectionString { get; set; }
-		public string EditorRoleName { get; set; }
 		public bool Installed { get; set; }
-		public bool UseWindowsAuthentication { get; set; }
-
-		public string AttachmentsFolder { get; set; }
-		public string AttachmentsRoutePath { get; set; }
-		public string ApiKeys { get; set; }
+		public string ConnectionString { get; set; }
 
 		[JsonIgnore]
-		public IEnumerable<string> ApiKeysList { get; private set; }
+		public InternalSettings InternalSettings { get; set; }
 
-		[JsonIgnore]
-		public bool IsRestApiEnabled
-		{
-			get
-			{
-				return ApiKeysList != null && ApiKeysList.Any();
-			}
-		}
+		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+		public SecuritySettings SecuritySettings { get; set; }
+
+		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+		public AttachmentSettings AttachmentSettings { get; set; }
+
+		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+		public Dictionary<string, string> Settings { get; set; }
 		#endregion
 
 		#region Optional
@@ -52,15 +41,6 @@ namespace Roadkill.Core.AmazingConfig
 		public bool? IsPublicSite { get; set; }
 
 		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-		public string LdapConnectionString { get; set; }
-
-		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-		public string LdapUsername { get; set; }
-
-		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-		public string LdapPassword { get; set; }
-
-		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
 		public bool? UseHtmlWhiteList { get; set; }
 
 		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
@@ -68,13 +48,9 @@ namespace Roadkill.Core.AmazingConfig
 
 		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
 		public bool? UseBrowserCache { get; set; }
-
-		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-		public string UserServiceType { get; set; }
 		#endregion
 
 		#region Built in Preferences
-		public string AllowedFileTypes { get; set; }
 		public bool AllowUserSignup { get; set; }
 		public bool IsRecaptchaEnabled { get; set; }
 		public string MarkupType { get; set; }
@@ -83,19 +59,9 @@ namespace Roadkill.Core.AmazingConfig
 		public string SiteUrl { get; set; }
 		public string SiteName { get; set; }
 		public string Theme { get; set; }
-		public bool OverwriteExistingFiles { get; set; }
 		public string HeadContent { get; set; }
 		public string MenuMarkup { get; set; }
 		public DateTime PluginLastSaveDate { get; set; }
-
-		public string AzureConnectionString { get; set; }
-		public string AzureContainer { get; set; }
-
-		[JsonIgnore]
-		public bool UseAzureFileStorage
-		{
-			get { return !string.IsNullOrEmpty(AzureConnectionString); }
-		}
 
 		[JsonIgnore]
 		public string ThemePath
@@ -105,28 +71,18 @@ namespace Roadkill.Core.AmazingConfig
 				return string.Format("~/Themes/{0}", Theme);
 			}
 		}
-
-		[JsonIgnore]
-		public List<string> AllowedFileTypesList
-		{
-			get
-			{
-				if (string.IsNullOrEmpty(AllowedFileTypes))
-					return new List<string>();
-
-				return new List<string>(AllowedFileTypes.Replace(" ", "").Split(','));
-			}
-		}
 		#endregion
 
 		public JsonConfiguration()
 		{
-			NonConfigurableSettings = new NonConfigurableSettings();
+			InternalSettings = new InternalSettings();
+			AttachmentSettings = new AttachmentSettings();;
+			SecuritySettings = new SecuritySettings();
 			Settings = new Dictionary<string, string>();
 
-			ApiKeysList = new List<string>();
-			AttachmentsRoutePath = "Attachments";
-			AttachmentsFolder = "~/App_Data/Attachments";
+			// Required
+			ConnectionString = "";
+			Installed = false;
 			DatabaseProvider = SupportedDatabases.SqlServer2008.Id;
 
 			// Optional
@@ -134,13 +90,8 @@ namespace Roadkill.Core.AmazingConfig
 			IsPublicSite = true;
 			UseBrowserCache = true;
 			UseHtmlWhiteList = true;
-			UserServiceType = "";
-			LdapConnectionString = "";
-			LdapUsername = "";
-			LdapPassword = "";
 
 			// Preferences
-			AllowedFileTypes = "jpg, png, gif";
 			AllowUserSignup = false;
 			IsRecaptchaEnabled = false;
 			Theme = "Mediawiki";
@@ -149,7 +100,6 @@ namespace Roadkill.Core.AmazingConfig
 			SiteUrl = "";
 			RecaptchaPrivateKey = "";
 			RecaptchaPublicKey = "";
-			OverwriteExistingFiles = false;
 			HeadContent = "";
 			MenuMarkup = GetDefaultMenuMarkup();
 			PluginLastSaveDate = DateTime.UtcNow;

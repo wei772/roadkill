@@ -1,5 +1,6 @@
 ﻿using System.Web;
 using System.Web.Mvc;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Mvc.Attributes;
 using Roadkill.Core.Plugins;
@@ -14,11 +15,11 @@ namespace Roadkill.Core.Mvc.Controllers
 	[OptionalAuthorization]
 	public class SpecialPagesController : ControllerBase
 	{
-		private IPluginFactory _pluginFactory;
+		private readonly IPluginFactory _pluginFactory;
 
-		public SpecialPagesController(ApplicationSettings settings, UserServiceBase userManager, IUserContext context, 
-			SettingsService settingsService, IPluginFactory pluginFactory)
-			: base(settings, userManager, context, settingsService) 
+		public SpecialPagesController(IConfigurationStore configurationStore, UserServiceBase userManager, 
+			IUserContext context, IPluginFactory pluginFactory)
+			: base(configurationStore, userManager, context) 
 		{
 			_pluginFactory = pluginFactory;
 		}

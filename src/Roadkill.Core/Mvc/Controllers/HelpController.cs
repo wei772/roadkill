@@ -1,12 +1,9 @@
-﻿using System;
-using System.Web.Mvc;
-using Roadkill.Core.Configuration;
+﻿using System.Web.Mvc;
 using Roadkill.Core.Services;
-using Roadkill.Core.Mvc.Attributes;
 using Roadkill.Core.Security;
 using Roadkill.Core.Mvc.ViewModels;
-using Roadkill.Core.Localization;
 using System.Linq;
+using Roadkill.Core.AmazingConfig;
 
 namespace Roadkill.Core.Mvc.Controllers
 {
@@ -15,13 +12,15 @@ namespace Roadkill.Core.Mvc.Controllers
 	/// </summary>
 	public class HelpController : ControllerBase
 	{
-		private CustomTokenParser _customTokenParser;
-		private PageService _pageService;
+		private readonly CustomTokenParser _customTokenParser;
+		private readonly PageService _pageService;
 
-		public HelpController(ApplicationSettings settings, UserServiceBase userManager, IUserContext context, SettingsService settingsService, PageService pageService)
-			: base(settings, userManager, context, settingsService) 
+		public HelpController(IConfigurationStore configurationStore, UserServiceBase userManager, IUserContext context, PageService pageService)
+			: base(configurationStore, userManager, context) 
 		{
-			_customTokenParser = new CustomTokenParser(settings.NonConfigurableSettings);
+			IConfiguration config = ConfigurationStore.Load();
+
+			_customTokenParser = new CustomTokenParser(config.InternalSettings);
 			_pageService = pageService;
 		}
 

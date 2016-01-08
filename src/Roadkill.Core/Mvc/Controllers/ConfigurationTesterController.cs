@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web.Mvc;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Attachments;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
@@ -15,17 +16,17 @@ namespace Roadkill.Core.Mvc.Controllers
 	/// </summary>
 	public class ConfigurationTesterController : Controller // Don't inherit from ControllerBase, as it checks if Installed is true.
 	{
-		private readonly ApplicationSettings _applicationSettings;
+		private readonly IConfiguration _configuration;
 		private readonly IUserContext _userContext;
 		private readonly IConfigReaderWriter _configReaderWriter;
 		private readonly IActiveDirectoryProvider _activeDirectoryProvider;
 		private readonly UserServiceBase _userService;
 		private readonly IDatabaseTester _databaseTester;
 
-		public ConfigurationTesterController(ApplicationSettings appSettings, IUserContext userContext, IConfigReaderWriter configReaderWriter, 
+		public ConfigurationTesterController(IConfigurationStore configurationStore, IUserContext userContext, IConfigReaderWriter configReaderWriter, 
 			IActiveDirectoryProvider activeDirectoryProvider, UserServiceBase userService, IDatabaseTester databaseTester) 
 		{
-			_applicationSettings = appSettings;
+			_configuration = configurationStore.Load();
 			_userContext = userContext;
 			_configReaderWriter = configReaderWriter;
 			_activeDirectoryProvider = activeDirectoryProvider;
@@ -37,7 +38,7 @@ namespace Roadkill.Core.Mvc.Controllers
 		{
 			_userContext.CurrentUser = _userService.GetLoggedInUserName(HttpContext);
 			ViewBag.Context = _userContext;
-			ViewBag.Config = _applicationSettings;
+			ViewBag.Config = _configuration;
 		}
 
 		/// <summary>
@@ -105,7 +106,7 @@ namespace Roadkill.Core.Mvc.Controllers
 
 		internal bool IsInstalledAndUserIsNotAdmin()
 		{
-			return _applicationSettings.Installed && !_userContext.IsAdmin;
+			return _configuration.Installed && !_userContext.IsAdmin;
 		}
 	}
 }

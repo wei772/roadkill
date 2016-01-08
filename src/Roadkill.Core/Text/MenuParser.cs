@@ -5,6 +5,7 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using HtmlAgilityPack;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Cache;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Converters;
@@ -23,15 +24,15 @@ namespace Roadkill.Core.Text
 		private static readonly string MANAGEFILES_TOKEN = "%managefiles%";
 		private static readonly string SITESETTINGS_TOKEN = "%sitesettings%";
 
-		private ISettingsRepository _settingsRepository;
-		private SiteCache _siteCache;
-		private MarkupConverter _markupConverter;
-		private IUserContext _userContext;
+		private readonly SiteCache _siteCache;
+		private readonly MarkupConverter _markupConverter;
+		private readonly IConfiguration _configuration;
+		private readonly IUserContext _userContext;
 
-		public MenuParser(MarkupConverter markupConverter, ISettingsRepository settingsRepository, SiteCache siteCache, IUserContext userContext)
+		public MenuParser(MarkupConverter markupConverter, IConfiguration configuration, SiteCache siteCache, IUserContext userContext)
 		{
 			_markupConverter = markupConverter;
-			_settingsRepository = settingsRepository;
+			_configuration = configuration;
 			_siteCache = siteCache;
 			_userContext = userContext;
 		}
@@ -59,8 +60,7 @@ namespace Roadkill.Core.Text
 			// If the cache is empty, populate the right menu option
 			if (string.IsNullOrEmpty(html))
 			{
-				SiteSettings siteSettings = _settingsRepository.GetSiteSettings();
-				html = siteSettings.MenuMarkup;
+				html = _configuration.MenuMarkup;
 
 				html = _markupConverter.ParseMenuMarkup(html);
 				html = ReplaceKnownTokens(html);

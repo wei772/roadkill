@@ -2,17 +2,14 @@
 using System.Web.Mvc;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
-using Roadkill.Core.Attachments;
 using Roadkill.Core.Services;
 using Roadkill.Core.Security;
 using Roadkill.Core.Mvc.ViewModels;
-using Roadkill.Core.Security.Windows;
-using System.IO;
 using System.Collections.Generic;
 using System.Threading;
 using System.Globalization;
 using System.Linq;
-using Roadkill.Core.DependencyResolution;
+using Roadkill.Core.AmazingConfig;
 
 namespace Roadkill.Core.Mvc.Controllers
 {
@@ -25,10 +22,9 @@ namespace Roadkill.Core.Mvc.Controllers
 	{
 		private readonly IConfigReaderWriter _configReaderWriter;
 		private readonly IInstallationService _installationService;
-		private readonly IDatabaseTester _databaseTester;
 		private static string _uiLanguageCode = "en";
 
-		public ApplicationSettings ApplicationSettings { get; private set; }
+		public IConfigurationStore ConfigurationStore { get; private set; }
 		public UserServiceBase UserService { get; private set; }
 		public IUserContext Context { get; private set; }
 		public SettingsService SettingsService { get; private set; }
@@ -37,13 +33,12 @@ namespace Roadkill.Core.Mvc.Controllers
 		/// 
 		/// </summary>
 		/// <param name="applicationSettings">Use solely to detect whether Roadkill is already installed.</param>
-		public InstallController(ApplicationSettings applicationSettings, IConfigReaderWriter configReaderWriter, IInstallationService installationService, IDatabaseTester databaseTester)
+		public InstallController(IConfigurationStore configurationStore, IConfigReaderWriter configReaderWriter, IInstallationService installationService)
 		{
 			_configReaderWriter = configReaderWriter;
 			_installationService = installationService;
-			_databaseTester = databaseTester;
 
-			ApplicationSettings = applicationSettings;
+			ConfigurationStore = configurationStore;
 
 			// These aren't needed for the installer
 			Context = null;
@@ -53,7 +48,9 @@ namespace Roadkill.Core.Mvc.Controllers
 
 		protected override void OnActionExecuting(ActionExecutingContext filterContext)
 		{
-			if (ApplicationSettings.Installed)
+			IConfiguration config = ConfigurationStore.Load();
+
+			if (config.Installed)
 				filterContext.Result = new RedirectResult(this.Url.Action("Index", "Home"));
 		}
 

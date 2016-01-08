@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Converters;
 using Roadkill.Core.Localization;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Services;
 using Roadkill.Core.Security;
 using Roadkill.Core.Mvc.Attributes;
 using Roadkill.Core.Mvc.ViewModels;
-using StructureMap;
 
 namespace Roadkill.Core.Mvc.Controllers
 {
@@ -20,12 +19,12 @@ namespace Roadkill.Core.Mvc.Controllers
 	public class HomeController : ControllerBase
 	{
 		public IPageService PageService { get; private set; }
-		private SearchService _searchService;
-		private MarkupConverter _markupConverter;
+		private readonly SearchService _searchService;
+		private readonly MarkupConverter _markupConverter;
 
-		public HomeController(ApplicationSettings settings, UserServiceBase userManager, MarkupConverter markupConverter,
-			IPageService pageService, SearchService searchService, IUserContext context, SettingsService settingsService)
-			: base(settings, userManager, context, settingsService) 
+		public HomeController(IConfigurationStore configurationStore, UserServiceBase userManager, MarkupConverter markupConverter,
+			IPageService pageService, SearchService searchService, IUserContext context)
+			: base(configurationStore, userManager, context) 
 		{
 			_markupConverter = markupConverter;
 			_searchService = searchService;

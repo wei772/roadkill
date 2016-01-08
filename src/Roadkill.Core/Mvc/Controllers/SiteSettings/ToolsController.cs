@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Web.Mvc;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Cache;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Domain.Export;
 using Roadkill.Core.Import;
 using Roadkill.Core.Localization;
@@ -21,17 +21,17 @@ namespace Roadkill.Core.Mvc.Controllers
 	[AdminRequired]
 	public class ToolsController : ControllerBase
 	{
-		private PageService _pageService;
-		private SearchService _searchService;
-		private IWikiImporter _wikiImporter;
-		private ListCache _listCache;
-		private PageViewModelCache _pageViewModelCache;
+		private readonly PageService _pageService;
+		private readonly SearchService _searchService;
+		private readonly IWikiImporter _wikiImporter;
+		private readonly ListCache _listCache;
+		private readonly PageViewModelCache _pageViewModelCache;
 		internal WikiExporter _wikiExporter;
 
-		public ToolsController(ApplicationSettings settings, UserServiceBase userManager,
-			SettingsService settingsService, PageService pageService, SearchService searchService, IUserContext context,
+		public ToolsController(IConfigurationStore configurationStore, UserServiceBase userManager,
+			PageService pageService, SearchService searchService, IUserContext context,
 			ListCache listCache, PageViewModelCache pageViewModelCache, IWikiImporter wikiImporter, IPluginFactory pluginFactory, WikiExporter wikiExporter)
-			: base(settings, userManager, context, settingsService) 
+			: base(configurationStore, userManager, context) 
 		{
 			_pageService = pageService;
 			_searchService = searchService;
@@ -213,7 +213,9 @@ namespace Roadkill.Core.Mvc.Controllers
 		/// <returns></returns>
 		public ActionResult SiteSettings()
 		{
-			return Content(SettingsService.GetSiteSettings().GetJson(), "text/json");
+			throw new InvalidOperationException("TODO");
+
+			//return Content(SettingsService.GetSiteSettings().GetJson(), "text/json");
 		}
 	}
 }

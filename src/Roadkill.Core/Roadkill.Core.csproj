@@ -364,7 +364,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AmazingConfig\AttachmentPathsResolver.cs" />
     <Compile Include="AmazingConfig\AttachmentSettings.cs" />
     <Compile Include="AmazingConfig\JsonConfigurationStore.cs" />
     <Compile Include="AmazingConfig\IConfigurationStore.cs" />

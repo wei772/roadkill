@@ -4,12 +4,12 @@ using System.Linq;
 using System.Web.Mvc;
 using Roadkill.Core.Diff;
 using Roadkill.Core.Converters;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Services;
 using Roadkill.Core.Security;
 using Roadkill.Core.Mvc.Attributes;
 using Roadkill.Core.Mvc.ViewModels;
 using System.Web;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Text;
 using Roadkill.Core.Extensions;
 
@@ -22,19 +22,14 @@ namespace Roadkill.Core.Mvc.Controllers
 	[OptionalAuthorization]
 	public class PagesController : ControllerBase
 	{
-		private SettingsService _settingsService;
 		private IPageService _pageService;
-		private SearchService _searchService;
 		private PageHistoryService _historyService;
 
-		public PagesController(ApplicationSettings settings, UserServiceBase userManager,
-			SettingsService settingsService, IPageService pageService, SearchService searchService,
-			PageHistoryService historyService, IUserContext context)
-			: base(settings, userManager, context, settingsService)
+		public PagesController(IConfigurationStore configurationStore, UserServiceBase userManager,
+			IPageService pageService, PageHistoryService historyService, IUserContext context)
+			: base(configurationStore, userManager, context)
 		{
-			_settingsService = settingsService;
 			_pageService = pageService;
-			_searchService = searchService;
 			_historyService = historyService;
 		}
 

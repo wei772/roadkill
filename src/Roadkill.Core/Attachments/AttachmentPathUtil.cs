@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Logging;
 
@@ -14,11 +15,11 @@ namespace Roadkill.Core.Attachments
 	/// </summary>
 	public class AttachmentPathUtil
 	{
-		private ApplicationSettings _settings;
+		private IConfiguration _configuration;
 
-		public AttachmentPathUtil(ApplicationSettings settings)
+		public AttachmentPathUtil(IConfiguration configuration)
 		{
-			_settings = settings;
+			_configuration = configuration;
 		}
 
 		/// <summary>
@@ -30,13 +31,13 @@ namespace Roadkill.Core.Attachments
 		public string ConvertUrlPathToPhysicalPath(string relativePath)
 		{
 			string dirSeperator = Path.DirectorySeparatorChar.ToString();
-			string attachmentsPath = _settings.AttachmentsDirectoryPath;
+			string attachmentsPath = _configuration.AttachmentSettings.GetAttachmentsDirectoryPath();
 
 			if (string.IsNullOrEmpty(relativePath))
 				return attachmentsPath;
 
 			// Strip out the /Attachments/ part of the path
-			relativePath = relativePath.Replace(_settings.AttachmentsUrlPath, "");
+			relativePath = relativePath.Replace(_configuration.AttachmentSettings.GetAttachmentsUrlPath(), "");
 			relativePath = relativePath.Replace("/", dirSeperator);
 
 			// Remove all '\' ('/' on unix) from the start of the path.
@@ -96,7 +97,7 @@ namespace Roadkill.Core.Attachments
 				try
 				{
 					// Check the path passed isn't simply the attachments path with extra slashes etc.
-					DirectoryInfo attachmentsDir = new DirectoryInfo(_settings.AttachmentsDirectoryPath);
+					DirectoryInfo attachmentsDir = new DirectoryInfo(_configuration.AttachmentSettings.GetAttachmentsDirectoryPath());
 					DirectoryInfo searchDir = new DirectoryInfo(physicalDirectoryPath);
 
 					string attachmentsFullPath = attachmentsDir.FullName.TrimEnd('\\');

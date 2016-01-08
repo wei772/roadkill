@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Text.RegularExpressions;
-using Roadkill.Core.Configuration;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Text.Sanitizer;
 using Roadkill.Core.Database;
 using Roadkill.Core.Database.Repositories;
 using Roadkill.Core.Text;
-using Roadkill.Core.Logging;
 using Roadkill.Core.Plugins;
 
 namespace Roadkill.Core.Converters
@@ -21,8 +20,7 @@ namespace Roadkill.Core.Converters
 		private static Regex _imgFileRegex = new Regex("^File:", RegexOptions.IgnoreCase);
 		private static Regex _anchorRegex = new Regex("(?<hash>(#|%23).+)", RegexOptions.IgnoreCase);
 
-		private ApplicationSettings _applicationSettings;
-		private ISettingsRepository _settingsRepository;
+		private IConfiguration _configuration;
 		private readonly IPageRepository _pageRepository;
 		private IMarkupParser _parser;
 		private List<string> _externalLinkPrefixes;
@@ -47,7 +45,7 @@ namespace Roadkill.Core.Converters
 		/// markdown format parsers.
 		/// </summary>
 		/// <returns>An <see cref="IMarkupParser"/> for Creole,Markdown or Media wiki formats.</returns>
-		public MarkupConverter(ApplicationSettings applicationSettings, ISettingsRepository settingsRepository, IPageRepository pageRepository,  IPluginFactory pluginFactory)
+		public MarkupConverter(IConfiguration configuration, IPageRepository pageRepository,  IPluginFactory pluginFactory)
 		{
 			_externalLinkPrefixes = new List<string>()
 			{
@@ -60,9 +58,8 @@ namespace Roadkill.Core.Converters
 			};
 
 			_pluginFactory = pluginFactory;
-			_settingsRepository = settingsRepository;
 			_pageRepository = pageRepository;
-			_applicationSettings = applicationSettings;
+			_configuration = configuration;
 
 			// Create the UrlResolver for all wiki urls
 			HttpContextBase httpContext = null;
@@ -71,7 +68,7 @@ namespace Roadkill.Core.Converters
 
 			UrlResolver = new UrlResolver(httpContext);		
 	
-			if (!_applicationSettings.Installed)
+			if (!_configuration.Installed)
 			{
 				// Skip the chain of creation, as the markup converter isn't needed but is created by
 				// StructureMap - this is required for installation
@@ -84,16 +81,15 @@ namespace Roadkill.Core.Converters
 		private void CreateParserForMarkupType()
 		{
 			string markupType = "";
-			SiteSettings siteSettings = _settingsRepository.GetSiteSettings();
-			if (siteSettings != null && !string.IsNullOrEmpty(siteSettings.MarkupType))
+			if (!string.IsNullOrEmpty(_configuration.MarkupType))
 			{
-				markupType = siteSettings.MarkupType.ToLower();
+				markupType = _configuration.MarkupType.ToLower();
 			}
 
 			switch (markupType)
 			{
 				case "creole":
-					_parser = new CreoleParser(_applicationSettings, siteSettings);
+					_parser = new CreoleParser(_configuration);
 					break;
 
 				case "mediawiki":
@@ -125,7 +121,7 @@ namespace Roadkill.Core.Converters
 		/// <returns>The wiki markup converted to HTML.</returns>
 		public PageHtml ToHtml(string text)
 		{
-			CustomTokenParser tokenParser = new CustomTokenParser(_applicationSettings.NonConfigurableSettings);
+			CustomTokenParser tokenParser = new CustomTokenParser(_configuration.InternalSettings);
 			PageHtml pageHtml = new PageHtml();
 			TextPluginRunner runner = new TextPluginRunner(_pluginFactory);
 
@@ -164,7 +160,7 @@ namespace Roadkill.Core.Converters
 				string src = e.OriginalSrc;
 				src = _imgFileRegex.Replace(src, "");
 
-				string attachmentsPath = _applicationSettings.AttachmentsUrlPath;
+				string attachmentsPath = _configuration.AttachmentSettings.GetAttachmentsUrlPath();
 				string urlPath = attachmentsPath + (src.StartsWith("/") ? "" : "/") + src;
 				e.Src = UrlResolver.ConvertToAbsolutePath(urlPath);
 			}
@@ -227,7 +223,7 @@ namespace Roadkill.Core.Converters
 			}
 
 			// Get the full path to the attachment
-			string attachmentsPath = _applicationSettings.AttachmentsUrlPath;
+			string attachmentsPath = _configuration.AttachmentSettings.GetAttachmentsUrlPath();
 			e.Href = UrlResolver.ConvertToAbsolutePath(attachmentsPath) + href;
 		}
 
@@ -291,9 +287,9 @@ namespace Roadkill.Core.Converters
 		/// </summary>
 		private string RemoveHarmfulTags(string html)
 		{
-			if (_applicationSettings.UseHtmlWhiteList)
+			if (_configuration.UseHtmlWhiteList.GetValueOrDefault(true))
 			{
-				MarkupSanitizer sanitizer = new MarkupSanitizer(_applicationSettings.NonConfigurableSettings.HtmlElementWhiteListPath, true, false, true);
+				MarkupSanitizer sanitizer = new MarkupSanitizer(_configuration.InternalSettings.HtmlElementWhiteListPath, true, false, true);
 				return sanitizer.SanitizeHtml(html);
 			}
 			else

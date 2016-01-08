@@ -10,34 +10,23 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System;
+using Roadkill.Core.AmazingConfig;
 
 namespace Roadkill.Core.Services
 {
 	public class LocalFileService : IFileService
 	{
-		#region private properties
-
+		private readonly IConfiguration _configuration;
 		private readonly AttachmentPathUtil _attachmentPathUtil;
-		private readonly ApplicationSettings _applicationSettings;
-		private readonly SettingsService _settingsService;
+
 		private static readonly string[] FilesToExclude = new string[] { "emptyfile.txt", "_installtest.txt" }; // installer/publish files
 
-		#endregion
-
-		#region constructors
-
-		public LocalFileService(ApplicationSettings settings, SettingsService settingsService)
+		public LocalFileService(IConfigurationStore configurationStore)
 		{
-			_applicationSettings = settings;
-			_settingsService = settingsService;
-			_attachmentPathUtil = new AttachmentPathUtil(settings);
+			_configuration = configurationStore.Load();
+			_attachmentPathUtil = new AttachmentPathUtil(_configuration);
 		}
 
-		#endregion
-
-		#region public methods
-
-		#region deletes
 		public void Delete(string filePath, string fileName)
 		{
 			string physicalPath = _attachmentPathUtil.ConvertUrlPathToPhysicalPath(filePath);
@@ -50,8 +39,8 @@ namespace Roadkill.Core.Services
 
 			try
 			{
-				if (System.IO.File.Exists(physicalFilePath))
-					System.IO.File.Delete(physicalFilePath);
+				if (File.Exists(physicalFilePath))
+					File.Delete(physicalFilePath);
 			}
 			catch (IOException e)
 			{
@@ -91,9 +80,7 @@ namespace Roadkill.Core.Services
 				throw new FileException(e, "Unable to delete {0} from {1}", folderPath);
 			}
 		}
-		#endregion
 
-		#region creates
 		public bool CreateFolder(string parentPath, string folderName)
 		{
 			if (string.IsNullOrEmpty(folderName))
@@ -143,8 +130,7 @@ namespace Roadkill.Core.Services
 				string fileName = "";
 
 				// For checking the setting to overwrite existing files
-				SiteSettings siteSettings = _settingsService.GetSiteSettings();
-				IEnumerable<string> allowedExtensions = siteSettings.AllowedFileTypesList
+				IEnumerable<string> allowedExtensions = _configuration.AttachmentSettings.AllowedFileTypesList
 													.Select(x => x.ToLower());
 
 				for (int i = 0; i < files.Count; i++)
@@ -162,7 +148,7 @@ namespace Roadkill.Core.Services
 						string fullFilePath = Path.Combine(physicalPath, sourceFile.FileName);
 
 						// Check if it exists on disk already
-						if (!siteSettings.OverwriteExistingFiles)
+						if (!_configuration.AttachmentSettings.OverwriteExistingFiles)
 						{
 							if (System.IO.File.Exists(fullFilePath))
 							{
@@ -192,12 +178,9 @@ namespace Roadkill.Core.Services
 			}
 		}
 
-		#endregion
-
-		#region reads
 		public DirectoryViewModel FolderInfo(string dir)
 		{
-			if (!Directory.Exists(_applicationSettings.AttachmentsDirectoryPath))
+			if (!Directory.Exists(_configuration.AttachmentSettings.GetAttachmentsDirectoryPath()))
 			{
 				throw new SecurityException("The attachments directory does not exist - please create it.", null);
 			}
@@ -225,7 +208,7 @@ namespace Roadkill.Core.Services
 					{
 						DirectoryInfo info = new DirectoryInfo(directory);
 						string fullPath = info.FullName;
-						fullPath = fullPath.Replace(_applicationSettings.AttachmentsDirectoryPath, "");
+						fullPath = fullPath.Replace(_configuration.AttachmentSettings.GetAttachmentsDirectoryPath(), "");
 						fullPath = fullPath.Replace(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture), "/");
 						fullPath = "/" + fullPath; // removed in the 1st replace
 
@@ -299,9 +282,6 @@ namespace Roadkill.Core.Services
 			}
 		}
 
-		#endregion
-
-		#region helpers
 		/// <summary>
 		/// Takes a request's local file path (e.g. /attachments/a.jpg 
 		/// and translates it into the correct attachment file path.
@@ -321,7 +301,7 @@ namespace Roadkill.Core.Services
 
 			// Get rid of the route from the path
 			// This replacement assumes the url is case sensitive (e.g. '/Attachments' is replaced, '/attachments' isn't)
-			string filePath = urlPath.Replace(string.Format("/{0}", _applicationSettings.AttachmentsRoutePath), "");
+			string filePath = urlPath.Replace(string.Format("/{0}", _configuration.AttachmentSettings.AttachmentsRoutePath), "");
 
 			if (!string.IsNullOrEmpty(applicationPath) && applicationPath != "/" && filePath.StartsWith(applicationPath))
 				filePath = filePath.Replace(applicationPath, "");
@@ -335,11 +315,8 @@ namespace Roadkill.Core.Services
 				filePath = filePath.Remove(0, 1);
 
 			// THe attachmentFolder has a trailing slash
-			string fullPath = _applicationSettings.AttachmentsDirectoryPath + filePath;
+			string fullPath = _configuration.AttachmentSettings.GetAttachmentsDirectoryPath() + filePath;
 			return fullPath;
 		}
-		#endregion
-
-		#endregion
 	}
 }

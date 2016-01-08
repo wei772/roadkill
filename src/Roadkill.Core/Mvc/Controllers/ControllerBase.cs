@@ -1,13 +1,8 @@
 ﻿using System.Web.Mvc;
-using System.Diagnostics;
-using Roadkill.Core.Configuration;
-using System;
-using StructureMap;
-using System.Web;
-using Roadkill.Core.Services;
 using Roadkill.Core.Security;
 using Roadkill.Core.Logging;
 using System.Collections.Generic;
+using Roadkill.Core.AmazingConfig;
 
 namespace Roadkill.Core.Mvc.Controllers
 {
@@ -17,18 +12,15 @@ namespace Roadkill.Core.Mvc.Controllers
 	/// </summary>
 	public class ControllerBase : Controller, IRoadkillController
 	{
-		public ApplicationSettings ApplicationSettings { get; private set; }
+		public IConfigurationStore ConfigurationStore { get; private set; }
 		public UserServiceBase UserService { get; private set; }
 		public IUserContext Context { get; private set; }
-		public SettingsService SettingsService { get; private set; }
 
-		public ControllerBase(ApplicationSettings settings, UserServiceBase userService, IUserContext context, 
-			SettingsService settingsService)
+		public ControllerBase(IConfigurationStore configurationStore, UserServiceBase userService, IUserContext context)
 		{
-			ApplicationSettings = settings;
+			ConfigurationStore = configurationStore;
 			UserService = userService;
 			Context = context;
-			SettingsService = settingsService;
 		}
 
 		protected override void OnException(ExceptionContext filterContext)
@@ -54,8 +46,10 @@ namespace Roadkill.Core.Mvc.Controllers
 		/// <param name="filterContext">Information about the current request and action.</param>
 		protected override void OnActionExecuting(ActionExecutingContext filterContext)
 		{
+			IConfiguration config = ConfigurationStore.Load();
+
 			// Redirect if Roadkill isn't installed
-			if (!ApplicationSettings.Installed)
+			if (!config.Installed)
 			{
 				if (!(filterContext.Controller is InstallController))
 					filterContext.Result = new RedirectResult(this.Url.Action("Index", "Install"));
@@ -65,7 +59,7 @@ namespace Roadkill.Core.Mvc.Controllers
 
 			Context.CurrentUser = UserService.GetLoggedInUserName(HttpContext);
 			ViewBag.Context = Context;
-			ViewBag.Config = ApplicationSettings;
+			ViewBag.Config = config;
 		}
 	}
 }

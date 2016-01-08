@@ -2,6 +2,7 @@
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Services;
 using Roadkill.Core.Mvc.Attributes;
@@ -18,9 +19,9 @@ namespace Roadkill.Core.Mvc.Controllers
 	{
 		public PageService PageService { get; private set; }
 
-		public WikiController(ApplicationSettings settings, UserServiceBase userManager, PageService pageService,
-			IUserContext context, SettingsService settingsService)
-			: base(settings, userManager, context, settingsService) 
+		public WikiController(IConfigurationStore configurationStore, UserServiceBase userManager,
+			PageService pageService, IUserContext context)
+			: base(configurationStore, userManager, context) 
 		{
 			PageService = pageService;
 		}

@@ -10,6 +10,7 @@ using Roadkill.Core.Cache;
 using Roadkill.Core.Mvc.ViewModels;
 using Roadkill.Core.Configuration;
 using System.Web;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Database.Repositories;
 using Roadkill.Core.Logging;
 using Roadkill.Core.Text;
@@ -32,16 +33,18 @@ namespace Roadkill.Core.Services
 		private readonly IPluginFactory _pluginFactory;
 		private readonly MarkupLinkUpdater _markupLinkUpdater;
 
-		public ApplicationSettings ApplicationSettings { get; set; }
-		public ISettingsRepository SettingsRepository { get; set; }
+		public IConfiguration Configuration { get; set; }
 		public IPageRepository PageRepository { get; set; }
 
-		public PageService(ApplicationSettings settings, ISettingsRepository settingsRepository, IPageRepository pageRepository, SearchService searchService, 
+		public PageService(IConfigurationStore configurationStore, IPageRepository pageRepository, SearchService searchService, 
 			PageHistoryService historyService, IUserContext context, 
 			ListCache listCache, PageViewModelCache pageViewModelCache, SiteCache sitecache, IPluginFactory pluginFactory)
 		{
+			Configuration = configurationStore.Load();
+			PageRepository = pageRepository;
+
 			_searchService = searchService;
-			_markupConverter = new MarkupConverter(settings, settingsRepository, pageRepository, pluginFactory);
+			_markupConverter = new MarkupConverter(Configuration, pageRepository, pluginFactory);
 			_historyService = historyService;
 			_context = context;
 			_listCache = listCache;
@@ -49,10 +52,6 @@ namespace Roadkill.Core.Services
 			_siteCache = sitecache;
 			_pluginFactory = pluginFactory;
 			_markupLinkUpdater = new MarkupLinkUpdater(_markupConverter.Parser);
-
-			ApplicationSettings = settings;
-			SettingsRepository = settingsRepository;
-			PageRepository = pageRepository;
 		}
 
 		/// <summary>
@@ -417,7 +416,7 @@ namespace Roadkill.Core.Services
 					{
 						// If object caching is enabled, ignore the "loadcontent" parameter as the cache will be 
 						// used on the second call anyway, so performance isn't an issue.
-						if (ApplicationSettings.UseObjectCache)
+						if (Configuration.UseObjectCache.GetValueOrDefault(true))
 						{
 							pageModel = new PageViewModel(PageRepository.GetLatestPageContent(page.Id), _markupConverter);
 						}
@@ -563,7 +562,7 @@ namespace Roadkill.Core.Services
 		{
 			string result = username;
 
-			if (ApplicationSettings.IsDemoSite)
+			if (InternalSettings.IsDemoSite)
 			{
 				if (!_context.IsAdmin)
 				{
@@ -610,7 +609,7 @@ namespace Roadkill.Core.Services
 		/// </summary>
 		public string GetMenu(IUserContext userContext)
 		{
-			MenuParser parser = new MenuParser(_markupConverter, SettingsRepository, _siteCache, userContext);
+			MenuParser parser = new MenuParser(_markupConverter, Configuration, _siteCache, userContext);
 
 			// TODO: turn this into a theme-based bit of template HTML
 			StringBuilder builder = new StringBuilder();
@@ -627,7 +626,7 @@ namespace Roadkill.Core.Services
 		/// </summary>
 		public string GetBootStrapNavMenu(IUserContext userContext)
 		{
-			MenuParser parser = new MenuParser(_markupConverter, SettingsRepository, _siteCache, userContext);
+			MenuParser parser = new MenuParser(_markupConverter, Configuration, _siteCache, userContext);
 
 			// TODO: turn this into a theme-based bit of template HTML
 			StringBuilder builder = new StringBuilder();
@@ -672,7 +671,7 @@ namespace Roadkill.Core.Services
 		/// <returns></returns>
 		public MarkupConverter GetMarkupConverter()
 		{
-			return new MarkupConverter(ApplicationSettings, SettingsRepository, PageRepository, _pluginFactory);
+			return new MarkupConverter(Configuration, PageRepository, _pluginFactory);
 		}
 
 		/// <summary>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Cache;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Database.Repositories;
@@ -16,16 +17,16 @@ namespace Roadkill.Core.Mvc.Controllers
 	[AdminRequired]
 	public class PluginSettingsController : ControllerBase
 	{
-		private IPluginFactory _pluginFactory;
-		private ISettingsRepository _settingsRepository;
-		private SiteCache _siteCache;
-		private PageViewModelCache _viewModelCache;
-		private ListCache _listCache;
+		private readonly IPluginFactory _pluginFactory;
+		private readonly ISettingsRepository _settingsRepository;
+		private readonly SiteCache _siteCache;
+		private readonly PageViewModelCache _viewModelCache;
+		private readonly ListCache _listCache;
 
-		public PluginSettingsController(ApplicationSettings settings, UserServiceBase userService, IUserContext context, 
-			SettingsService settingsService, IPluginFactory pluginFactory, ISettingsRepository settingsRepository, SiteCache siteCache, 
+		public PluginSettingsController(IConfigurationStore configurationStore, UserServiceBase userService, IUserContext context, 
+			IPluginFactory pluginFactory, ISettingsRepository settingsRepository, SiteCache siteCache, 
 			PageViewModelCache viewModelCache, ListCache listCache)
-			: base (settings, userService, context, settingsService)
+			: base (configurationStore, userService, context)
 		{
 			_pluginFactory = pluginFactory;
 			_settingsRepository = settingsRepository;
@@ -91,10 +92,13 @@ namespace Roadkill.Core.Mvc.Controllers
 
 			// Update the plugin last saved date - this is important for 304 modified tracking
 			// when the browser caching option is turned on.
-			Configuration.SiteSettings settings = SettingsService.GetSiteSettings();
-			settings.PluginLastSaveDate = DateTime.UtcNow;
-			SettingsViewModel settingsViewModel = new SettingsViewModel(ApplicationSettings, settings);
-			SettingsService.SaveSiteSettings(settingsViewModel);
+			IConfiguration config = ConfigurationStore.Load();
+
+			throw new InvalidOperationException("TODO");
+			//Configuration.SiteSettings settings = SettingsService.GetSiteSettings();
+			//settings.PluginLastSaveDate = DateTime.UtcNow;
+			//SettingsViewModel settingsViewModel = new SettingsViewModel(ApplicationSettings, settings);
+			//SettingsService.SaveSiteSettings(settingsViewModel);
 
 			// Save and clear the cached settings
 			_settingsRepository.SaveTextPluginSettings(plugin);

@@ -1,11 +1,9 @@
-﻿using Roadkill.Core.Attachments;
-using Roadkill.Core.Configuration;
-using Roadkill.Core.Exceptions;
+﻿using Roadkill.Core.Exceptions;
 using Roadkill.Core.Mvc.Attributes;
 using Roadkill.Core.Security;
 using Roadkill.Core.Services;
-using System;
 using System.Web.Mvc;
+using Roadkill.Core.AmazingConfig;
 
 namespace Roadkill.Core.Mvc.Controllers
 {
@@ -15,21 +13,15 @@ namespace Roadkill.Core.Mvc.Controllers
 	[EditorRequired]
 	public class FileManagerController : ControllerBase
 	{
-		private AttachmentFileHandler _attachmentHandler;
-		private AttachmentPathUtil _attachmentPathUtil;
-		private static string[] _filesToExclude = new string[] { "emptyfile.txt", "_installtest.txt" }; // installer/publish files
 		private readonly IFileService _fileService;
 
 		/// <summary>
 		/// Constructor for the file manager.
 		/// </summary>
 		/// <remarks>This action requires editor rights.</remarks>
-		public FileManagerController(ApplicationSettings settings, UserServiceBase userManager, IUserContext context,
-			SettingsService settingsService, AttachmentFileHandler attachment, IFileService fileService)
-			: base(settings, userManager, context, settingsService)
+		public FileManagerController(IConfigurationStore configurationStore, UserServiceBase userManager, IUserContext context, IFileService fileService)
+			: base(configurationStore, userManager, context)
 		{
-			_attachmentHandler = attachment;
-			_attachmentPathUtil = new AttachmentPathUtil(settings);
 			_fileService = fileService;
 		}
 

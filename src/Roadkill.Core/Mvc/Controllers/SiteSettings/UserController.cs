@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Web.Mvc;
 using System.Web.Security;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Localization;
 using Roadkill.Core.Configuration;
 using RoadkillUser = Roadkill.Core.Database.User;
@@ -17,16 +18,23 @@ namespace Roadkill.Core.Mvc.Controllers
 	/// </summary>
 	public class UserController : ControllerBase
 	{
-		private SignupEmail _signupEmail;
-		private ResetPasswordEmail _resetPasswordEmail;
+		private readonly SignupEmail _signupEmail;
+		private readonly ResetPasswordEmail _resetPasswordEmail;
 		
-		public UserController(ApplicationSettings settings, UserServiceBase userManager,
-			IUserContext context, SettingsService settingsService, 
-			SignupEmail signupEmail, ResetPasswordEmail resetPasswordEmail)
-			: base(settings, userManager, context, settingsService) 
+		public UserController(IConfigurationStore configurationStore, UserServiceBase userManager,
+			IUserContext context, SignupEmail signupEmail, ResetPasswordEmail resetPasswordEmail)
+			: base(configurationStore, userManager, context) 
 		{
 			_signupEmail = signupEmail;
 			_resetPasswordEmail = resetPasswordEmail;
+		}
+
+		protected override void OnActionExecuting(ActionExecutingContext filterContext)
+		{
+			IConfiguration config = ConfigurationStore.Load();
+
+			if (config.SecuritySettings.UseWindowsAuthentication)
+				filterContext.Result = new RedirectResult(this.Url.Action("Index", "Home"));
 		}
 
 		/// <summary>
@@ -35,9 +43,6 @@ namespace Roadkill.Core.Mvc.Controllers
 		/// <returns></returns>
 		public ActionResult Activate(string id)
 		{
-			if (ApplicationSettings.UseWindowsAuthentication)
-				return RedirectToAction("Index", "Home");
-
 			if (string.IsNullOrEmpty(id))
 				return RedirectToAction("Index", "Home");
 
@@ -54,9 +59,6 @@ namespace Roadkill.Core.Mvc.Controllers
 		/// </summary>
 		public ActionResult CompleteResetPassword(string id)
 		{
-			if (ApplicationSettings.UseWindowsAuthentication)
-				return RedirectToAction("Index", "Home");
-
 			RoadkillUser user = UserService.GetUserByResetKey(id);
 			
 			if (user == null)
@@ -76,9 +78,6 @@ namespace Roadkill.Core.Mvc.Controllers
 		[HttpPost]
 		public ActionResult CompleteResetPassword(string id, UserViewModel model)
 		{
-			if (ApplicationSettings.UseWindowsAuthentication)
-				return RedirectToAction("Index", "Home");
-
 			// Don't use ModelState.isvalid as the UserViewModel instance only has an ID and two passwords
 			if (string.IsNullOrEmpty(model.Password) || string.IsNullOrEmpty(model.PasswordConfirmation) ||
 				model.Password != model.PasswordConfirmation)
@@ -109,9 +108,6 @@ namespace Roadkill.Core.Mvc.Controllers
 		/// login view with no theme is displayed.</remarks>
 		public ActionResult Login()
 		{
-			if (ApplicationSettings.UseWindowsAuthentication)
-				return RedirectToAction("Index", "Home");
-
 			// Show a plain login page if the session has ended inside the file explorer/help dialogs
 			if (Request.QueryString["ReturnUrl"] != null)
 			{
@@ -132,9 +128,6 @@ namespace Roadkill.Core.Mvc.Controllers
 		[HttpPost]
 		public ActionResult Login(string email, string password, string fromUrl)
 		{
-			if (ApplicationSettings.UseWindowsAuthentication)
-				return RedirectToAction("Index", "Home");
-
 			string viewName = "Login";
 
 			// Show a plain login page if the session has ended inside the file explorer/help dialogs
@@ -180,7 +173,9 @@ namespace Roadkill.Core.Mvc.Controllers
 			if (Context.IsLoggedIn)
 			{
 				UserViewModel model = null;
-				if (!ApplicationSettings.UseWindowsAuthentication)
+				IConfiguration config = ConfigurationStore.Load();
+
+				if (!config.SecuritySettings.UseWindowsAuthentication)
 				{
 					RoadkillUser user = UserService.GetUserById(new Guid(Context.CurrentUser));
 					model = new UserViewModel(user);
@@ -213,7 +208,7 @@ namespace Roadkill.Core.Mvc.Controllers
 			if (model.Id.ToString() != Context.CurrentUser)
 				return new HttpStatusCodeResult(403, "You cannot change the profile of another user");
 
-			if (ApplicationSettings.IsDemoSite)
+			if (InternalSettings.IsDemoSite)
 			{
 				ModelState.AddModelError("General", "The demo site login cannot be changed.");
 				return View(model);
@@ -253,9 +248,6 @@ namespace Roadkill.Core.Mvc.Controllers
 		/// </summary>
 		public ActionResult ResetPassword()
 		{
-			if (ApplicationSettings.UseWindowsAuthentication)
-				return RedirectToAction("Index", "Home");
-
 			return View();
 		}
 
@@ -267,13 +259,11 @@ namespace Roadkill.Core.Mvc.Controllers
 		[HttpPost]
 		public ActionResult ResetPassword(string email)
 		{
-			if (ApplicationSettings.UseWindowsAuthentication)
-				return RedirectToAction("Index", "Home");
-
-#if DEMOSITE
-			ModelState.AddModelError("General", "The demo site login cannot be changed.");
-			return View();
-#endif
+			if (InternalSettings.IsDemoSite)
+			{
+				ModelState.AddModelError("General", "The demo site login cannot be changed.");
+				return View();
+			}
 
 			if (string.IsNullOrEmpty(email))
 			{
@@ -294,7 +284,6 @@ namespace Roadkill.Core.Mvc.Controllers
 					{
 						// Everything worked, send the email
 						user.PasswordResetKey = key;
-						Configuration.SiteSettings siteSettings = SettingsService.GetSiteSettings();
 						_resetPasswordEmail.Send(new UserViewModel(user));
 
 						return View("ResetPasswordSent",(object) email);
@@ -325,7 +314,6 @@ namespace Roadkill.Core.Mvc.Controllers
 
 			UserViewModel model = new UserViewModel(user);
 
-			Configuration.SiteSettings siteSettings = SettingsService.GetSiteSettings();
 			_signupEmail.Send(model);
 
 			TempData["resend"] = true;
@@ -338,8 +326,9 @@ namespace Roadkill.Core.Mvc.Controllers
 		/// </summary>
 		public ActionResult Signup()
 		{
-			Configuration.SiteSettings siteSettings = SettingsService.GetSiteSettings();
-			if (Context.IsLoggedIn || !siteSettings.AllowUserSignup || ApplicationSettings.UseWindowsAuthentication)
+			IConfiguration config = ConfigurationStore.Load();
+
+			if (Context.IsLoggedIn || !config.AllowUserSignup || config.SecuritySettings.UseWindowsAuthentication)
 			{
 				return RedirectToAction("Index","Home");
 			}
@@ -356,8 +345,9 @@ namespace Roadkill.Core.Mvc.Controllers
 		[RecaptchaRequired]
 		public ActionResult Signup(UserViewModel model, bool? isCaptchaValid)
 		{
-			Configuration.SiteSettings siteSettings = SettingsService.GetSiteSettings();
-			if (Context.IsLoggedIn || !siteSettings.AllowUserSignup || ApplicationSettings.UseWindowsAuthentication)
+			IConfiguration config = ConfigurationStore.Load();
+
+			if (Context.IsLoggedIn || !config.AllowUserSignup || config.SecuritySettings.UseWindowsAuthentication)
 				return RedirectToAction("Index","Home");
 
 			if (ModelState.IsValid)

@@ -1,4 +1,6 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Web.Mvc;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Cache;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Mvc.Attributes;
@@ -15,15 +17,13 @@ namespace Roadkill.Core.Mvc.Controllers
 	[AdminRequired]
 	public class SettingsController : ControllerBase
 	{
-		private SettingsService _settingsService;
-		private SiteCache _siteCache;
-		private IConfigReaderWriter _configReaderWriter;
+		private readonly SiteCache _siteCache;
+		private readonly IConfigReaderWriter _configReaderWriter;
 
-		public SettingsController(ApplicationSettings settings, UserServiceBase userManager, SettingsService settingsService, 
+		public SettingsController(IConfigurationStore configurationStore, UserServiceBase userManager, 
 			IUserContext context, SiteCache siteCache, IConfigReaderWriter configReaderWriter)
-			: base(settings, userManager, context, settingsService) 
+			: base(configurationStore, userManager, context) 
 		{
-			_settingsService = settingsService;
 			_siteCache = siteCache;
 			_configReaderWriter = configReaderWriter;
 		}
@@ -34,11 +34,13 @@ namespace Roadkill.Core.Mvc.Controllers
 		/// <returns>A <see cref="SettingsViewModel"/> as the model.</returns>
 		public ActionResult Index()
 		{
-			Configuration.SiteSettings siteSettings = SettingsService.GetSiteSettings();
-			SettingsViewModel model = new SettingsViewModel(ApplicationSettings, siteSettings);
-			model.SetSupportedDatabases(SettingsService.GetSupportedDatabases());
+			throw new InvalidOperationException("TODO");
 
-			return View(model);
+			//SettingsViewModel model = new SettingsViewModel(ApplicationSettings, siteSettings);
+			//model.SetSupportedDatabases(SettingsService.GetSupportedDatabases());
+			//return View(model);
+
+			return View();
 		}
 
 		/// <summary>
@@ -53,8 +55,9 @@ namespace Roadkill.Core.Mvc.Controllers
 			if (ModelState.IsValid)
 			{
 				_configReaderWriter.Save(model);
-			
-				_settingsService.SaveSiteSettings(model);
+
+				throw new InvalidOperationException("TODO");
+				//_settingsService.SaveSiteSettings(model);
 				_siteCache.RemoveMenuCacheItems();
 
 				// Refresh the AttachmentsDirectoryPath using the absolute attachments path, as it's calculated in the constructor

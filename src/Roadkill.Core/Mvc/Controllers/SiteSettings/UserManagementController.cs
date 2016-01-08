@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
-using Roadkill.Core.Configuration;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Database;
 using Roadkill.Core.Localization;
 using Roadkill.Core.Mvc.Attributes;
 using Roadkill.Core.Mvc.ViewModels;
 using Roadkill.Core.Security;
-using Roadkill.Core.Services;
 
 namespace Roadkill.Core.Mvc.Controllers
 {
@@ -18,8 +17,8 @@ namespace Roadkill.Core.Mvc.Controllers
 	[AdminRequired]
 	public class UserManagementController : ControllerBase
 	{
-		public UserManagementController(ApplicationSettings settings, UserServiceBase userManager, SettingsService settingsService, IUserContext context)
-			: base(settings, userManager, context, settingsService) 
+		public UserManagementController(IConfigurationStore configurationStore, UserServiceBase userManager, IUserContext context)
+			: base(configurationStore, userManager, context) 
 		{
 
 		}

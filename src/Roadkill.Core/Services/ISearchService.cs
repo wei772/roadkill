@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
 using Roadkill.Core.Database.Repositories;
@@ -8,9 +9,8 @@ namespace Roadkill.Core.Services
 {
 	public interface ISearchService
 	{
-		ApplicationSettings ApplicationSettings { get; set; }
-		ISettingsRepository SettingsRepository { get; set; }
 		IPageRepository PageRepository { get; set; }
+		IConfiguration Configuration { get; set; }
 
 		/// <summary>
 		/// Searches the lucene index with the search text.

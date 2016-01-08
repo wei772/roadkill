@@ -5,6 +5,7 @@ using System.Text;
 using System.Xml.Serialization;
 using System.IO;
 using System.Text.RegularExpressions;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Logging;
 
@@ -30,7 +31,7 @@ namespace Roadkill.Core
 			CacheTokensFile = true;
 		}
 
-		public CustomTokenParser(NonConfigurableSettings settings)
+		public CustomTokenParser(InternalSettings settings)
 		{
 			if (CacheTokensFile && !_isTokensFileCached)
 			{
@@ -80,7 +81,7 @@ namespace Roadkill.Core
 			}
 		}
 
-		private static IEnumerable<TextToken> Deserialize(NonConfigurableSettings settings)
+		private static IEnumerable<TextToken> Deserialize(InternalSettings settings)
 		{
 			if (string.IsNullOrEmpty(settings.CustomTokensPath) || !File.Exists(settings.CustomTokensPath))
 			{

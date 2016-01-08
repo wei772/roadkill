@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using Newtonsoft.Json;
 
 namespace Roadkill.Core.AmazingConfig
@@ -13,6 +14,8 @@ namespace Roadkill.Core.AmazingConfig
 	/// </summary>
 	public class AttachmentSettings
 	{
+		private readonly HttpContextWrapper _httpContext;
+
 		/// <summary>
 		/// Gets or sets the attachments folder, which should begin with "~/".
 		/// </summary>
@@ -80,6 +83,55 @@ namespace Roadkill.Core.AmazingConfig
 			OverwriteExistingFiles = false;
 
 			Settings = new Dictionary<string, string>();
+			if (HttpContext.Current != null)
+				_httpContext = new HttpContextWrapper(HttpContext.Current);
+		}
+
+		/// <summary>
+		/// The absolute file path for the attachments folder. If the AttachmentsFolder uses "~/" then the path is 
+		/// translated into one that is relative to the site root, otherwise it is assumed to be an absolute file path.
+		/// This property always contains a trailing slash (or / on Unix based systems).
+		/// </summary>
+		public string GetAttachmentsDirectoryPath()
+		{
+			string path = "";
+
+			if (AttachmentsFolder.StartsWith("~") && _httpContext != null)
+			{
+				path = _httpContext.Server.MapPath(AttachmentsFolder);
+			}
+			else
+			{
+				path = AttachmentsFolder;
+			}
+
+			if (!path.EndsWith(Path.DirectorySeparatorChar.ToString()))
+				path += Path.DirectorySeparatorChar.ToString();
+
+			return path;
+		}
+
+		/// <summary>
+		/// Gets the full path for the attachments folder, including any extra application paths from the url.
+		/// Contains a "/" the start and does not contain a trailing "/".
+		/// </summary>
+		public string GetAttachmentsUrlPath()
+		{
+			string attachmentsPath = "/" + AttachmentsRoutePath;
+
+			if (_httpContext != null)
+			{
+				string applicationPath = _httpContext.Request.ApplicationPath;
+				if (!applicationPath.EndsWith("/"))
+					applicationPath += "/";
+
+				if (attachmentsPath.StartsWith("/"))
+					attachmentsPath = attachmentsPath.Remove(0, 1);
+
+				attachmentsPath = applicationPath + attachmentsPath;
+			}
+
+			return attachmentsPath;
 		}
 	}
 }

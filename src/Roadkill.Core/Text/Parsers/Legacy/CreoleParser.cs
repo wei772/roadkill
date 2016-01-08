@@ -50,6 +50,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Roadkill.Core.Configuration;
 using System.Web;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Plugins;
 
 namespace Roadkill.Core.Converters
@@ -78,7 +79,6 @@ namespace Roadkill.Core.Converters
 	{
 		private string _tabStop;
 		private int _nTabSpaces;
-		private ApplicationSettings _applicationSettings;
 
 		public MarkupParserHelp MarkupParserHelp { get; private set; }
 
@@ -145,7 +145,7 @@ namespace Roadkill.Core.Converters
 			}
 		}
 
-		public CreoleParser(ApplicationSettings applicationSettings, SiteSettings siteSettings)
+		public CreoleParser(IConfiguration configuration)
 		{
 			MarkupParserHelp = new MarkupParserHelp()
 			{
@@ -161,7 +161,6 @@ namespace Roadkill.Core.Converters
 				HeadingToken = "=",
 			};
 
-			_applicationSettings = applicationSettings;
 			AddIdToParagraphTags = false;
 			HTMLAttributes = new Dictionary<string, string>();
 			InterWiki = new Dictionary<string, string>();
@@ -169,8 +168,7 @@ namespace Roadkill.Core.Converters
 			NoWikiEscapeStart = "{{{";
 			NoWikiEscapeEnd = "}}}";
 
-			if (siteSettings != null)
-				InterWiki.Add("tag", siteSettings.SiteUrl + "/pages/tag/");
+			InterWiki.Add("tag", configuration.SiteUrl + "/pages/tag/");
 		}
 
 

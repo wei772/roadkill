@@ -79,7 +79,11 @@ namespace Roadkill.Core.Extensions
 		{
 			ControllerBase controller = helper.ViewContext.Controller as ControllerBase;
 
-			if (controller == null || controller.ApplicationSettings.UseWindowsAuthentication)
+			if (controller == null)
+				return MvcHtmlString.Empty;
+
+			var config = controller.ConfigurationStore.Load();
+			if (config.SecuritySettings.UseWindowsAuthentication)
 				return MvcHtmlString.Empty;
 
 			string link = "";
@@ -93,7 +97,7 @@ namespace Roadkill.Core.Extensions
 				string redirectPath = helper.ViewContext.HttpContext.Request.Path;
 				link = helper.ActionLink(SiteStrings.Navigation_Login, "Login", "User", new { ReturnUrl = redirectPath }, null).ToString();
 
-				if (controller.SettingsService.GetSiteSettings().AllowUserSignup)
+				if (config.AllowUserSignup)
 					link += "&nbsp;/&nbsp;" + helper.ActionLink(SiteStrings.Navigation_Register, "Signup", "User").ToString();
 			}
 

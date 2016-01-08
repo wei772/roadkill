@@ -76,7 +76,7 @@ namespace Roadkill.Core.AmazingConfig
 		{
 			get
 			{
-				return FileVersionInfo.GetVersionInfo(typeof(ApplicationSettings).Assembly.Location).ProductVersion;
+				return FileVersionInfo.GetVersionInfo(typeof(InternalSettings).Assembly.Location).ProductVersion;
 			}
 		}
 
@@ -87,12 +87,12 @@ namespace Roadkill.Core.AmazingConfig
 		{
 			get
 			{
-				return FileVersionInfo.GetVersionInfo(typeof(ApplicationSettings).Assembly.Location).FileVersion;
+				return FileVersionInfo.GetVersionInfo(typeof(InternalSettings).Assembly.Location).FileVersion;
 			}
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ApplicationSettings"/> class.
+		/// Initializes a new instance of the <see cref="InternalSettings"/> class.
 		/// </summary>
 		public InternalSettings()
 		{

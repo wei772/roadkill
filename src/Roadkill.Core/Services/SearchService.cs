@@ -13,6 +13,7 @@ using System.Text.RegularExpressions;
 using Directory = System.IO.Directory;
 using LuceneVersion = Lucene.Net.Util.Version;
 using Lucene.Net.Store;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
 using Roadkill.Core.Database.Repositories;
@@ -26,20 +27,19 @@ namespace Roadkill.Core.Services
 	/// </summary>
 	public class SearchService : ISearchService
 	{
-		private static Regex _removeTagsRegex = new Regex("<(.|\n)*?>");
-		private MarkupConverter _markupConverter;
+		private static readonly Regex _removeTagsRegex = new Regex("<(.|\n)*?>");
+		private readonly MarkupConverter _markupConverter;
 		protected virtual string IndexPath { get; set; }
 		private IPluginFactory _pluginFactory;
 		private static readonly LuceneVersion LUCENEVERSION = LuceneVersion.LUCENE_29;
 
-		public ApplicationSettings ApplicationSettings { get; set; }
-		public ISettingsRepository SettingsRepository { get; set; }
+		public IConfiguration Configuration { get; set; }
 		public IPageRepository PageRepository { get; set; }
 
-		public SearchService(ApplicationSettings applicationSettings, ISettingsRepository settingsRepository, IPageRepository pageRepository, IPluginFactory pluginFactory)
+		public SearchService(IConfigurationStore configurationStore, ISettingsRepository settingsRepository, IPageRepository pageRepository, IPluginFactory pluginFactory)
 		{
-			if (applicationSettings == null)
-				throw new ArgumentNullException(nameof(applicationSettings));
+			if (configurationStore == null)
+				throw new ArgumentNullException(nameof(configurationStore));
 
 			if (settingsRepository == null)
 				throw new ArgumentNullException(nameof(settingsRepository));
@@ -50,13 +50,11 @@ namespace Roadkill.Core.Services
 			if (pluginFactory == null)
 				throw new ArgumentNullException(nameof(pluginFactory));
 
-			_markupConverter = new MarkupConverter(applicationSettings, settingsRepository, pageRepository, pluginFactory);
-			IndexPath = applicationSettings.NonConfigurableSettings.SearchIndexPath;
+			Configuration = configurationStore.Load();
+			_markupConverter = new MarkupConverter(Configuration, pageRepository, pluginFactory);
+			IndexPath = Configuration.InternalSettings.SearchIndexPath;
 
-			SettingsRepository = settingsRepository;
 			PageRepository = pageRepository;
-			ApplicationSettings = applicationSettings;
-
 		}
 
 		/// <summary>
@@ -150,7 +148,7 @@ namespace Roadkill.Core.Services
 			}
 			catch (Exception ex)
 			{
-				if (!ApplicationSettings.IgnoreSearchIndexErrors)
+				if (!Configuration.IgnoreSearchIndexErrors.GetValueOrDefault(true))
 					throw new SearchException(ex, "An error occurred while adding page '{0}' to the search index", model.Title);
 			}
 		}
@@ -164,7 +162,6 @@ namespace Roadkill.Core.Services
 		{
 			try
 			{
-				StandardAnalyzer analyzer = new StandardAnalyzer(LUCENEVERSION);
 				int count = 0;
 				using (IndexReader reader = IndexReader.Open(FSDirectory.Open(new DirectoryInfo(IndexPath)), false))
 				{
@@ -175,7 +172,7 @@ namespace Roadkill.Core.Services
 			}
 			catch (Exception ex)
 			{
-				if (!ApplicationSettings.IgnoreSearchIndexErrors)
+				if (!Configuration.IgnoreSearchIndexErrors.GetValueOrDefault(true))
 					throw new SearchException(ex, "An error occurred while deleting page '{0}' from the search index", model.Title);
 				else
 					return 0;

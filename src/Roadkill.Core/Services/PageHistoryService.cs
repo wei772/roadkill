@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Cache;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Converters;
@@ -17,23 +18,24 @@ namespace Roadkill.Core.Services
 	/// </summary>
 	public class PageHistoryService
 	{
-		private MarkupConverter _markupConverter;
-		private IUserContext _context;
-		private PageViewModelCache _pageViewModelCache;
+		private readonly MarkupConverter _markupConverter;
+		private readonly IUserContext _context;
+		private readonly PageViewModelCache _pageViewModelCache;
 
-		public ApplicationSettings ApplicationSettings { get; set; }
+		public IConfiguration Configuration { get; set; }
 		public ISettingsRepository SettingsRepository { get; set; }
 		public IPageRepository PageRepository { get; set; }
 
-		public PageHistoryService(ApplicationSettings settings, ISettingsRepository settingsRepository, IPageRepository pageRepository, IUserContext context, 
+		public PageHistoryService(IConfigurationStore configurationStore, ISettingsRepository settingsRepository, IPageRepository pageRepository, IUserContext context, 
 			PageViewModelCache pageViewModelCache, IPluginFactory pluginFactory)
 		{
-			_markupConverter = new MarkupConverter(settings, settingsRepository, pageRepository, pluginFactory);
-			_context = context;
-			_pageViewModelCache = pageViewModelCache;
-
+			Configuration = configurationStore.Load();
 			SettingsRepository = settingsRepository;
 			PageRepository = pageRepository;
+
+			_markupConverter = new MarkupConverter(Configuration, pageRepository, pluginFactory);
+			_context = context;
+			_pageViewModelCache = pageViewModelCache;
 		}
 
 		/// <summary>

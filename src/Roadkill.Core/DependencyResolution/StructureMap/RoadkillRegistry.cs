@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Runtime.Caching;
 using System.Web.Http;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Attachments;
 using Roadkill.Core.Cache;
 using Roadkill.Core.Configuration;
@@ -72,6 +73,10 @@ namespace Roadkill.Core.DependencyResolution.StructureMap
 			scanner.With(new AbstractClassConvention<SpecialPagePlugin>());
             scanner.AddAllTypesOf<IPluginFactory>();
 
+			// New config
+			scanner.AddAllTypesOf<IConfiguration>();
+			scanner.AddAllTypesOf<IConfigurationStore>();
+
 			// Config, context
 			scanner.AddAllTypesOf<ApplicationSettings>();
 			scanner.AddAllTypesOf<IUserContext>();
@@ -125,6 +130,9 @@ namespace Roadkill.Core.DependencyResolution.StructureMap
 
 		private void ConfigureInstances(IConfigReaderWriter configReader)
 		{
+			// New config
+			For<IConfigurationStore>().Use<JsonConfigurationStore>().Singleton();
+
 			// Appsettings and reader - these need to go first
 			For<IConfigReaderWriter>().HybridHttpOrThreadLocalScoped().Use(configReader);
 			For<ApplicationSettings>()

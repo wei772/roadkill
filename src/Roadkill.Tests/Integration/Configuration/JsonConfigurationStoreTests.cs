@@ -67,7 +67,7 @@ namespace Roadkill.Tests.Integration.Configuration
 			Assert.That(actualConfiguration.SecuritySettings.AllowUserSignup, Is.False);
 			Assert.That(actualConfiguration.SecuritySettings.IsRecaptchaEnabled, Is.False);
 			Assert.That(actualConfiguration.Theme, Is.EqualTo("Mediawiki"));
-			Assert.That(actualConfiguration.MarkupType, Is.EqualTo("Creole"));
+			Assert.That(actualConfiguration.MarkupType, Is.EqualTo("Markdown"));
 			Assert.That(actualConfiguration.SiteName, Is.EqualTo("Your site"));
 			Assert.That(actualConfiguration.SiteUrl, Is.EqualTo(""));
 			Assert.That(actualConfiguration.SecuritySettings.RecaptchaPrivateKey, Is.EqualTo(""));

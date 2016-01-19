@@ -24,7 +24,7 @@ namespace Roadkill.Core.Services
 		public LocalFileService(IConfigurationStore configurationStore)
 		{
 			_configuration = configurationStore.Load();
-			_attachmentPathUtil = new AttachmentPathUtil(_configuration);
+			_attachmentPathUtil = new AttachmentPathUtil(configurationStore);
 		}
 
 		public void Delete(string filePath, string fileName)

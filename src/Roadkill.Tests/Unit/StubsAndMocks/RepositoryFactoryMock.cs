@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Principal;
-using System.Text;
+﻿using System.Collections.Generic;
 using Roadkill.Core.Database;
-using Roadkill.Core.Database.Repositories;
 
 namespace Roadkill.Tests.Unit.StubsAndMocks
 {
 	public class RepositoryFactoryMock : IRepositoryFactory
 	{
-		public SettingsRepositoryMock SettingsRepository { get; set; }
 		public UserRepositoryMock UserRepository { get; set; }
 		public PageRepositoryMock PageRepository { get; set; }
 
@@ -20,11 +14,6 @@ namespace Roadkill.Tests.Unit.StubsAndMocks
 		{
 			PageRepository = new PageRepositoryMock();
 			InstallerRepository = new InstallerRepositoryMock();
-		}
-
-		public ISettingsRepository GetSettingsRepository(string databaseProviderName, string connectionString)
-		{
-			return SettingsRepository;
 		}
 
 		public IUserRepository GetUserRepository(string databaseProviderName, string connectionString)

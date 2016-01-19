@@ -1,14 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-using System.Web;
-using System.Globalization;
-using Roadkill.Core.Configuration;
+﻿using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Mvc.ViewModels;
-using Roadkill.Core.Database;
-using Roadkill.Core.Database.Repositories;
 
 namespace Roadkill.Core.Email
 {
@@ -20,8 +11,8 @@ namespace Roadkill.Core.Email
 		private static string _htmlContent;
 		private static string _plainTextContent;
 
-		public ResetPasswordEmail(NonConfigurableSettings settings, ISettingsRepository settingsRepository, IEmailClient emailClient)
-			: base(settings, settingsRepository, emailClient)
+		public ResetPasswordEmail(IConfigurationStore configurationStore, IEmailClient emailClient)
+			: base(configurationStore, emailClient)
 		{
 		}
 

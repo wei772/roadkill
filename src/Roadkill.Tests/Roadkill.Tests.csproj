@@ -309,14 +309,11 @@
     <Compile Include="Integration\Configuration\JsonConfigReaderWriterTests.cs" />
     <Compile Include="Integration\Repository\LightSpeed\LightSpeedPageRepositoryTests.cs" />
     <Compile Include="Integration\Repository\LightSpeed\LightSpeedInstallerRepositoryTests.cs" />
-    <Compile Include="Integration\Repository\LightSpeed\LightSpeedSettingsRepositoryTests.cs" />
     <Compile Include="Integration\Repository\MongoDb\MongoDbInstallerRepositoryTests.cs" />
-    <Compile Include="Integration\Repository\MongoDb\MongoDbSettingsRepositoryTests.cs" />
     <Compile Include="Integration\Repository\MongoDb\MongoDbPageRepositoryTests.cs" />
     <Compile Include="Integration\Repository\MongoDb\MongoDbUserRepositoryTests.cs" />
     <Compile Include="Integration\Repository\PageRepositoryTests.cs" />
     <Compile Include="Integration\Repository\InstallerRepositoryTests.cs" />
-    <Compile Include="Integration\Repository\SettingsRepositoryTests.cs" />
     <Compile Include="Integration\Repository\UserRepositoryTests.cs" />
     <Compile Include="Integration\Repository\LightSpeed\LightSpeedUserRepositoryTests.cs" />
     <Compile Include="Integration\Import\ScrewturnImporterTests.cs" />
@@ -352,6 +349,7 @@
     <Compile Include="Unit\Mvc\WebApi\SearchControllerTests.cs" />
     <Compile Include="Unit\Mvc\WebApi\PageControllerTests.cs" />
     <Compile Include="Unit\Owin\InstallCheckMiddlewareTests.cs" />
+    <Compile Include="Unit\StubsAndMocks\ConfigurationStoreMock.cs" />
     <Compile Include="Unit\StubsAndMocks\Owin\OwinContextStub.cs" />
     <Compile Include="Unit\StubsAndMocks\Owin\OwinRequestStub.cs" />
     <Compile Include="Unit\Plugins\PluginFileManagerTests.cs" />
@@ -390,7 +388,6 @@
     <Compile Include="Unit\Services\LocalFileServiceTests.cs" />
     <Compile Include="Unit\Services\PageHistoryServiceTests.cs" />
     <Compile Include="Unit\Services\InstallationServiceTests.cs" />
-    <Compile Include="Unit\Services\SettingsServiceTests.cs" />
     <Compile Include="Unit\Mvc\Controllers\FileManagerControllerTests.cs" />
     <Compile Include="Unit\Mvc\Controllers\PagesControllerTests.cs" />
     <Compile Include="Unit\Mvc\Setup\RoutingTests.cs" />
@@ -414,7 +411,6 @@
     <Compile Include="Unit\StubsAndMocks\PluginFactoryMock.cs" />
     <Compile Include="Unit\StubsAndMocks\InstallerRepositoryMock.cs" />
     <Compile Include="Unit\StubsAndMocks\UserRepositoryMock.cs" />
-    <Compile Include="Unit\StubsAndMocks\SettingsRepositoryMock.cs" />
     <Compile Include="Unit\StubsAndMocks\ResetPasswordEmailStub.cs" />
     <Compile Include="Unit\StubsAndMocks\EmailTemplateStub.cs" />
     <Compile Include="Unit\StubsAndMocks\SpecialPageMock.cs" />
@@ -497,6 +493,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Integration\Configuration\TestConfigs\JSON\test-empty-connectionstring-not-installed.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Integration\Configuration\TestConfigs\JSON\plugin-test.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="packages.config">

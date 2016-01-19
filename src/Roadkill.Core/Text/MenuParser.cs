@@ -10,7 +10,6 @@ using Roadkill.Core.Cache;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Converters;
 using Roadkill.Core.Database;
-using Roadkill.Core.Database.Repositories;
 using Roadkill.Core.Localization;
 
 namespace Roadkill.Core.Text
@@ -29,10 +28,10 @@ namespace Roadkill.Core.Text
 		private readonly IConfiguration _configuration;
 		private readonly IUserContext _userContext;
 
-		public MenuParser(MarkupConverter markupConverter, IConfiguration configuration, SiteCache siteCache, IUserContext userContext)
+		public MenuParser(MarkupConverter markupConverter, IConfigurationStore configurationStore, SiteCache siteCache, IUserContext userContext)
 		{
 			_markupConverter = markupConverter;
-			_configuration = configuration;
+			_configuration = configurationStore.Load();
 			_siteCache = siteCache;
 			_userContext = userContext;
 		}

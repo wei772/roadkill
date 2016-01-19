@@ -51,7 +51,7 @@ module Roadkill.Web.Admin
 				}
 			};
 			var validation = new Roadkill.Web.Validation();
-			validation.Configure("#settings-form", validationRules);
+			validation.Configure("#configuration-form", validationRules);
 		}
 
 		public OnTestDatabaseClick()
@@ -134,15 +134,15 @@ module Roadkill.Web.Admin
 		{
 			if ($("#UseWindowsAuth").is(":checked"))
 			{
-				$("#aspnetuser-settings").hide();
+				$("#aspnetuser-configuration").hide();
 				$("#ldapsettings").show();
 				$("#ldapsettings").removeClass("hidden");
 			}
 			else
 			{
 				$("#ldapsettings").hide();
-				$("#aspnetuser-settings").show();
-				$("#aspnetuser-settings").removeClass("hidden");
+				$("#aspnetuser-configuration").show();
+				$("#aspnetuser-configuration").removeClass("hidden");
 			}
 		}
 

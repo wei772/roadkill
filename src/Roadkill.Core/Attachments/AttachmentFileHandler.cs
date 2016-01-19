@@ -2,6 +2,7 @@
 using Roadkill.Core.Services;
 using System.IO;
 using System.Web;
+using Roadkill.Core.AmazingConfig;
 
 namespace Roadkill.Core.Attachments
 {
@@ -10,7 +11,7 @@ namespace Roadkill.Core.Attachments
 	/// </summary>
 	public class AttachmentFileHandler : IHttpHandler
 	{
-		private ApplicationSettings _settings;
+		private readonly IConfiguration _configuration;
 		private readonly IFileService _fileService;
 
 		public bool IsReusable
@@ -18,9 +19,9 @@ namespace Roadkill.Core.Attachments
 			get { return true; }
 		}
 
-		public AttachmentFileHandler(ApplicationSettings settings, IFileService fileService)
+		public AttachmentFileHandler(IConfigurationStore configurationStore, IFileService fileService)
 		{
-			_settings = settings;
+			_configuration = configurationStore.Load();
 			_fileService = fileService;
 		}
 
@@ -67,7 +68,7 @@ namespace Roadkill.Core.Attachments
 
 			// Get rid of the route from the path
 			// This replacement assumes the url is case sensitive (e.g. '/Attachments' is replaced, '/attachments' isn't)
-			string filePath = urlPath.Replace(string.Format("/{0}", _settings.AttachmentsRoutePath), "");
+			string filePath = urlPath.Replace(string.Format("/{0}", _configuration.AttachmentSettings.AttachmentsRoutePath), "");
 
 			if (!string.IsNullOrEmpty(applicationPath) && applicationPath != "/" && filePath.StartsWith(applicationPath))
 				filePath = filePath.Replace(applicationPath, "");
@@ -81,7 +82,7 @@ namespace Roadkill.Core.Attachments
 				filePath = filePath.Remove(0, 1);
 
 			// THe attachmentFolder has a trailing slash
-			string fullPath = _settings.AttachmentsDirectoryPath + filePath;
+			string fullPath = _configuration.AttachmentSettings.GetAttachmentsDirectoryPath() + filePath;
 			return fullPath;
 		}
 	}

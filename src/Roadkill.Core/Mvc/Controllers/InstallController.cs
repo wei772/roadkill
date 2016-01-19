@@ -27,7 +27,6 @@ namespace Roadkill.Core.Mvc.Controllers
 		public IConfigurationStore ConfigurationStore { get; private set; }
 		public UserServiceBase UserService { get; private set; }
 		public IUserContext Context { get; private set; }
-		public SettingsService SettingsService { get; private set; }
 
 		/// <summary>
 		/// 
@@ -42,7 +41,6 @@ namespace Roadkill.Core.Mvc.Controllers
 
 			// These aren't needed for the installer
 			Context = null;
-			SettingsService = null;
 			UserService = null;
 		}
 

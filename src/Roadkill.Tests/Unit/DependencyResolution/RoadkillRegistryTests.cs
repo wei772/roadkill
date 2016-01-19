@@ -14,7 +14,6 @@ using Roadkill.Core.Converters;
 using Roadkill.Core.Database;
 using Roadkill.Core.Database.LightSpeed;
 using Roadkill.Core.Database.MongoDB;
-using Roadkill.Core.Database.Repositories;
 using Roadkill.Core.DependencyResolution;
 using Roadkill.Core.DependencyResolution.StructureMap;
 using Roadkill.Core.Domain.Export;
@@ -332,11 +331,10 @@ namespace Roadkill.Tests.Unit.DependencyResolution
 			ISetterInjected setterInjected = container.GetInstance<AdminRequiredAttribute>();
 
 			// Assert
-			Assert.That(setterInjected.ApplicationSettings, Is.Not.Null);
+			Assert.That(setterInjected.Configuration, Is.Not.Null);
 			Assert.That(setterInjected.Context, Is.Not.Null);
 			Assert.That(setterInjected.UserService, Is.Not.Null);
 			Assert.That(setterInjected.PageService, Is.Not.Null);
-			Assert.That(setterInjected.SettingsService, Is.Not.Null);
 		}
 
 		[Test]

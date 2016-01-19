@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.DependencyResolution;
 using Roadkill.Core.Mvc.Attributes;
@@ -20,10 +21,10 @@ namespace Roadkill.Core.Plugins
 	public abstract class SpecialPagePlugin : ISetterInjected
 	{
 		/// <summary>
-		/// Gets or sets the current Roadkill <see cref="ApplicationSettings"/>. This property is automatically filled by Roadkill when the plugin is loaded.
+		/// Gets or sets the current Roadkill <see cref="Configuration"/>. This property is automatically filled by Roadkill when the plugin is loaded.
 		/// </summary>
 		[SetterProperty]
-		public ApplicationSettings ApplicationSettings { get; set; }
+		public IConfigurationStore ConfigurationStore { get; set; }
 
 		/// <summary>
 		/// Gets or sets the current logged in user represnted by <see cref="IUserContext"/>. This property is automatically filled by Roadkill when the plugin is loaded.
@@ -42,12 +43,6 @@ namespace Roadkill.Core.Plugins
 		/// </summary>
 		[SetterProperty]
 		public IPageService PageService { get; set; }
-
-		/// <summary>
-		/// Gets the current Roadkill <see cref="SettingsService"/> that can be used to get the current <see cref="SiteSettings"/>. This property is automatically filled by Roadkill when the plugin is loaded.
-		/// </summary>
-		[SetterProperty]
-		public SettingsService SettingsService { get; set; }
 
 		/// <summary>
 		/// The unique name of the special page, used in the url /Special:{name}

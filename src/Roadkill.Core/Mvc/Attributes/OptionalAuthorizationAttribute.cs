@@ -1,9 +1,8 @@
 ﻿using System.Security.Principal;
 using System.Web;
 using System.Web.Mvc;
-using Roadkill.Core.Configuration;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.DependencyResolution;
-using Roadkill.Core.Mvc.Controllers;
 using Roadkill.Core.Services;
 using Roadkill.Core.Security;
 using StructureMap.Attributes;
@@ -16,7 +15,7 @@ namespace Roadkill.Core.Mvc.Attributes
 	public class OptionalAuthorizationAttribute : AuthorizeAttribute, ISetterInjected
 	{
 		[SetterProperty]
-		public ApplicationSettings ApplicationSettings { get; set; }
+		public IConfigurationStore ConfigurationStore { get; set; }
 
 		[SetterProperty]
 		public IUserContext Context { get; set; }
@@ -26,9 +25,6 @@ namespace Roadkill.Core.Mvc.Attributes
 
 		[SetterProperty]
 		public IPageService PageService { get; set; }
-
-		[SetterProperty]
-		public SettingsService SettingsService { get; set; }
 
 		[SetterProperty]
 		public IAuthorizationProvider AuthorizationProvider { get; set; }
@@ -46,17 +42,19 @@ namespace Roadkill.Core.Mvc.Attributes
 			if (AuthorizationProvider == null)
 				throw new SecurityException("The OptionalAuthorizationAttribute property has not been set for AdminRequiredAttribute. Has it been injected by the DI?", null);
 
-			if (!ApplicationSettings.Installed)
+			IConfiguration configuration = ConfigurationStore.Load();
+
+			if (!configuration.Installed)
 			{
 				return true;
 			}
 
 			// If the site is private then check for a login
-			if (!ApplicationSettings.IsPublicSite)
+			if (!configuration.IsPublicSite.GetValueOrDefault())
 			{
 				IPrincipal principal = httpContext.User;
 
-				AuthorizationProvider provider = new AuthorizationProvider(ApplicationSettings, UserService);
+				AuthorizationProvider provider = new AuthorizationProvider(ConfigurationStore, UserService);
 				return provider.IsAdmin(principal) || provider.IsEditor(principal);
 			}
 			else

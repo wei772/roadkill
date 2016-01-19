@@ -4,8 +4,6 @@ using Mindscape.LightSpeed;
 using Mindscape.LightSpeed.Caching;
 using Roadkill.Core.Database.LightSpeed;
 using Roadkill.Core.Database.MongoDB;
-using Roadkill.Core.Database.Repositories;
-using Roadkill.Core.Database.Schema;
 using Roadkill.Core.DependencyResolution;
 
 namespace Roadkill.Core.Database
@@ -63,22 +61,6 @@ namespace Roadkill.Core.Database
 		{
 			Context.VerboseLogging = true;
 			Context.Logger = new DatabaseLogger();
-		}
-
-		public ISettingsRepository GetSettingsRepository(string databaseProviderName, string connectionString)
-		{
-			if (_pendingInstallation)
-				return null;
-
-			if (databaseProviderName == SupportedDatabases.MongoDB)
-			{
-				return new MongoDBSettingsRepository(connectionString);
-			}
-			else
-			{
-				IUnitOfWork unitOfWork = UnitOfWorkFunc(Context);
-				return new LightSpeedSettingsRepository(unitOfWork);
-			}
 		}
 
 		public IUserRepository GetUserRepository(string databaseProviderName, string connectionString)

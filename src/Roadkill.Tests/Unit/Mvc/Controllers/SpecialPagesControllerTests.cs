@@ -2,9 +2,8 @@
 using System.Web.Mvc;
 using NUnit.Framework;
 using Roadkill.Core;
-using Roadkill.Core.Configuration;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Mvc.Controllers;
-using Roadkill.Core.Services;
 using Roadkill.Tests.Unit.StubsAndMocks;
 
 namespace Roadkill.Tests.Unit.Mvc.Controllers
@@ -14,12 +13,10 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 	public class SpecialPagesControllerTests
 	{
 		private MocksAndStubsContainer _container;
-		
-		private ApplicationSettings _applicationSettings;
+		private IConfigurationStore _configurationStore;
+
 		private IUserContext _context;
-		private PageRepositoryMock _pageRepository;
 		private UserServiceMock _userService;
-		private SettingsService _settingsService;
 		private PluginFactoryMock _pluginFactory;
 
 		private SpecialPagesController _specialPagesController;
@@ -28,15 +25,13 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void Setup()
 		{
 			_container = new MocksAndStubsContainer();
+			_configurationStore = _container.ConfigurationStoreMock;
 
-			_applicationSettings = _container.ApplicationSettings;
 			_context = _container.UserContext;
-			_pageRepository = _container.PageRepository;
 			_pluginFactory = _container.PluginFactory;
-			_settingsService = _container.SettingsService;
 			_userService = _container.UserService;
 
-			_specialPagesController = new SpecialPagesController(_applicationSettings, _userService, _context, _settingsService, _pluginFactory);
+			_specialPagesController = new SpecialPagesController(_configurationStore, _userService, _context, _pluginFactory);
 		}
 
 		[Test]

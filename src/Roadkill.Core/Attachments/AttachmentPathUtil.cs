@@ -17,9 +17,9 @@ namespace Roadkill.Core.Attachments
 	{
 		private IConfiguration _configuration;
 
-		public AttachmentPathUtil(IConfiguration configuration)
+		public AttachmentPathUtil(IConfigurationStore configurationStore)
 		{
-			_configuration = configuration;
+			_configuration = configurationStore.Load();
 		}
 
 		/// <summary>

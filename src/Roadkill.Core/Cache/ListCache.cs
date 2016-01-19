@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Caching;
-using System.Text;
-using Mindscape.LightSpeed;
-using Roadkill.Core.Configuration;
-using Roadkill.Core.Database;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Logging;
 
 namespace Roadkill.Core.Cache
@@ -16,16 +12,16 @@ namespace Roadkill.Core.Cache
 	public class ListCache
 	{
 		private readonly ObjectCache _cache; 
-		private readonly ApplicationSettings _applicationSettings;
+		private readonly IConfiguration _configuration;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ListCache"/> class.
 		/// </summary>
-		/// <param name="settings">The application settings.</param>
+		/// <param name="configurationStore">The application configuration store.</param>
 		/// <param name="cache">The underlying OjectCache - a MemoryCache by default.</param>
-		public ListCache(ApplicationSettings settings, ObjectCache cache)
+		public ListCache(IConfigurationStore configurationStore, ObjectCache cache)
 		{
-			_applicationSettings = settings;
+			_configuration = configurationStore.Load();
 			_cache = cache;
 		}
 
@@ -37,7 +33,7 @@ namespace Roadkill.Core.Cache
 		/// <param name="items">The list to add.</param>
 		public void Add<T>(string key, IEnumerable<T> items)
 		{
-			if (!_applicationSettings.UseObjectCache)
+			if (!_configuration.UseObjectCache.GetValueOrDefault())
 				return;
 
 			if (!key.StartsWith(CacheKeys.LIST_CACHE_PREFIX))
@@ -66,7 +62,7 @@ namespace Roadkill.Core.Cache
 		/// <param name="key">The cache key</param>
 		public void Remove(string key)
 		{
-			if (!_applicationSettings.UseObjectCache)
+			if (!_configuration.UseObjectCache.GetValueOrDefault())
 				return;
 
 			Log.Information("ListCache: Removed {0} from cache", key);
@@ -78,7 +74,7 @@ namespace Roadkill.Core.Cache
 		/// </summary>
 		public void RemoveAll()
 		{
-			if (!_applicationSettings.UseObjectCache)
+			if (!_configuration.UseObjectCache.GetValueOrDefault())
 				return;
 
 			Log.Information("ListCache: RemoveAll from cache");

@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using Moq;
 using NUnit.Framework;
 using Roadkill.Core;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Cache;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
@@ -25,7 +26,9 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers.Admin
 	{
 		private MocksAndStubsContainer _container;
 
-		private ApplicationSettings _applicationSettings;
+		private IConfigurationStore _configurationStore;
+		private IConfiguration _configuration;
+
 		private IUserContext _context;
 		private PageRepositoryMock _pageRepository;
 		private UserServiceMock _userService;
@@ -33,7 +36,6 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers.Admin
 		private WikiImporterMock _wikiImporter;
 		private PluginFactoryMock _pluginFactory;
 		private SearchServiceMock _searchService;
-		private SettingsService _settingsService;
 		private PageViewModelCache _pageCache;
 		private ListCache _listCache;
 		private SiteCache _siteCache;
@@ -41,22 +43,20 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers.Admin
 		private WikiExporter _wikiExporter;
 
 		private ToolsController _toolsController;
-		private SettingsRepositoryMock _settingsRepository;
 		private UserRepositoryMock _userRepository;
 
 		[SetUp]
 		public void Setup()
 		{
-			_container = new MocksAndStubsContainer();	
+			_container = new MocksAndStubsContainer();
 
-			_applicationSettings = _container.ApplicationSettings;
+			_configurationStore = _container.ConfigurationStoreMock;
+			_configuration = _container.Configuration;
 			_context = _container.UserContext;
 
-			_settingsRepository = _container.SettingsRepository;
 			_userRepository = _container.UserRepository;
 			_pageRepository = _container.PageRepository;
 
-			_settingsService = _container.SettingsService;
 			_userService = _container.UserService;
 			_pageCache = _container.PageViewModelCache;
 			_listCache = _container.ListCache;
@@ -71,10 +71,10 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers.Admin
 
 			// There's no point mocking WikiExporter (and turning it into an interface) as 
 			// a lot of usefulness of these tests would be lost when creating fake Streams and zip files.
-			_wikiExporter = new WikiExporter(_applicationSettings, _pageService, _settingsRepository, _pageRepository, _userRepository, _pluginFactory);
+			_wikiExporter = new WikiExporter(_configurationStore, _pageService, _pageRepository, _userRepository, _pluginFactory);
 			_wikiExporter.ExportFolder = AppDomain.CurrentDomain.BaseDirectory;
 
-			_toolsController = new ToolsController(_applicationSettings, _userService, _settingsService, _pageService,
+			_toolsController = new ToolsController(_configurationStore, _userService, _pageService,
 													_searchService, _context, _listCache, _pageCache, _wikiImporter, 
 													_pluginFactory, _wikiExporter);
 		}
@@ -269,7 +269,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers.Admin
 		public void exportattachments_should_call_wikiexporter_exportattachments()
 		{
 			// Arrange
-			var mockWikiExporter = new Mock<WikiExporter>(_applicationSettings, _pageService, _settingsRepository, _pageRepository, _userRepository, _pluginFactory);
+			var mockWikiExporter = new Mock<WikiExporter>(_configuration, _pageService, _settingsRepository, _pageRepository, _userRepository, _pluginFactory);
 			_toolsController._wikiExporter = mockWikiExporter.Object;
 
 			// Act
@@ -283,7 +283,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers.Admin
 		public void exportaswikifiles_should_call_wikiexporter_exportaswikifiles()
 		{
 			// Arrange
-			var mockWikiExporter = new Mock<WikiExporter>(_applicationSettings, _pageService, _settingsRepository, _pageRepository, _userRepository, _pluginFactory);
+			var mockWikiExporter = new Mock<WikiExporter>(_configuration, _pageService, _settingsRepository, _pageRepository, _userRepository, _pluginFactory);
 			_toolsController._wikiExporter = mockWikiExporter.Object;
 
 			// Act
@@ -297,7 +297,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers.Admin
 		public void exportassql_should_call_wikiexporter_exportassql()
 		{
 			// Arrange
-			var mockWikiExporter = new Mock<WikiExporter>(_applicationSettings, _pageService, _settingsRepository, _pageRepository, _userRepository, _pluginFactory);
+			var mockWikiExporter = new Mock<WikiExporter>(_configuration, _pageService, _settingsRepository, _pageRepository, _userRepository, _pluginFactory);
 			_toolsController._wikiExporter = mockWikiExporter.Object;
 			mockWikiExporter.Setup(x => x.ExportAsSql()).Returns(new MemoryStream());
 
@@ -312,7 +312,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers.Admin
 		public void exportasxml_should_call_wikiexporter_exportasxml()
 		{
 			// Arrange
-			var mockWikiExporter = new Mock<WikiExporter>(_applicationSettings, _pageService, _settingsRepository, _pageRepository, _userRepository, _pluginFactory);
+			var mockWikiExporter = new Mock<WikiExporter>(_configuration, _pageService, _settingsRepository, _pageRepository, _userRepository, _pluginFactory);
 			mockWikiExporter.Setup(x => x.ExportAsXml()).Returns(new MemoryStream());
 			_toolsController._wikiExporter = mockWikiExporter.Object;
 

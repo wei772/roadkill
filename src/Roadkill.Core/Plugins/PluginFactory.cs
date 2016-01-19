@@ -39,7 +39,8 @@ namespace Roadkill.Core.Plugins
 		/// </summary>
 		public IEnumerable<TextPlugin> GetEnabledTextPlugins()
 		{
-			return _container.GetAllInstances<TextPlugin>().Where(x => x.Settings.IsEnabled);
+			throw new NotImplementedException();
+			//return _container.GetAllInstances<TextPlugin>().Where(x => x.Settings.IsEnabled);
 		}
 
 		/// <summary>

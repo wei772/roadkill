@@ -4,6 +4,7 @@ using System.Runtime.Caching;
 using System.Web.Mvc;
 using NUnit.Framework;
 using Roadkill.Core;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Cache;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Mvc.Controllers;
@@ -19,13 +20,11 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers.Admin
 	{
 		private MocksAndStubsContainer _container;
 
-		private ApplicationSettings _applicationSettings;
+		private IConfigurationStore _configurationStore;
+		private IConfiguration _configuration;
+
 		private IUserContext _context;
-		private SettingsRepositoryMock _settingsRepository;
 		private UserServiceMock _userService;
-		private SettingsService _settingsService;
-		private PageViewModelCache _pageCache;
-		private ListCache _listCache;
 		private SiteCache _siteCache;
 		private MemoryCache _cache;
 		private ConfigReaderWriterStub _configReaderWriter;
@@ -38,19 +37,17 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers.Admin
 			_container = new MocksAndStubsContainer();
 			_container.ClearCache();
 
-			_applicationSettings = _container.ApplicationSettings;
-			_applicationSettings.AttachmentsFolder = AppDomain.CurrentDomain.BaseDirectory;
+			_configurationStore = _container.ConfigurationStoreMock;
+			_configuration = _container.Configuration;
+			_configuration.AttachmentSettings.AttachmentsFolder = AppDomain.CurrentDomain.BaseDirectory;
+
 			_context = _container.UserContext;
-			_settingsRepository = _container.SettingsRepository;
-			_settingsService = _container.SettingsService;
 			_userService = _container.UserService;
-			_pageCache = _container.PageViewModelCache;
-			_listCache = _container.ListCache;
 			_siteCache = _container.SiteCache;
 			_cache = _container.MemoryCache;
 			_configReaderWriter = new ConfigReaderWriterStub();
 
-			_settingsController = new SettingsController(_applicationSettings, _userService, _settingsService, _context, _siteCache, _configReaderWriter);
+			_settingsController = new SettingsController(_configurationStore, _userService, _context, _siteCache, _configReaderWriter);
 		}
 
 		[Test]
@@ -82,7 +79,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers.Admin
 			SettingsViewModel resultModel = result.ModelFromActionResult<SettingsViewModel>();
 			Assert.That(resultModel, Is.Not.Null, "model");
 
-			Assert.That(_settingsRepository.GetSiteSettings().MenuMarkup, Is.EqualTo("some new markup"));
+			Assert.That(_configuration.MenuMarkup, Is.EqualTo("some new markup"));
 		}
 
 		[Test]

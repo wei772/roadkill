@@ -40,7 +40,7 @@ module.exports = function (grunt) {
 						'Assets/Scripts/roadkill/filemanager/setup.js',
 						'Assets/Scripts/roadkill/filemanager/tableevents.js',
 						'Assets/Scripts/roadkill/filemanager/util.js',
-						'Assets/Scripts/roadkill/sitesettings/settings.js',
+						'Assets/Scripts/roadkill/sitesettings/configuration.js',
 						'Assets/Scripts/shared/bootbox.js',
 						'Assets/Scripts/shared/head.js',
 						'Assets/Scripts/shared/tagmanager.js',

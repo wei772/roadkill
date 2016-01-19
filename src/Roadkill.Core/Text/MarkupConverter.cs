@@ -6,7 +6,6 @@ using System.Text.RegularExpressions;
 using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Text.Sanitizer;
 using Roadkill.Core.Database;
-using Roadkill.Core.Database.Repositories;
 using Roadkill.Core.Text;
 using Roadkill.Core.Plugins;
 
@@ -17,14 +16,14 @@ namespace Roadkill.Core.Converters
 	/// </summary>
 	public class MarkupConverter
 	{
-		private static Regex _imgFileRegex = new Regex("^File:", RegexOptions.IgnoreCase);
-		private static Regex _anchorRegex = new Regex("(?<hash>(#|%23).+)", RegexOptions.IgnoreCase);
+		private static readonly Regex _imgFileRegex = new Regex("^File:", RegexOptions.IgnoreCase);
+		private static readonly Regex _anchorRegex = new Regex("(?<hash>(#|%23).+)", RegexOptions.IgnoreCase);
 
-		private IConfiguration _configuration;
+		private readonly IConfiguration _configuration;
 		private readonly IPageRepository _pageRepository;
 		private IMarkupParser _parser;
-		private List<string> _externalLinkPrefixes;
-		private IPluginFactory _pluginFactory;
+		private readonly List<string> _externalLinkPrefixes;
+		private readonly IPluginFactory _pluginFactory;
 		
 		/// <summary>
 		/// The current <see cref="IMarkupParser"/> being used by this instance, which is taken from 
@@ -45,7 +44,7 @@ namespace Roadkill.Core.Converters
 		/// markdown format parsers.
 		/// </summary>
 		/// <returns>An <see cref="IMarkupParser"/> for Creole,Markdown or Media wiki formats.</returns>
-		public MarkupConverter(IConfiguration configuration, IPageRepository pageRepository,  IPluginFactory pluginFactory)
+		public MarkupConverter(IConfigurationStore configurationStore, IPageRepository pageRepository,  IPluginFactory pluginFactory)
 		{
 			_externalLinkPrefixes = new List<string>()
 			{
@@ -59,7 +58,7 @@ namespace Roadkill.Core.Converters
 
 			_pluginFactory = pluginFactory;
 			_pageRepository = pageRepository;
-			_configuration = configuration;
+			_configuration = configurationStore.Load();
 
 			// Create the UrlResolver for all wiki urls
 			HttpContextBase httpContext = null;

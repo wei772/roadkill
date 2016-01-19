@@ -2,7 +2,6 @@
 using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
-using Roadkill.Core.Database.Repositories;
 using Roadkill.Core.Mvc.ViewModels;
 
 namespace Roadkill.Core.Services

@@ -3,7 +3,7 @@ using System.Web.Mvc;
 using Moq;
 using NUnit.Framework;
 using Roadkill.Core;
-using Roadkill.Core.Configuration;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Extensions;
 using Roadkill.Core.Mvc.Controllers;
 using Roadkill.Core.Mvc.ViewModels;
@@ -19,14 +19,10 @@ namespace Roadkill.Tests.Unit.Extensions
 	{
 		// Objects for the HtmlHelper
 		private MocksAndStubsContainer _container;
-		private ApplicationSettings _applicationSettings;
+		private IConfigurationStore _configurationStore;
 		private IUserContext _context;
-		private PageRepositoryMock _pageRepository;
 		private UserServiceMock _userService;
 		private PageService _pageService;
-		private PageHistoryService _historyService;
-		private SettingsService _settingsService;
-		private PluginFactoryMock _pluginFactory;
 		private WikiController _wikiController;
 		private HtmlHelper _htmlHelper;
 		private ViewContext _viewContext;
@@ -36,17 +32,13 @@ namespace Roadkill.Tests.Unit.Extensions
 		{
 			// WikiController setup (use WikiController as it's the one typically used by views)
 			_container = new MocksAndStubsContainer();
+			_configurationStore = _container.ConfigurationStoreMock;
 
-			_applicationSettings = _container.ApplicationSettings;
 			_context = _container.UserContext;
-			_pageRepository = _container.PageRepository;
-			_pluginFactory = _container.PluginFactory;
-			_settingsService = _container.SettingsService;
 			_userService = _container.UserService;
-			_historyService = _container.HistoryService;
 			_pageService = _container.PageService;
 
-			_wikiController = new WikiController(_applicationSettings, _userService, _pageService, _context, _settingsService);
+			_wikiController = new WikiController(_configurationStore, _userService, _pageService, _context);
 			_wikiController.SetFakeControllerContext("~/wiki/index/1");
 
 			// HtmlHelper setup

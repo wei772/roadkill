@@ -2,13 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Ionic.Zip;
-using Roadkill.Core.Configuration;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Database;
 using Roadkill.Core.Database.Export;
-using Roadkill.Core.Database.Repositories;
 using Roadkill.Core.Mvc.ViewModels;
 using Roadkill.Core.Plugins;
 using Roadkill.Core.Services;
@@ -17,22 +14,19 @@ namespace Roadkill.Core.Domain.Export
 {
 	public class WikiExporter
 	{
-		private readonly ApplicationSettings _applicationSettings;
+		private readonly IConfiguration _configuration;
 		private readonly PageService _pageService;
 		private readonly SqlExportBuilder _sqlExportBuilder;
 
 		public string ExportFolder { get; set; }
 
-		public WikiExporter(ApplicationSettings applicationSettings, PageService pageService, ISettingsRepository settingsRepository, IPageRepository pageRepository, IUserRepository userRepository, IPluginFactory pluginFactory)
+		public WikiExporter(IConfigurationStore configurationStore, PageService pageService, IPageRepository pageRepository, IUserRepository userRepository, IPluginFactory pluginFactory)
 		{
-			if (applicationSettings == null)
-				throw new ArgumentNullException(nameof(applicationSettings));
+			if (configurationStore == null)
+				throw new ArgumentNullException(nameof(configurationStore));
 
 			if (pageService == null)
 				throw new ArgumentNullException(nameof(pageService));
-
-			if (settingsRepository == null)
-				throw new ArgumentNullException(nameof(settingsRepository));
 
 			if (pageRepository == null)
 				throw new ArgumentNullException(nameof(pageRepository));
@@ -43,9 +37,9 @@ namespace Roadkill.Core.Domain.Export
 			if (pluginFactory == null)
 				throw new ArgumentNullException(nameof(pluginFactory));
 
-			_applicationSettings = applicationSettings;
+			_configuration = configurationStore.Load();
 			_pageService = pageService;
-			_sqlExportBuilder = new SqlExportBuilder(settingsRepository, userRepository, pageRepository, pluginFactory);
+			_sqlExportBuilder = new SqlExportBuilder(userRepository, pageRepository, pluginFactory);
 
 			ExportFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App_Data", "Export");
 		}
@@ -85,7 +79,7 @@ namespace Roadkill.Core.Domain.Export
 			string zipFullPath = Path.Combine(ExportFolder, filename);
 			using (ZipFile zip = new ZipFile(zipFullPath))
 			{
-				zip.AddDirectory(_applicationSettings.AttachmentsDirectoryPath, "Attachments");
+				zip.AddDirectory(_configuration.AttachmentSettings.GetAttachmentsDirectoryPath(), "Attachments");
 				zip.Save();
 			}
 		}

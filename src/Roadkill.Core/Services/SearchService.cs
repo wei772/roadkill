@@ -16,7 +16,6 @@ using Lucene.Net.Store;
 using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
-using Roadkill.Core.Database.Repositories;
 using Roadkill.Core.Mvc.ViewModels;
 using Roadkill.Core.Plugins;
 
@@ -36,13 +35,10 @@ namespace Roadkill.Core.Services
 		public IConfiguration Configuration { get; set; }
 		public IPageRepository PageRepository { get; set; }
 
-		public SearchService(IConfigurationStore configurationStore, ISettingsRepository settingsRepository, IPageRepository pageRepository, IPluginFactory pluginFactory)
+		public SearchService(IConfigurationStore configurationStore, IPageRepository pageRepository, IPluginFactory pluginFactory)
 		{
 			if (configurationStore == null)
 				throw new ArgumentNullException(nameof(configurationStore));
-
-			if (settingsRepository == null)
-				throw new ArgumentNullException(nameof(settingsRepository));
 
 			if (pageRepository == null)
 				throw new ArgumentNullException(nameof(pageRepository));
@@ -51,7 +47,7 @@ namespace Roadkill.Core.Services
 				throw new ArgumentNullException(nameof(pluginFactory));
 
 			Configuration = configurationStore.Load();
-			_markupConverter = new MarkupConverter(Configuration, pageRepository, pluginFactory);
+			_markupConverter = new MarkupConverter(configurationStore, pageRepository, pluginFactory);
 			IndexPath = Configuration.InternalSettings.SearchIndexPath;
 
 			PageRepository = pageRepository;

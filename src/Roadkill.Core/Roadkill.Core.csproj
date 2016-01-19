@@ -361,11 +361,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AmazingConfig\AttachmentSettings.cs" />
-    <Compile Include="AmazingConfig\JsonConfigurationStore.cs" />
+    <Compile Include="AmazingConfig\JSON\JsonPluginConfiguration.cs" />
+    <Compile Include="AmazingConfig\Plugins\IPluginConfiguration.cs" />
+    <Compile Include="AmazingConfig\JSON\JsonConfigurationStore.cs" />
     <Compile Include="AmazingConfig\IConfigurationStore.cs" />
     <Compile Include="AmazingConfig\IConfiguration.cs" />
-    <Compile Include="AmazingConfig\JsonConfiguration.cs" />
+    <Compile Include="AmazingConfig\JSON\JsonConfiguration.cs" />
     <Compile Include="AmazingConfig\InternalSettings.cs" />
+    <Compile Include="AmazingConfig\Plugins\PluginSettings.cs" />
     <Compile Include="AmazingConfig\SecuritySettings.cs" />
     <Compile Include="Configuration\IRoadkillConfiguration.cs" />
     <Compile Include="Configuration\JsonConfigReaderWriter.cs" />
@@ -378,10 +381,8 @@
     <Compile Include="Database\Repositories\DatabaseTester.cs" />
     <Compile Include="Database\Repositories\LightSpeed\LightSpeedInstallerRepository.cs" />
     <Compile Include="Database\Repositories\LightSpeed\LightSpeedUserRepository.cs" />
-    <Compile Include="Database\Repositories\LightSpeed\LightSpeedSettingsRepository.cs" />
     <Compile Include="Database\Repositories\MongoDB\MongoDbInstallerRepository.cs" />
     <Compile Include="Database\Repositories\MongoDB\MongoDBUserRepository.cs" />
-    <Compile Include="Database\Repositories\MongoDB\MongoDBSettingsRepository.cs" />
     <Compile Include="Database\RepositoryFactory.cs" />
     <Compile Include="Database\RepositoryInfo.cs" />
     <Compile Include="Database\SupportedDatabases.cs" />
@@ -392,7 +393,6 @@
     <Compile Include="Attachments\AttachmentPathUtil.cs" />
     <Compile Include="Attachments\IResponseWrapper.cs" />
     <Compile Include="Attachments\ResponseWrapper.cs" />
-    <Compile Include="Database\Repositories\ISettingsRepository.cs" />
     <Compile Include="DependencyResolution\StructureMap\LightSpeedRegistry.cs" />
     <Compile Include="DependencyResolution\StructureMap\RoadkillRegistry.cs" />
     <Compile Include="DependencyResolution\StructureMap\StructureMapServiceLocator.cs" />
@@ -517,7 +517,6 @@
     <Compile Include="Plugins\TextPlugin.cs" />
     <Compile Include="Plugins\PluginFactory.cs" />
     <Compile Include="Services\ISearchService.cs" />
-    <Compile Include="Services\ISettingsService.cs" />
     <Compile Include="Services\LocalFileService.cs" />
     <Compile Include="Services\InstallationService.cs" />
     <Compile Include="Startup.cs" />
@@ -540,7 +539,6 @@
     <Compile Include="Security\Windows\ActiveDirectoryUserService.cs" />
     <Compile Include="Security\FormsAuthUserService.cs" />
     <Compile Include="Security\UserServiceBase.cs" />
-    <Compile Include="Services\SettingsService.cs" />
     <Compile Include="Database\Entities\User.cs" />
     <Compile Include="Mvc\ViewModels\FileViewModel.cs" />
     <Compile Include="Mvc\ViewModels\UserViewModel.cs" />

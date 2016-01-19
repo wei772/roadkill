@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Caching;
 using System.Web.Mvc;
 using MvcContrib.TestHelper;
 using NUnit.Framework;
 using Roadkill.Core;
-using Roadkill.Core.Cache;
-using Roadkill.Core.Configuration;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Converters;
 using Roadkill.Core.Database;
 using Roadkill.Core.Localization;
@@ -25,19 +23,14 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 	{
 		private MocksAndStubsContainer _container;
 
-		private ApplicationSettings _applicationSettings;
+		private IConfiguration _configuration;
+		private ConfigurationStoreMock _configurationStore;
+
 		private IUserContext _context;
 		private PageRepositoryMock _pageRepository;
 		private UserServiceMock _userService;
 		private PageService _pageService;
-		private PageHistoryService _historyService;
-		private SettingsService _settingsService;
-		private PluginFactoryMock _pluginFactory;
 		private SearchServiceMock _searchService;
-		private ListCache _listCache;
-		private SiteCache _siteCache;
-		private PageViewModelCache _pageViewModelCache;
-		private MemoryCache _memoryCache;
 		private MarkupConverter _markupConverter;
 
 		private HomeController _homeController;
@@ -46,24 +39,17 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void Setup()
 		{
 			_container = new MocksAndStubsContainer();
+			_configuration = _container.Configuration;
+			_configurationStore = _container.ConfigurationStoreMock;
 
-			_applicationSettings = _container.ApplicationSettings;
 			_context = _container.UserContext;
 			_pageRepository = _container.PageRepository;
-			_pluginFactory = _container.PluginFactory;
-			_settingsService = _container.SettingsService;
 			_userService = _container.UserService;
-			_historyService = _container.HistoryService;
 			_pageService = _container.PageService;
 			_searchService = _container.SearchService;
 			_markupConverter = _container.MarkupConverter;
 
-			_listCache = _container.ListCache;
-			_siteCache = _container.SiteCache;
-			_pageViewModelCache = _container.PageViewModelCache;
-			_memoryCache = _container.MemoryCache;
-
-			_homeController = new HomeController(_applicationSettings, _userService, _markupConverter, _pageService, _searchService, _context, _settingsService);
+			_homeController = new HomeController(_configurationStore, _userService, _markupConverter, _pageService, _searchService, _context);
 			_homeController.SetFakeControllerContext();
 		}
 

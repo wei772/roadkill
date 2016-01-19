@@ -2,6 +2,7 @@
 using System.IO;
 using System.Web;
 using NUnit.Framework;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Attachments;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Services;
@@ -13,24 +14,28 @@ namespace Roadkill.Tests.Unit.Attachments
 	[Category("Unit")]
 	public class AttachmentFileHandlerTests
 	{
-		private ApplicationSettings _applicationSettings;
+		private ConfigurationStoreMock _configurationStore;
 		private IFileService _fileService;
+		private IConfiguration _configuration;
 
 		[SetUp]
 		public void Setup()
 		{
-			_applicationSettings = new ApplicationSettings();
-			_applicationSettings.AttachmentsFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Unit", "Attachments");
-			_applicationSettings.AttachmentsRoutePath = "Attachments";
+			_configuration = new JsonConfiguration();
+			_configuration.AttachmentSettings.AttachmentsFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Unit", "Attachments");
+			_configuration.AttachmentSettings.AttachmentsRoutePath = "Attachments";
 
-			_fileService = new LocalFileService(_applicationSettings, new SettingsService(new RepositoryFactoryMock(), _applicationSettings));
+			_configurationStore = new ConfigurationStoreMock();
+			_configurationStore.Configuration = _configuration;
+
+			_fileService = new LocalFileService(_configurationStore);
 		}
 
 		[Test]
 		public void writeresponse_should_set_200_status_and_mimetype_and_write_bytes()
 		{
 			// Arrange
-			AttachmentFileHandler handler = new AttachmentFileHandler(_applicationSettings,_fileService);
+			AttachmentFileHandler handler = new AttachmentFileHandler(_configuration,_fileService);
 
 			string fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Unit", "Attachments", "afile.jpg");
 			File.WriteAllText(fullPath, "fake content");
@@ -56,7 +61,7 @@ namespace Roadkill.Tests.Unit.Attachments
 		public void writeresponse_should_throw_404_exception_for_missing_file()
 		{
 			// Arrange
-			AttachmentFileHandler handler = new AttachmentFileHandler(_applicationSettings,_fileService);
+			AttachmentFileHandler handler = new AttachmentFileHandler(_configuration,_fileService);
 
 			string localPath = "/wiki/Attachments/doesntexist404.jpg";
 			string applicationPath = "/wiki";
@@ -81,7 +86,7 @@ namespace Roadkill.Tests.Unit.Attachments
 		public void writeresponse_should_throw_404_exception_for_bad_application_path()
 		{
 			// Arrange
-			AttachmentFileHandler handler = new AttachmentFileHandler(_applicationSettings,_fileService);
+			AttachmentFileHandler handler = new AttachmentFileHandler(_configuration,_fileService);
 
 			string fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Unit", "Attachments", "afile.jpg");
 			File.WriteAllText(fullPath, "fake content");
@@ -109,8 +114,8 @@ namespace Roadkill.Tests.Unit.Attachments
 		public void translatelocalpathtofilepath_should_be_case_sensitive()
 		{
 			// Arrange
-			_applicationSettings.AttachmentsFolder = @"C:\attachments\";
-			AttachmentFileHandler handler = new AttachmentFileHandler(_applicationSettings, _fileService);
+			_configuration.AttachmentSettings.AttachmentsFolder = @"C:\attachments\";
+			AttachmentFileHandler handler = new AttachmentFileHandler(_configuration, _fileService);
 
 			// Act
 			string actualPath = handler.TranslateUrlPathToFilePath("/Attachments/a.jpg", "/");
@@ -130,8 +135,8 @@ namespace Roadkill.Tests.Unit.Attachments
 		public void TranslateLocalPathToFilePath(string localPath, string appPath, string expectedPath)
 		{
 			// Arrange
-			_applicationSettings.AttachmentsFolder = @"C:\Attachments\";
-			AttachmentFileHandler handler = new AttachmentFileHandler(_applicationSettings, _fileService);
+			_configuration.AttachmentSettings.AttachmentsFolder = @"C:\Attachments\";
+			AttachmentFileHandler handler = new AttachmentFileHandler(_configuration, _fileService);
 
 			// Act
 			string actualPath = handler.TranslateUrlPathToFilePath(localPath, appPath);

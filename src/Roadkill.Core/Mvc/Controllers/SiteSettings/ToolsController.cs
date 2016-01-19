@@ -28,10 +28,10 @@ namespace Roadkill.Core.Mvc.Controllers
 		private readonly PageViewModelCache _pageViewModelCache;
 		internal WikiExporter _wikiExporter;
 
-		public ToolsController(IConfigurationStore configurationStore, UserServiceBase userManager,
+		public ToolsController(IConfigurationStore configurationStore, UserServiceBase userService,
 			PageService pageService, SearchService searchService, IUserContext context,
 			ListCache listCache, PageViewModelCache pageViewModelCache, IWikiImporter wikiImporter, IPluginFactory pluginFactory, WikiExporter wikiExporter)
-			: base(configurationStore, userManager, context) 
+			: base(configurationStore, userService, context) 
 		{
 			_pageService = pageService;
 			_searchService = searchService;

@@ -1,6 +1,4 @@
-﻿using Roadkill.Core.Configuration;
-using Roadkill.Core.Database;
-using Roadkill.Core.Database.Repositories;
+﻿using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Email;
 using Roadkill.Core.Mvc.ViewModels;
 
@@ -11,8 +9,8 @@ namespace Roadkill.Tests.Unit.StubsAndMocks
 		public bool IsSent { get; set; }
 		public UserViewModel Model { get; set; }
 
-		public ResetPasswordEmailStub(NonConfigurableSettings settings, ISettingsRepository settingsRepository, IEmailClient emailClient)
-			: base(settings, settingsRepository, emailClient)
+		public ResetPasswordEmailStub(IConfigurationStore configurationStore, IEmailClient emailClient)
+			: base(configurationStore, emailClient)
 		{
 		}
 

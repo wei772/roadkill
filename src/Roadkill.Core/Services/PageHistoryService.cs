@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Cache;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Converters;
 using Roadkill.Core.Database;
-using Roadkill.Core.Database.Repositories;
 using Roadkill.Core.Mvc.ViewModels;
 using Roadkill.Core.Plugins;
 
@@ -23,17 +20,15 @@ namespace Roadkill.Core.Services
 		private readonly PageViewModelCache _pageViewModelCache;
 
 		public IConfiguration Configuration { get; set; }
-		public ISettingsRepository SettingsRepository { get; set; }
 		public IPageRepository PageRepository { get; set; }
 
-		public PageHistoryService(IConfigurationStore configurationStore, ISettingsRepository settingsRepository, IPageRepository pageRepository, IUserContext context, 
+		public PageHistoryService(IConfigurationStore configurationStore, IPageRepository pageRepository, IUserContext context, 
 			PageViewModelCache pageViewModelCache, IPluginFactory pluginFactory)
 		{
 			Configuration = configurationStore.Load();
-			SettingsRepository = settingsRepository;
 			PageRepository = pageRepository;
 
-			_markupConverter = new MarkupConverter(Configuration, pageRepository, pluginFactory);
+			_markupConverter = new MarkupConverter(configurationStore, pageRepository, pluginFactory);
 			_context = context;
 			_pageViewModelCache = pageViewModelCache;
 		}

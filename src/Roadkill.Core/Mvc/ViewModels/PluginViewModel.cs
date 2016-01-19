@@ -41,17 +41,19 @@ namespace Roadkill.Core.Mvc.ViewModels
 
 		public PluginViewModel(TextPlugin plugin) : this()
 		{
-			Id = plugin.Id;
-			DatabaseId = plugin.DatabaseId;
-			Name = plugin.Name;
-			Description = plugin.Description;
-			IsEnabled = plugin.Settings.IsEnabled;
+			throw new NotImplementedException();
 
-			if (!string.IsNullOrEmpty(Description))
-			{
-				Description = Description.Replace("\n", "<br/>");
-				Description = Description.Replace("\r", "<br/>");
-			}
+			//Id = plugin.Id;
+			//DatabaseId = plugin.DatabaseId;
+			//Name = plugin.Name;
+			//Description = plugin.Description;
+			//IsEnabled = plugin.Settings.IsEnabled;
+
+			//if (!string.IsNullOrEmpty(Description))
+			//{
+			//	Description = Description.Replace("\n", "<br/>");
+			//	Description = Description.Replace("\r", "<br/>");
+			//}
 		}
 	}
 }

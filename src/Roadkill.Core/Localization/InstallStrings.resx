@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:element name="data">
@@ -52,7 +52,7 @@
 	<value>Next</value>
 </data>
 <data name="Step1_Intro" xml:space="preserve">
-	<value>Thank for you downloading Roadkill .NET Wiki engine. The installer writes the settings you enter here to the web.config file (and also the database). </value>
+	<value>Thank for you downloading Roadkill .NET Wiki engine. The installer writes the configuration you enter here to the web.config file (and also the database). </value>
 	<comment>Fuzzy</comment>
 </data>
 <data name="Step1_WebConfig_Intro" xml:space="preserve">
@@ -68,7 +68,7 @@
 	<comment>Fuzzy</comment>
 </data>
 <data name="Step2_Intro" xml:space="preserve">
-	<value>Below are some required settings for Roadkill to work correctly. You can change these later via the settings page as an admin.</value>
+	<value>Below are some required configuration for Roadkill to work correctly. You can change these later via the configuration page as an admin.</value>
 	<comment>Fuzzy</comment>
 </data>
 <data name="Step2_ConnectionString_CreateDatabase" xml:space="preserve">
@@ -144,7 +144,7 @@
 	<comment>Fuzzy</comment>
 </data>
 <data name="Step3_AD_Editor_GroupName_Details" xml:space="preserve">
-	<value>This is the security group that users should belong to in order to be editors (people who can edit and create pages). The test button uses the connection settings entered above. </value>
+	<value>This is the security group that users should belong to in order to be editors (people who can edit and create pages). The test button uses the connection configuration entered above. </value>
 	<comment>Fuzzy</comment>
 </data>
 <data name="Step3_AD_Admin_GroupName_Title" xml:space="preserve">
@@ -152,7 +152,7 @@
 	<comment>Fuzzy</comment>
 </data>
 <data name="Step3_AD_Admin_GroupName_Details" xml:space="preserve">
-	<value>This is the security group that users should belong to in order to be admins. Admins have the same rights as editors, but also have access to configuration settings and tools for the site.The test button uses the connection settings entered above.</value>
+	<value>This is the security group that users should belong to in order to be admins. Admins have the same rights as editors, but also have access to configuration configuration and tools for the site.The test button uses the connection configuration entered above.</value>
 	<comment>Fuzzy</comment>
 </data>
 <data name="Step3_One_Way_Hashed" xml:space="preserve">
@@ -172,7 +172,7 @@
 	<comment>Fuzzy</comment>
 </data>
 <data name="Step3_DB_Admin_Role" xml:space="preserve">
-	<value>This is the name of the admin role. Admins have the same rights as editors, but also have access to configuration settings and tools for the site.</value>
+	<value>This is the name of the admin role. Admins have the same rights as editors, but also have access to configuration configuration and tools for the site.</value>
 	<comment>Fuzzy</comment>
 </data>
 <data name="Step3_DB_Allow_User_Signups_Title" xml:space="preserve">
@@ -196,7 +196,7 @@
 	<comment>Fuzzy</comment>
 </data>
 <data name="Step3_DB_Admin_Email" xml:space="preserve">
-	<value>This is the email address for the admin user. You can add more admins in the settings page, so this user does not &apos;own&apos; the site</value>
+	<value>This is the email address for the admin user. You can add more admins in the configuration page, so this user does not &apos;own&apos; the site</value>
 	<comment>Fuzzy</comment>
 </data>
 <data name="Step3_DB_Admin_Password_Title" xml:space="preserve">
@@ -208,7 +208,7 @@
 	<comment>Fuzzy</comment>
 </data>
 <data name="Step4_Almost_Done" xml:space="preserve">
-	<value>Almost done...Finally some extra tweakable settings. </value>
+	<value>Almost done...Finally some extra tweakable configuration. </value>
 	<comment>Fuzzy</comment>
 </data>
 <data name="Step4_Attachments_Folder_Description" xml:space="preserve">
@@ -240,7 +240,7 @@
 	<comment>Fuzzy</comment>
 </data>
 <data name="Step5_Failure_GoBack_And_Check" xml:space="preserve">
-	<value>Please go back through the installation steps and check your settings. The error message was:</value>
+	<value>Please go back through the installation steps and check your configuration. The error message was:</value>
 	<comment>Fuzzy</comment>
 </data>
 

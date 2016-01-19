@@ -6,8 +6,6 @@ using NUnit.Framework;
 using Roadkill.Core.Database;
 using Roadkill.Core.Database.LightSpeed;
 using Roadkill.Core.Database.MongoDB;
-using Roadkill.Core.Database.Repositories;
-using Roadkill.Core.Database.Schema;
 
 namespace Roadkill.Tests.Unit.Database
 {
@@ -32,60 +30,6 @@ namespace Roadkill.Tests.Unit.Database
 			Assert.That(all.Count, Is.EqualTo(4));
 			Assert.That(all.First(), Is.Not.Null);
 			Assert.That(all.First().Id, Is.Not.Null.Or.Empty);
-		}
-
-		[Test]
-		[TestCase("PostGres", "my-postgres-connection-string", DataProvider.PostgreSql9)]
-		[TestCase("Mysql", "myql-connection-string", DataProvider.MySql5)]
-		[TestCase("sqlserver", "my-sqlserver-connection-string", DataProvider.SqlServer2008)]
-		[TestCase("anything", "connection-string", DataProvider.SqlServer2008)]
-		public void GetSettingsRepository_should_return_correct_lightspeedrepository(string provider, string connectionString, DataProvider expectedProvider)
-		{
-			// Arrange
-			var factory = new RepositoryFactory(provider, connectionString);
-			SetUnitOfWork(factory);
-
-			// Act
-			ISettingsRepository repository = factory.GetSettingsRepository(provider, connectionString);
-
-			// Assert
-			LightSpeedSettingsRepository lightSpeedRepository = repository as LightSpeedSettingsRepository;
-			Assert.That(lightSpeedRepository, Is.Not.Null);
-		}
-
-		[Test]
-		public void GetSettingsRepository_should_default_to_sqlserver_lightspeedrepository()
-		{
-			// Arrange
-			string provider = "anything";
-			string connectionString = "connection-string";
-			var factory = new RepositoryFactory(provider, connectionString);
-			SetUnitOfWork(factory);
-
-			// Act
-			ISettingsRepository repository = factory.GetSettingsRepository(provider, connectionString);
-
-			// Assert
-			LightSpeedSettingsRepository lightSpeedRepository = repository as LightSpeedSettingsRepository;
-			Assert.That(lightSpeedRepository, Is.Not.Null);
-		}
-
-		[Test]
-		public void GetSettingsRepository_should_return_mongodb_repository()
-		{
-			// Arrange
-			string provider = "MONGODB";
-			string connectionString = "mongodb-connection-string";
-			var factory = new RepositoryFactory(provider, connectionString);
-			SetUnitOfWork(factory);
-
-			// Act
-			ISettingsRepository repository = factory.GetSettingsRepository(provider, connectionString);
-
-			// Assert
-			MongoDBSettingsRepository mongoDbRepository = repository as MongoDBSettingsRepository;
-			Assert.That(mongoDbRepository, Is.Not.Null);
-			Assert.That(mongoDbRepository.ConnectionString, Is.EqualTo(connectionString));
 		}
 
 		[Test]

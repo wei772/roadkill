@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Web.Routing;
 using Microsoft.Practices.ServiceLocation;
 using Mindscape.LightSpeed;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Attachments;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
@@ -74,9 +75,9 @@ namespace Roadkill.Core.Services
 				installerRepository.SaveSettings(siteSettings);
 
 				// Attachments handler needs re-registering
-				var appSettings = Locator.GetInstance<ApplicationSettings>();
+				var configurationStore = Locator.GetInstance<IConfigurationStore>();
 				var fileService = Locator.GetInstance<IFileService>();
-				AttachmentRouteHandler.RegisterRoute(appSettings, RouteTable.Routes, fileService);
+				AttachmentRouteHandler.RegisterRoute(configurationStore, RouteTable.Routes, fileService);
 			}
 			catch (DatabaseException ex)
 			{

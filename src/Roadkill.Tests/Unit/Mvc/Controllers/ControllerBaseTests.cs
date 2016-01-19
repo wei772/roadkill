@@ -1,6 +1,7 @@
 ﻿using System.Web.Mvc;
 using NUnit.Framework;
 using Roadkill.Core;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
 using Roadkill.Core.Mvc.Controllers;
@@ -17,10 +18,9 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 	{
 		private MocksAndStubsContainer _container;
 
-		private ApplicationSettings _applicationSettings;
+		private IConfigurationStore _configurationStore;
 		private IUserContext _context;
 		private UserServiceMock _userService;
-		private SettingsService _settingsService;
 
 		private ConfigReaderWriterStub _configReaderWriter;
 
@@ -33,12 +33,11 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		{
 			_container = new MocksAndStubsContainer();
 
-			_applicationSettings = _container.ApplicationSettings;
+			_configurationStore = _container.ConfigurationStoreMock;
 			_context = _container.UserContext;
-			_settingsService = _container.SettingsService;
 			_userService = _container.UserService;
 
-			_controller = new ControllerBaseStub(_applicationSettings, _userService, _context, _settingsService);
+			_controller = new ControllerBaseStub(_configurationStore, _userService, _context);
 			_controller.SetFakeControllerContext("~/");
 
 			// InstallController
@@ -51,7 +50,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void should_redirect_when_installed_is_false()
 		{
 			// Arrange
-			_applicationSettings.Installed = false;
+			_configurationStore.Installed = false;
 			ActionExecutingContext filterContext = new ActionExecutingContext();
 			filterContext.Controller = _controller;
 
@@ -68,8 +67,8 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void should_not_redirect_when_installed_is_false_and_controller_is_installercontroller()
 		{
 			// Arrange
-			_applicationSettings.Installed = false;
-			InstallControllerStub installController = new InstallControllerStub(_applicationSettings, _configReaderWriter, _installationService, _databaseTester);
+			_configurationStore.Installed = false;
+			InstallControllerStub installController = new InstallControllerStub(_configurationStore, _configReaderWriter, _installationService, _databaseTester);
 			ActionExecutingContext filterContext = new ActionExecutingContext();
 			filterContext.Controller = installController;
 
@@ -84,7 +83,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void should_set_loggedin_user_and_viewbag_data()
 		{
 			// Arrange
-			_applicationSettings.Installed = true;
+			_configurationStore.Installed = true;
 			_userService.LoggedInUserId = "mrblah";
 
 			ActionExecutingContext filterContext = new ActionExecutingContext();
@@ -96,7 +95,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 			// Assert
 			Assert.That(_context.CurrentUsername, Is.EqualTo("mrblah"));
 			Assert.That(_controller.ViewBag.Context, Is.EqualTo(_context));
-			Assert.That(_controller.ViewBag.Config, Is.EqualTo(_applicationSettings));
+			Assert.That(_controller.ViewBag.Config, Is.EqualTo(_configurationStore));
 		}
 	}
 
@@ -107,8 +106,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 
 	public class ControllerBaseStub : Roadkill.Core.Mvc.Controllers.ControllerBase
 	{
-		public ControllerBaseStub(ApplicationSettings settings, UserServiceBase userService, IUserContext context, 
-			SettingsService settingsService) : base(settings, userService, context, settingsService)
+		public ControllerBaseStub(IConfigurationStore configurationStore, UserServiceBase userService, IUserContext context) : base(configurationStore, userService, context)
 		{
 
 		}
@@ -121,8 +119,8 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 
 	internal class InstallControllerStub : InstallController
 	{
-		public InstallControllerStub(ApplicationSettings settings, IConfigReaderWriter configReaderWriter, IInstallationService installationService, IDatabaseTester databaseTester)
-			: base(settings, configReaderWriter, installationService, databaseTester)
+		public InstallControllerStub(IConfigurationStore configurationStore, IConfigReaderWriter configReaderWriter, IInstallationService installationService, IDatabaseTester databaseTester)
+			: base(configurationStore, configReaderWriter, installationService)
 		{
 
 		}

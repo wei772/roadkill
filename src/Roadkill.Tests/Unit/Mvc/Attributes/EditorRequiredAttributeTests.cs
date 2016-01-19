@@ -41,7 +41,7 @@ namespace Roadkill.Tests.Unit.Mvc.Attributes
 			// Arrange
 			EditorRequiredAttributeMock attribute = new EditorRequiredAttributeMock();
 			attribute.AuthorizationProvider = new AuthorizationProviderMock() { IsEditorResult = true };
-			attribute.ApplicationSettings = _applicationSettings;
+			attribute.Configuration = _applicationSettings;
 			attribute.UserService = _userService;
 
 			IdentityStub identity = new IdentityStub() { Name = Guid.NewGuid().ToString(), IsAuthenticated = true };

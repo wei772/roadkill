@@ -8,10 +8,8 @@ using Roadkill.Core.Converters;
 using Roadkill.Core.Database;
 using Roadkill.Core.Cache;
 using Roadkill.Core.Mvc.ViewModels;
-using Roadkill.Core.Configuration;
 using System.Web;
 using Roadkill.Core.AmazingConfig;
-using Roadkill.Core.Database.Repositories;
 using Roadkill.Core.Logging;
 using Roadkill.Core.Text;
 using Roadkill.Core.Plugins;
@@ -33,6 +31,7 @@ namespace Roadkill.Core.Services
 		private readonly IPluginFactory _pluginFactory;
 		private readonly MarkupLinkUpdater _markupLinkUpdater;
 
+		public IConfigurationStore ConfigurationStore { get; set; }
 		public IConfiguration Configuration { get; set; }
 		public IPageRepository PageRepository { get; set; }
 
@@ -40,11 +39,12 @@ namespace Roadkill.Core.Services
 			PageHistoryService historyService, IUserContext context, 
 			ListCache listCache, PageViewModelCache pageViewModelCache, SiteCache sitecache, IPluginFactory pluginFactory)
 		{
+			ConfigurationStore = configurationStore;
 			Configuration = configurationStore.Load();
 			PageRepository = pageRepository;
 
 			_searchService = searchService;
-			_markupConverter = new MarkupConverter(Configuration, pageRepository, pluginFactory);
+			_markupConverter = new MarkupConverter(configurationStore, pageRepository, pluginFactory);
 			_historyService = historyService;
 			_context = context;
 			_listCache = listCache;
@@ -609,7 +609,7 @@ namespace Roadkill.Core.Services
 		/// </summary>
 		public string GetMenu(IUserContext userContext)
 		{
-			MenuParser parser = new MenuParser(_markupConverter, Configuration, _siteCache, userContext);
+			MenuParser parser = new MenuParser(_markupConverter, ConfigurationStore, _siteCache, userContext);
 
 			// TODO: turn this into a theme-based bit of template HTML
 			StringBuilder builder = new StringBuilder();
@@ -626,7 +626,7 @@ namespace Roadkill.Core.Services
 		/// </summary>
 		public string GetBootStrapNavMenu(IUserContext userContext)
 		{
-			MenuParser parser = new MenuParser(_markupConverter, Configuration, _siteCache, userContext);
+			MenuParser parser = new MenuParser(_markupConverter, ConfigurationStore, _siteCache, userContext);
 
 			// TODO: turn this into a theme-based bit of template HTML
 			StringBuilder builder = new StringBuilder();
@@ -671,7 +671,7 @@ namespace Roadkill.Core.Services
 		/// <returns></returns>
 		public MarkupConverter GetMarkupConverter()
 		{
-			return new MarkupConverter(Configuration, PageRepository, _pluginFactory);
+			return new MarkupConverter(ConfigurationStore, PageRepository, _pluginFactory);
 		}
 
 		/// <summary>

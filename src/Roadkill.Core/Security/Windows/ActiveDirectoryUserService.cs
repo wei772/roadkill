@@ -1,7 +1,9 @@
 ﻿#if !MONO
 using System;
 using System.Collections.Generic;
+using System.Security.Principal;
 using System.Web;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
 using Roadkill.Core.Mvc.ViewModels;
@@ -14,14 +16,13 @@ namespace Roadkill.Core.Security.Windows
 	public class ActiveDirectoryUserService : UserServiceBase
 	{
 		// Very simplistic caching.
-		private static Dictionary<string, List<string>> _usersInGroupCache = new Dictionary<string, List<string>>();
-		private string _connectionString;
+		private static readonly Dictionary<string, List<string>> _usersInGroupCache = new Dictionary<string, List<string>>();
 		private string _username;
 		private string _password;
-		private List<string> _editorGroupNames;
-		private List<string> _adminGroupNames;
-		private string _domainName;
-		private IActiveDirectoryProvider _service;
+		private readonly List<string> _editorGroupNames;
+		private readonly List<string> _adminGroupNames;
+		private readonly string _domainName;
+		private readonly IActiveDirectoryProvider _service;
 
 		/// <summary>
 		/// Returns false as <see cref="ActiveDirectoryUserService"/> does not support user updates.
@@ -37,42 +38,40 @@ namespace Roadkill.Core.Security.Windows
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ActiveDirectoryUserService"/> class.
 		/// </summary>
-		public ActiveDirectoryUserService(ApplicationSettings settings, IUserRepository repository, IActiveDirectoryProvider service)
-			: base(settings, repository)
+		public ActiveDirectoryUserService(IConfigurationStore configurationStore, IUserRepository repository, IActiveDirectoryProvider service)
+			: base(configurationStore, repository)
 		{
 			// Some guards
-			if (settings == null)
+			if (configurationStore == null)
 				throw new SecurityException("The configuration is null", null);
 
-			if (settings == null)
-				throw new SecurityException("The configuration Settings is null", null);
+			IConfiguration configuration = configurationStore.Load();
 
-			if (string.IsNullOrEmpty(settings.LdapConnectionString))
+			if (string.IsNullOrEmpty(configuration.SecuritySettings.LdapConnectionString))
 				throw new SecurityException("The LDAP connection string is empty", null);
 
-			if (string.IsNullOrEmpty(settings.EditorRoleName))
+			if (string.IsNullOrEmpty(configuration.SecuritySettings.EditorRoleName))
 				throw new SecurityException("The LDAP editor group name is empty", null);
 
-			if (string.IsNullOrEmpty(settings.AdminRoleName))
+			if (string.IsNullOrEmpty(configuration.SecuritySettings.AdminRoleName))
 				throw new SecurityException("The LDAP admin group name is empty", null);
 
-			string ldapConnectionString = settings.LdapConnectionString;
-			string username = settings.LdapUsername;
-			string password = settings.LdapPassword;
-			string editorGroupName = settings.EditorRoleName;
-			string adminGroupName = settings.AdminRoleName;
+			string ldapConnectionString = configuration.SecuritySettings.LdapConnectionString;
+			string username = configuration.SecuritySettings.LdapUsername;
+			string password = configuration.SecuritySettings.LdapPassword;
+			string editorGroupName = configuration.SecuritySettings.EditorRoleName;
+			string adminGroupName = configuration.SecuritySettings.AdminRoleName;
 
 			_service = service;
-			_connectionString = ldapConnectionString;
 			_username = username;
 			_password = password;
 
 			// Remove the "LDAP://" part for the domain name, as the PrincipleContext doesn't like it.
 			int length = "ldap://".Length;
-			if (!_connectionString.ToLower().StartsWith("ldap://") || _connectionString.Length < length)
-				throw new SecurityException(null, "The LDAP connection string: '{0}' does not appear to be a valid LDAP. A correct connection string example is LDAP://dc=megacorp,dc=com.", _connectionString);
+			if (!ldapConnectionString.ToLower().StartsWith("ldap://") || ldapConnectionString.Length < length)
+				throw new SecurityException(null, "The LDAP connection string: '{0}' does not appear to be a valid LDAP. A correct connection string example is LDAP://dc=megacorp,dc=com.", ldapConnectionString);
 
-			_domainName = _connectionString.Substring(length);
+			_domainName = ldapConnectionString.Substring(length);
 
 			//
 			// Cater for multiple groups for editors and admins

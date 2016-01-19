@@ -1,10 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
 using Newtonsoft.Json;
-using Roadkill.Core.Configuration;
-using Roadkill.Core.Security;
 
 namespace Roadkill.Core.AmazingConfig
 {
@@ -62,32 +58,11 @@ namespace Roadkill.Core.AmazingConfig
 
 		#region Built in Preferences
 		/// <summary>
-		/// Whether users can register themselves, or if the administrators should do it. 
-		/// If windows authentication is enabled, this setting is ignored.
-		/// </summary>
-		bool AllowUserSignup { get; set; }
-
-		/// <summary>
-		/// Whether to Recaptcha is enabled for user signups and password resets.
-		/// </summary>
-		bool IsRecaptchaEnabled { get; set; }
-
-		/// <summary>
 		/// The type of markup used: Three available options are: Creole, Markdown, MediaWiki.
 		/// The default is Creole.
 		/// </summary>
 		/// <remarks>This is a string because it's easier with the Javascript interaction.</remarks>
 		string MarkupType { get; set; }
-
-		/// <summary>
-		/// The private key for the recaptcha service, if enabled. This is optained when you sign up for the free service at https://www.google.com/recaptcha/.
-		/// </summary>
-		string RecaptchaPrivateKey { get; set; }
-
-		/// <summary>
-		/// The public key for the recaptcha service, if enabled. This is optained when you sign up for the free service at https://www.google.com/recaptcha/.
-		/// </summary>
-		string RecaptchaPublicKey { get; set; }
 
 		/// <summary>
 		/// The full url of the site.

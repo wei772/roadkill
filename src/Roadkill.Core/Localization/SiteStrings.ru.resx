@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:element name="data">
@@ -684,7 +684,7 @@
 	<value>Импорт из ScrewTurn</value>
 </data>
 <data name="SiteSettings_Tools_ScrewTurnImport_Label" xml:space="preserve">
-	<value>Импортирует все содержимое ScrewTurn 2 базы данных. Вам нужно будет установить на MediaWiki markuptype в settings/web.config для совместимости форматов. Так как ScrewTurn использует в качестве синтаксиса вариацию MediaWiki, некоторые содержимое не будет отображаться идеально. Это включает в себя некоторые изображения и ссылки.</value>
+	<value>Импортирует все содержимое ScrewTurn 2 базы данных. Вам нужно будет установить на MediaWiki markuptype в configuration/web.config для совместимости форматов. Так как ScrewTurn использует в качестве синтаксиса вариацию MediaWiki, некоторые содержимое не будет отображаться идеально. Это включает в себя некоторые изображения и ссылки.</value>
 </data>
 <data name="SiteSettings_Tools_ScrewTurnImport_Connection" xml:space="preserve">
 	<value>ScrewTurn строка соединения:</value>

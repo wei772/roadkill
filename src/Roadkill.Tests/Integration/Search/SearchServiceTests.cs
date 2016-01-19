@@ -4,9 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using NUnit.Framework;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
-using Roadkill.Core.Database.Repositories;
 using Roadkill.Core.Mvc.ViewModels;
 using Roadkill.Core.Services;
 using Roadkill.Tests.Unit;
@@ -18,10 +18,11 @@ namespace Roadkill.Tests.Integration.Search
 	[Category("Integration")]
 	public class SearchServiceTests
 	{
-		private ISettingsRepository _settingsRepository;
-		private ApplicationSettings _config;
+		private IConfigurationStore _config;
 		private PluginFactoryMock _pluginFactory;
 		private IPageRepository _pageRepository;
+		private MocksAndStubsContainer _container;
+		private IConfiguration _configuration;
 
 		[SetUp]
 		public void Initialize()
@@ -30,17 +31,17 @@ namespace Roadkill.Tests.Integration.Search
 			if (Directory.Exists(indexPath))
 				Directory.Delete(indexPath, true);
 
-			_settingsRepository = new SettingsRepositoryMock();
 			_pageRepository = new PageRepositoryMock();
 
-			_config = new ApplicationSettings();
-			_config.Installed = true;
+			_container = new MocksAndStubsContainer();
+			_configuration = _container.Configuration;
+			_configuration.Installed = true;
 			_pluginFactory = new PluginFactoryMock();
 		}
 
 		private SearchService CreateSearchService()
 		{
-			return new SearchService(_config, _settingsRepository, _pageRepository, _pluginFactory);
+			return new SearchService(_config, _pageRepository, _pluginFactory);
 		}
 
 		[Test]

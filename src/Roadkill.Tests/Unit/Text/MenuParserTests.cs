@@ -1,5 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Cache;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Converters;
@@ -13,9 +14,12 @@ namespace Roadkill.Tests.Unit.Text
 	[Category("Unit")]
 	public class MenuParserTests
 	{
+		private MocksAndStubsContainer _container;
+		private IConfiguration _configuration;
+		private ConfigurationStoreMock _configurationStore;
+
 		private PluginFactoryMock _pluginFactory;
 		private PageRepositoryMock _pageRepository;
-		private SettingsRepositoryMock _settingsRepository;
 		private UserContextStub _userContext;
 		private ApplicationSettings _applicationSettings;
 		private CacheMock _cache;
@@ -26,14 +30,13 @@ namespace Roadkill.Tests.Unit.Text
 		[SetUp]
 		public void Setup()
 		{
+			_container = new MocksAndStubsContainer();
+			_configuration = _container.Configuration;
+			_configurationStore = _container.ConfigurationStoreMock;
+
 			_pluginFactory = new PluginFactoryMock();
 
 			_pageRepository = new PageRepositoryMock();
-
-			_settingsRepository = new SettingsRepositoryMock();
-			_settingsRepository.SiteSettings = new SiteSettings();
-			_settingsRepository.SiteSettings.MarkupType = "Markdown";
-
 			_userContext = new UserContextStub();
 
 			_applicationSettings = new ApplicationSettings();
@@ -42,8 +45,8 @@ namespace Roadkill.Tests.Unit.Text
 			_cache = new CacheMock();
 			_siteCache = new SiteCache(_cache);
 
-			_converter = new MarkupConverter(_applicationSettings, _settingsRepository, _pageRepository, _pluginFactory);
-			_menuParser = new MenuParser(_converter, _settingsRepository, _siteCache, _userContext);
+			_converter = new MarkupConverter(_configurationStore, _pageRepository, _pluginFactory);
+			_menuParser = new MenuParser(_converter, _configurationStore, _siteCache, _userContext);
 		}
 
 		[Test]
@@ -58,7 +61,7 @@ namespace Roadkill.Tests.Unit.Text
 								  "<a href=\"/filemanager\">Manage files</a>" +
 								  "<a href=\"/settings\">Site settings</a>";
 
-			_settingsRepository.SiteSettings.MenuMarkup = menuMarkup;
+			_configuration.MenuMarkup = menuMarkup;
 
 			_userContext.IsAdmin = true;
 			_userContext.IsLoggedIn = true;
@@ -80,7 +83,7 @@ namespace Roadkill.Tests.Unit.Text
 								  "<a href=\"/\">Main Page</a>" +
 								  "<a href=\"/pages/new\">New page</a><a href=\"/filemanager\">Manage files</a>";
 
-			_settingsRepository.SiteSettings.MenuMarkup = menuMarkup;
+			_configuration.MenuMarkup = menuMarkup;
 
 			_userContext.IsAdmin = false;
 			_userContext.IsLoggedIn = true;
@@ -101,7 +104,7 @@ namespace Roadkill.Tests.Unit.Text
 								  "<a href=\"/pages/allpages\">All pages</a>" +
 								  "<a href=\"/\">Main Page</a>";
 
-			_settingsRepository.SiteSettings.MenuMarkup = menuMarkup;
+			_configuration.MenuMarkup = menuMarkup;
 
 			// Act
 			string actualHtml = _menuParser.GetMenu();
@@ -117,7 +120,7 @@ namespace Roadkill.Tests.Unit.Text
 		{
 			// Arrange - \r\n is important so the markdown is valid
 			string menuMarkup = "%mainpage%\r\n\r\n* %newpage%\r\n* %managefiles%\r\n* %sitesettings%\r\n";
-			_settingsRepository.SiteSettings.MenuMarkup = menuMarkup;
+			_configuration.MenuMarkup = menuMarkup;
 
 			// Act
 			string actualHtml = _menuParser.GetMenu();
@@ -131,7 +134,7 @@ namespace Roadkill.Tests.Unit.Text
 		{
 			// Arrange
 			string menuMarkup = "My menu %newpage% %sitesettings%";
-			_settingsRepository.SiteSettings.MenuMarkup = menuMarkup;
+			_configuration.MenuMarkup = menuMarkup;
 
 			// Act
 			_userContext.IsLoggedIn = false;
@@ -155,7 +158,7 @@ namespace Roadkill.Tests.Unit.Text
 		{
 			// Arrange
 			string menuMarkup = "My menu %newpage% %sitesettings%";
-			_settingsRepository.SiteSettings.MenuMarkup = menuMarkup;
+			_configuration.MenuMarkup = menuMarkup;
 
 			// Act
 			_userContext.IsLoggedIn = false;
@@ -182,7 +185,7 @@ namespace Roadkill.Tests.Unit.Text
 			// Arrange
 			string menuMarkup = "* [First link](http://www.google.com)\r\n";
 			string expectedHtml = "<ul><li><a href=\"http://www.google.com\" rel=\"nofollow\" class=\"external-link\">First link</a></li></ul>";
-			_settingsRepository.SiteSettings.MenuMarkup = menuMarkup;
+			_configuration.MenuMarkup = menuMarkup;
 
 			// Act
 			string actualHtml = _menuParser.GetMenu();
@@ -197,7 +200,7 @@ namespace Roadkill.Tests.Unit.Text
 			// Arrange
 			string menuMarkup = "* [First link](my-page)\r\n";
 			string expectedHtml = "<ul><li><a href=\"/wiki/1/my-page\">First link</a></li></ul>";
-			_settingsRepository.SiteSettings.MenuMarkup = menuMarkup;
+			_configuration.MenuMarkup = menuMarkup;
 
 			_pageRepository.AddNewPage(new Page() { Title = "my page", Id = 1 }, "text", "user", DateTime.Now);
 

@@ -4,6 +4,7 @@ using System.Runtime.Caching;
 using System.Web.Mvc;
 using NUnit.Framework;
 using Roadkill.Core;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Cache;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Mvc.Controllers;
@@ -19,12 +20,11 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers.Admin
 	{
 		private MocksAndStubsContainer _container;
 
-		private ApplicationSettings _applicationSettings;
+		private IConfigurationStore _configurationStore;
+		private IConfiguration _configuration;
+
 		private IUserContext _context;
-		private PageRepositoryMock _pageRepository;
 		private UserServiceMock _userService;
-		private PageService _pageService;
-		private SettingsService _settingsService;
 		private PageViewModelCache _pageCache;
 		private ListCache _listCache;
 		private SiteCache _siteCache;
@@ -38,24 +38,24 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers.Admin
 			_container = new MocksAndStubsContainer();
 			_container.ClearCache();
 
-			_applicationSettings = _container.ApplicationSettings;
+			_configurationStore = _container.ConfigurationStoreMock;
+			_configuration = _configurationStore.Load();
+
 			_context = _container.UserContext;
-			_pageRepository = _container.PageRepository;
-			_settingsService = _container.SettingsService;
 			_userService = _container.UserService;
 			_pageCache = _container.PageViewModelCache;
 			_listCache = _container.ListCache;
 			_siteCache = _container.SiteCache;
 			_cache = _container.MemoryCache;
 
-			_cacheController = new CacheController(_applicationSettings, _userService, _settingsService, _context, _listCache, _pageCache, _siteCache);
+			_cacheController = new CacheController(_configurationStore, _userService, _context, _listCache, _pageCache, _siteCache);
 		}
 
 		[Test]
 		public void index_should_return_viewmodel_with_filled_properties()
 		{
 			// Arrange
-			_applicationSettings.UseObjectCache = true;			
+			_configuration.UseObjectCache = true;			
 			_pageCache.Add(1, new PageViewModel());
 			_listCache.Add<string>("test", new List<string>());
 			_siteCache.AddMenu("menu");
@@ -78,7 +78,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers.Admin
 		public void clear_should_redirect_and_clear_all_cache_items()
 		{
 			// Arrange
-			_applicationSettings.UseObjectCache = true;
+			_configuration.UseObjectCache = true;
 			_pageCache.Add(1, new PageViewModel());
 			_listCache.Add<string>("test", new List<string>());
 			_siteCache.AddMenu("menu");

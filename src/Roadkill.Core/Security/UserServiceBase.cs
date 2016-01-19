@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Web;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
 using Roadkill.Core.Services;
@@ -17,11 +18,11 @@ namespace Roadkill.Core.Security
 	{
 		protected PageService PageService;
 		public IUserRepository UserRepository { get; set; }
-		public ApplicationSettings ApplicationSettings { get; set; }
+		public IConfiguration Configuration { get; set; }
 
-		public UserServiceBase(ApplicationSettings settings, IUserRepository userRepository)
+		public UserServiceBase(IConfigurationStore configurationStore, IUserRepository userRepository)
 		{
-			ApplicationSettings = settings;
+			Configuration = configurationStore.Load();
 			UserRepository = userRepository;
 		}
 

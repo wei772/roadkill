@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Configuration;
-using Roadkill.Core.Database.Repositories;
 using Roadkill.Core.Logging;
 using Roadkill.Core.Plugins;
 
@@ -14,10 +14,8 @@ namespace Roadkill.Core.Database.Export
 	/// </summary>
 	public class SqlExportBuilder
 	{
-		private readonly ISettingsRepository _settingsRepository;
 		private readonly IUserRepository _userRepository;
 		private readonly IPageRepository _pageRepository;
-		private readonly IPluginFactory _pluginFactory;
 
 		/// <summary>
 		/// Gets or sets a value indicating whether to include page data in the SQL script.
@@ -28,27 +26,16 @@ namespace Roadkill.Core.Database.Export
 		public bool IncludePages { get; set; }
 
 		/// <summary>
-		/// Gets or sets a value indicating whether to include configuration data in the SQL script.
-		/// </summary>
-		/// <value>
-		///   <c>true</c> if configuration data should be included; otherwise, <c>false</c>.
-		/// </value>
-		public bool IncludeConfiguration { get; set; }
-
-		/// <summary>
 		/// Initializes a new instance of the <see cref="SqlExportBuilder"/> class.
 		/// </summary>
-		/// <param name="settingsRepository">The current repository.</param>
 		/// <param name="pluginFactory">The plugin factory.</param>
 		/// <exception cref="System.ArgumentNullException">
 		/// repository
 		/// or
 		/// pluginFactory are null.
 		/// </exception>
-		public SqlExportBuilder(ISettingsRepository settingsRepository, IUserRepository userRepository, IPageRepository pageRepository, IPluginFactory pluginFactory)
+		public SqlExportBuilder(IUserRepository userRepository, IPageRepository pageRepository, IPluginFactory pluginFactory)
 		{
-			if (settingsRepository == null)
-				throw new ArgumentNullException(nameof(settingsRepository));
 
 			if (userRepository == null)
 				throw new ArgumentNullException(nameof(userRepository));
@@ -59,13 +46,10 @@ namespace Roadkill.Core.Database.Export
 			if (pluginFactory == null)
 				throw new ArgumentNullException(nameof(pluginFactory));
 
-			_settingsRepository = settingsRepository;
 			_userRepository = userRepository;
 			_pageRepository = pageRepository;
-			_pluginFactory = pluginFactory;
 
 			IncludePages = true;
-			IncludeConfiguration = true;
 		}
 
 		/// <summary>
@@ -79,13 +63,11 @@ namespace Roadkill.Core.Database.Export
 				IEnumerable<User> users = _userRepository.FindAllAdmins().Union(_userRepository.FindAllEditors());
 				IEnumerable<Page> pages = _pageRepository.AllPages();
 				IEnumerable<PageContent> pageContent = _pageRepository.AllPageContents();
-				IEnumerable<SiteConfigurationRow> configurationRows = GetSiteConfigurationRows();
 
 				// The order of the SQL is important - users should come before pages, pages before content.
 				string usersSql = GetSqlLines<User>(users, GetUsersInsertSql);
 				string pagesSql = GetSqlLines<Page>(pages, GetPagesInsertSql);
 				string pageContentSql = GetSqlLines<PageContent>(pageContent, GetPageContentInsertSql);
-				string configurationSql = GetSqlLines<SiteConfigurationRow>(configurationRows, GetSiteConfigurationInsertSql);
 
 				StringBuilder sqlBuilder = new StringBuilder();
 				sqlBuilder.AppendLine("-- You will need to enable identity inserts for your chosen db before running this Script, for example in SQL Server:");
@@ -113,16 +95,6 @@ namespace Roadkill.Core.Database.Export
 					}
 				}
 
-				if (IncludeConfiguration)
-				{
-					if (!string.IsNullOrWhiteSpace(configurationSql))
-					{
-						sqlBuilder.AppendLine();
-						sqlBuilder.AppendLine("-- Configuration");
-						sqlBuilder.AppendLine(configurationSql);
-					}
-				}
-
 				Log.Debug("Sql export successfully written: \n\n{0}", sqlBuilder);
 				return sqlBuilder.ToString();
 			}
@@ -142,39 +114,6 @@ namespace Roadkill.Core.Database.Export
 		{	
 			string[] sqlRows = items.Select(x => sqlInsertScriptMethod(x)).ToArray();
 			return string.Join(Environment.NewLine, sqlRows);
-		}
-
-		private IEnumerable<SiteConfigurationRow> GetSiteConfigurationRows()
-		{
-			List<SiteConfigurationRow> configurationRows = new List<SiteConfigurationRow>();
-			
-			// Turn the main SiteSettings into a row
-			SiteSettings settings = _settingsRepository.GetSiteSettings();
-			SiteConfigurationRow row = new SiteConfigurationRow()
-			{
-				Id = SiteSettings.SiteSettingsId,
-				Version = NonConfigurableSettings.FileVersion,
-				Json = settings.GetJson()
-			};
-
-			configurationRows.Add(row);
-
-			// Turn all plugin settings into rows
-			IEnumerable<TextPlugin> plugins = _pluginFactory.GetTextPlugins();
-
-			foreach (TextPlugin plugin in plugins)
-			{
-				row = new SiteConfigurationRow()
-				{
-					Id = plugin.DatabaseId,
-					Version = plugin.Version,
-					Json = plugin.GetSettingsJson()
-				};
-
-				configurationRows.Add(row);
-			}
-
-			return configurationRows;
 		}
 
 		internal string GetPagesInsertSql(Page page)

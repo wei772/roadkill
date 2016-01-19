@@ -5,6 +5,7 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Mvc.Controllers;
 using Roadkill.Core.Services;
@@ -25,7 +26,7 @@ namespace Roadkill.Core.Mvc.Attributes
 	public class BrowserCacheAttribute : ActionFilterAttribute, ISetterInjected
 	{
 		[SetterProperty]
-		public ApplicationSettings ApplicationSettings { get; set; }
+		public IConfigurationStore ConfigurationStore { get; set; }
 
 		[SetterProperty]
 		public IUserContext Context { get; set; }
@@ -36,12 +37,11 @@ namespace Roadkill.Core.Mvc.Attributes
 		[SetterProperty]
 		public IPageService PageService { get; set; }
 
-		[SetterProperty]
-		public SettingsService SettingsService { get; set; }
-
 		public override void OnResultExecuted(ResultExecutedContext filterContext)
 		{
-			if (!ApplicationSettings.Installed || !ApplicationSettings.UseBrowserCache || Context.IsLoggedIn)
+			var configuration = ConfigurationStore.Load();
+
+			if (!configuration.Installed || !configuration.UseBrowserCache.GetValueOrDefault() || Context.IsLoggedIn)
 				return;
 
 			WikiController wikiController = filterContext.Controller as WikiController;
@@ -74,8 +74,7 @@ namespace Roadkill.Core.Mvc.Attributes
 				// Check if any plugins have been recently updated as saving their settings invalidates the browser cache.
 				// This is necessary because, for example, enabling the TOC plugin will mean the content
 				// should have {TOC} parsed now, but the browser cache content will contain the un-cached version still.
-				SiteSettings siteSettings = SettingsService.GetSiteSettings();
-				DateTime pluginLastSaveDate = siteSettings.PluginLastSaveDate.ClearMilliseconds();
+				DateTime pluginLastSaveDate = configuration.PluginLastSaveDate.ClearMilliseconds();
 
 				if (pluginLastSaveDate > modifiedSinceDate)
 				{

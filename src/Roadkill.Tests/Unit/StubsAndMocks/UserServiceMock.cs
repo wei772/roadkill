@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Roadkill.Core;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
 using Roadkill.Core.Mvc.ViewModels;
@@ -24,8 +25,8 @@ namespace Roadkill.Tests.Unit.StubsAndMocks
 			Users = new List<User>();
 		}
 
-		public UserServiceMock(ApplicationSettings settings, IUserRepository repository)
-			: base(settings, repository)
+		public UserServiceMock(IConfigurationStore configurationStore, IUserRepository repository)
+			: base(configurationStore, repository)
 		{
 			Users = new List<User>();
 		}

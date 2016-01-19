@@ -2,7 +2,7 @@
 @{
 	// This is a copy of the _ViewStart page found in /Views
 	Roadkill.Core.Mvc.Controllers.ControllerBase controller = this.ViewContext.Controller as Roadkill.Core.Mvc.Controllers.ControllerBase;
-	ApplicationSettings applicationSettings = controller.ApplicationSettings;
+	ApplicationSettings applicationSettings = controller.Configuration;
 
 	if (applicationSettings.Installed)
 	{

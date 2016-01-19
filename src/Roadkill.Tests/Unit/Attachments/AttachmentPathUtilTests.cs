@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using NUnit.Framework;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Attachments;
 using Roadkill.Core.Configuration;
 
@@ -10,24 +11,24 @@ namespace Roadkill.Tests.Unit.Attachments
 	[Category("Unit")]
 	public class AttachmentPathUtilTests
 	{
-		private ApplicationSettings _settings;
+		private IConfiguration _configuration;
 		private AttachmentPathUtil _attachmentPathUtil;
 
 		[SetUp]
 		public void Setup()
 		{
-			_settings = new ApplicationSettings();
-			_settings.AttachmentsFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Attachments");
-			_attachmentPathUtil = new AttachmentPathUtil(_settings);
+			_configuration = new JsonConfiguration();
+			_configuration.AttachmentSettings.AttachmentsFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Attachments");
+			_attachmentPathUtil = new AttachmentPathUtil(_configuration);
 
 			try
 			{
 				// Delete any existing attachments folder
 
 				// Remove the files 1st
-				if (Directory.Exists(_settings.AttachmentsFolder))
+				if (Directory.Exists(_configuration.AttachmentSettings.AttachmentsFolder))
 				{
-					DirectoryInfo directoryInfo = new DirectoryInfo(_settings.AttachmentsFolder);
+					DirectoryInfo directoryInfo = new DirectoryInfo(_configuration.AttachmentSettings.AttachmentsFolder);
 					foreach (FileInfo file in directoryInfo.GetFiles())
 					{
 						File.Delete(file.FullName);
@@ -39,11 +40,11 @@ namespace Roadkill.Tests.Unit.Attachments
 						directoryInfo.Delete(true);
 					}
 				}
-				Directory.CreateDirectory(_settings.AttachmentsFolder);
+				Directory.CreateDirectory(_configuration.AttachmentSettings.AttachmentsFolder);
 			}
 			catch (IOException e)
 			{
-				Assert.Fail("Unable to delete the attachments folder " + _settings.AttachmentsFolder + ", does it have a lock?" + e.ToString());
+				Assert.Fail("Unable to delete the attachments folder " + _configuration.AttachmentSettings.AttachmentsFolder + ", does it have a lock?" + e.ToString());
 			}
 		}
 
@@ -54,7 +55,7 @@ namespace Roadkill.Tests.Unit.Attachments
 		public void ConvertUrlPathToPhysicalPath_Should_Strip_Empty_And_Redundant_Seperators(string relativePath)
 		{
 			// Arrange
-			string expectedPath = _settings.AttachmentsDirectoryPath;
+			string expectedPath = _configuration.AttachmentSettings.GetAttachmentsDirectoryPath();
 
 			// Act
 			string actualPath = _attachmentPathUtil.ConvertUrlPathToPhysicalPath(relativePath);
@@ -70,7 +71,7 @@ namespace Roadkill.Tests.Unit.Attachments
 		public void ConvertUrlPathToPhysicalPath_Should_Combine_Paths_And_Contain_Trailing_Slash(string relativePath, string expectedPath)
 		{
 			// Arrange
-			expectedPath = Path.Combine(_settings.AttachmentsDirectoryPath, expectedPath);
+			expectedPath = Path.Combine(_configuration.AttachmentSettings.GetAttachmentsDirectoryPath(), expectedPath);
 			Directory.CreateDirectory(expectedPath);
 
 			// Act
@@ -84,7 +85,7 @@ namespace Roadkill.Tests.Unit.Attachments
 		public void isattachmentpathvalid_should_be_true_for_valid_subdirectory()
 		{
 			// Arrange
-			string physicalPath = Path.Combine(_settings.AttachmentsDirectoryPath, "images", "test");
+			string physicalPath = Path.Combine(_configuration.AttachmentSettings.GetAttachmentsDirectoryPath(), "images", "test");
 			Directory.CreateDirectory(physicalPath);
 			bool expectedResult = true;
 
@@ -99,7 +100,7 @@ namespace Roadkill.Tests.Unit.Attachments
 		public void isattachmentpathvalid_should_be_false_for_valid_path_that_does_not_exist()
 		{
 			// Arrange
-			string physicalPath = Path.Combine(_settings.AttachmentsDirectoryPath, "folder100", "folder99");
+			string physicalPath = Path.Combine(_configuration.AttachmentSettings.GetAttachmentsDirectoryPath(), "folder100", "folder99");
 			bool expectedResult = false;
 
 			// Act
@@ -113,7 +114,7 @@ namespace Roadkill.Tests.Unit.Attachments
 		public void isattachmentpathvalid_should_be_case_insensitive()
 		{
 			// Arrange
-			string physicalPath = Path.Combine(_settings.AttachmentsDirectoryPath, "images", "test");
+			string physicalPath = Path.Combine(_configuration.AttachmentSettings.GetAttachmentsDirectoryPath(), "images", "test");
 			physicalPath = physicalPath.Replace("Attachments", "aTTacHMentS");
 			Directory.CreateDirectory(physicalPath);
 
@@ -133,7 +134,7 @@ namespace Roadkill.Tests.Unit.Attachments
 		public void IsAttachmentPathValid_Should_Be_True_For_Valid_Paths(string physicalPath, bool expectedResult)
 		{
 			// Arrange
-			physicalPath = physicalPath.Replace("{attachmentsfolder}", _settings.AttachmentsDirectoryPath);
+			physicalPath = physicalPath.Replace("{attachmentsfolder}", _configuration.AttachmentSettings.GetAttachmentsDirectoryPath());
 			Directory.CreateDirectory(physicalPath);
 
 			// Act
@@ -174,7 +175,7 @@ namespace Roadkill.Tests.Unit.Attachments
 		public void IsAttachmentPathValid_Should_Be_False_For_Invalid_Paths(string physicalPath, bool expectedResult)
 		{
 			// Arrange
-			physicalPath = physicalPath.Replace("{attachmentsfolder}", _settings.AttachmentsDirectoryPath);
+			physicalPath = physicalPath.Replace("{attachmentsfolder}", _configuration.AttachmentSettings.GetAttachmentsDirectoryPath());
 
 			// Act
 			bool actualResult = _attachmentPathUtil.IsAttachmentPathValid(physicalPath);

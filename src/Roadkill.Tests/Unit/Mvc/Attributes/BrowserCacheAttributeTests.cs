@@ -3,6 +3,7 @@ using System.Web;
 using System.Web.Mvc;
 using Moq;
 using NUnit.Framework;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Cache;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
@@ -19,27 +20,23 @@ namespace Roadkill.Tests.Unit.Mvc.Attributes
 	public class BrowserCacheAttributeTests
 	{
 		private PluginFactoryMock _pluginFactory;
-		private SettingsRepositoryMock _settingsRepository;
 		private PageRepositoryMock _pageRepository;
 
 		private readonly DateTime _pageCreatedDate = DateTime.Today;
 		private readonly DateTime _pageModifiedDate = DateTime.Today;
 		private readonly DateTime _pluginLastSavedDate = DateTime.Today;
 		private MocksAndStubsContainer _container;
-		private SettingsService _settingsService;
+		private IConfiguration _configuration;
 
 		[SetUp]
 		public void Setup()
 		{
 			_container = new MocksAndStubsContainer();
-
-			_container.SettingsRepository.SiteSettings.PluginLastSaveDate = _pluginLastSavedDate;
+			_container.Configuration.PluginLastSaveDate = _pluginLastSavedDate;
+			_configuration = _container.Configuration;
 
 			_pluginFactory = _container.PluginFactory;
-			_settingsRepository = _container.SettingsRepository;
 			_pageRepository = _container.PageRepository;
-
-			_settingsService = _container.SettingsService;
 		}
 
 		[Test]
@@ -47,12 +44,12 @@ namespace Roadkill.Tests.Unit.Mvc.Attributes
 		{
 			// Arrange
 			BrowserCacheAttribute attribute = new BrowserCacheAttribute();
-			attribute.SettingsService = _settingsService;
+			attribute.Configuration = _configuration;
 
 			WikiController controller = CreateWikiController(attribute);
 			ResultExecutedContext filterContext = CreateContext(controller);
 
-			attribute.ApplicationSettings.Installed = false;
+			attribute.Configuration.Installed = false;
 
 			// Act
 			attribute.OnResultExecuted(filterContext);
@@ -66,12 +63,12 @@ namespace Roadkill.Tests.Unit.Mvc.Attributes
 		{
 			// Arrange
 			BrowserCacheAttribute attribute = new BrowserCacheAttribute();
-			attribute.SettingsService = _settingsService;
+			attribute.Configuration = _configuration;
 
 			WikiController controller = CreateWikiController(attribute);
 			ResultExecutedContext filterContext = CreateContext(controller);
 
-			attribute.ApplicationSettings.UseBrowserCache = false;
+			attribute.Configuration.UseBrowserCache = false;
 
 			// Act
 			attribute.OnResultExecuted(filterContext);
@@ -85,7 +82,7 @@ namespace Roadkill.Tests.Unit.Mvc.Attributes
 		{
 			// Arrange
 			BrowserCacheAttribute attribute = new BrowserCacheAttribute();
-			attribute.SettingsService = _settingsService;
+			attribute.Configuration = _configuration;
 
 			WikiController controller = CreateWikiController(attribute);
 			ResultExecutedContext filterContext = CreateContext(controller);
@@ -104,7 +101,7 @@ namespace Roadkill.Tests.Unit.Mvc.Attributes
 		{
 			// Arrange
 			BrowserCacheAttribute attribute = new BrowserCacheAttribute();
-			attribute.SettingsService = _settingsService;
+			attribute.Configuration = _configuration;
 
 			WikiController controller = CreateWikiController(attribute);
 			ResultExecutedContext filterContext = CreateContext(controller);
@@ -122,8 +119,8 @@ namespace Roadkill.Tests.Unit.Mvc.Attributes
 		{
 			// Arrange
 			BrowserCacheAttribute attribute = new BrowserCacheAttribute();
-			attribute.SettingsService = _settingsService;
-			_settingsRepository.SiteSettings.PluginLastSaveDate = DateTime.UtcNow;
+			attribute.Configuration = _configuration;
+			_configuration.PluginLastSaveDate = DateTime.UtcNow;
 
 			WikiController controller = CreateWikiController(attribute);
 			ResultExecutedContext filterContext = CreateContext(controller);
@@ -142,8 +139,8 @@ namespace Roadkill.Tests.Unit.Mvc.Attributes
 		{
 			// Arrange
 			BrowserCacheAttribute attribute = new BrowserCacheAttribute();
-			attribute.SettingsService = _settingsService;
-			_settingsRepository.SiteSettings.PluginLastSaveDate = DateTime.Today.ToUniversalTime().AddHours(1);
+			attribute.Configuration = _configuration;
+			_configuration.PluginLastSaveDate = DateTime.Today.ToUniversalTime().AddHours(1);
 
 			WikiController controller = CreateWikiController(attribute);
 			ResultExecutedContext filterContext = CreateContext(controller);
@@ -166,7 +163,6 @@ namespace Roadkill.Tests.Unit.Mvc.Attributes
 
 			// Arrange
 			BrowserCacheAttribute attribute = new BrowserCacheAttribute();
-			attribute.SettingsService = _settingsService;
 
 			WikiController controller = CreateWikiController(attribute);
 			ResultExecutedContext filterContext = CreateContext(controller);
@@ -192,7 +188,7 @@ namespace Roadkill.Tests.Unit.Mvc.Attributes
 
 			// PageService
 			PageViewModelCache pageViewModelCache = new PageViewModelCache(appSettings, CacheMock.RoadkillCache);
-			ListCache listCache = new ListCache(appSettings, CacheMock.RoadkillCache);
+			ListCache listCache = new ListCache(_configuration, CacheMock.RoadkillCache);
 			SiteCache siteCache = new SiteCache(CacheMock.RoadkillCache);
 			SearchServiceMock searchService = new SearchServiceMock(appSettings, _settingsRepository, _pageRepository, _pluginFactory);
 			PageHistoryService historyService = new PageHistoryService(appSettings, _settingsRepository, _pageRepository, userContext, pageViewModelCache, _pluginFactory);
@@ -208,7 +204,7 @@ namespace Roadkill.Tests.Unit.Mvc.Attributes
 			_pageRepository.AddNewPage(page, "text", "user", _pageCreatedDate);
 
 			// Update the BrowserCacheAttribute
-			attribute.ApplicationSettings = appSettings;
+			attribute.Configuration = _configuration;
 			attribute.Context = userContext;
 			attribute.PageService = pageService;
 

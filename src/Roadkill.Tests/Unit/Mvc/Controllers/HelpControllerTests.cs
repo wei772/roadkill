@@ -2,6 +2,7 @@
 using System.Web.Mvc;
 using NUnit.Framework;
 using Roadkill.Core;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
 using Roadkill.Core.Mvc.Controllers;
@@ -17,12 +18,12 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 	{
 		private MocksAndStubsContainer _container;
 
-		private ApplicationSettings _applicationSettings;
+		private ConfigurationStoreMock _configurationStore;
+		private IConfiguration _configuration;
+
 		private IUserContext _context;
-		private SettingsRepositoryMock _settingsRepository;
 		private UserServiceMock _userService;
 		private PageService _pageService;
-		private SettingsService _settingsService;
 
 		private HelpController _helpController;
 		private PageRepositoryMock _pageRepository;
@@ -31,25 +32,23 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void Setup()
 		{
 			_container = new MocksAndStubsContainer();
+			_configurationStore = _container.ConfigurationStoreMock;
+			_configuration = _container.Configuration;
 
-			_applicationSettings = _container.ApplicationSettings;
 			_context = _container.UserContext;
 
-			_settingsRepository = _container.SettingsRepository;
 			_pageRepository = _container.PageRepository;
-
-			_settingsService = _container.SettingsService;
 			_userService = _container.UserService;
 			_pageService = _container.PageService;
 
-			_helpController = new HelpController(_applicationSettings, _userService, _context, _settingsService, _pageService);
+			_helpController = new HelpController(_configurationStore, _userService, _context, _pageService);
 		}
 
 		[Test]
 		public void index_should_return_viewresult()
 		{
 			// Arrange
-			_settingsRepository.SiteSettings.MarkupType = "Mediawiki";
+			_configuration.MarkupType = "Mediawiki";
 
 			// Act
 			ViewResult result = _helpController.Index() as ViewResult;
@@ -88,7 +87,6 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		{
 			// Arrange
 
-
 			// Act
 			RedirectToRouteResult result = _helpController.About() as RedirectToRouteResult;
 
@@ -105,7 +103,6 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		{
 			// Arrange
 
-
 			// Act
 			ViewResult result = _helpController.CreoleReference() as ViewResult;
 
@@ -118,7 +115,6 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		{
 			// Arrange
 
-
 			// Act
 			ViewResult result = _helpController.MediaWikiReference() as ViewResult;
 
@@ -130,7 +126,6 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void markdownreference_should_return_view()
 		{
 			// Arrange
-
 
 			// Act
 			ViewResult result = _helpController.MarkdownReference() as ViewResult;

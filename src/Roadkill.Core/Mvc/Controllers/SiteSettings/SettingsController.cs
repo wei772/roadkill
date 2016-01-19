@@ -36,7 +36,7 @@ namespace Roadkill.Core.Mvc.Controllers
 		{
 			throw new InvalidOperationException("TODO");
 
-			//SettingsViewModel model = new SettingsViewModel(ApplicationSettings, siteSettings);
+			//SettingsViewModel model = new SettingsViewModel(Configuration, siteSettings);
 			//model.SetSupportedDatabases(SettingsService.GetSupportedDatabases());
 			//return View(model);
 

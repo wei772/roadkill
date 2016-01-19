@@ -2,6 +2,7 @@
 using System.Web;
 using NUnit.Framework;
 using Roadkill.Core;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Mvc.Attributes;
 using Roadkill.Tests.Unit.StubsAndMocks;
@@ -18,8 +19,7 @@ namespace Roadkill.Tests.Unit.Mvc.Attributes
 	{
 		private MocksAndStubsContainer _container;
 
-		private ApplicationSettings _applicationSettings;
-		private IUserContext _context;
+		private IConfiguration _configuration;
 		private UserServiceMock _userService;
 
 		[SetUp]
@@ -27,12 +27,11 @@ namespace Roadkill.Tests.Unit.Mvc.Attributes
 		{
 			_container = new MocksAndStubsContainer();
 
-			_applicationSettings = _container.ApplicationSettings;
-			_context = _container.UserContext;
+			_configuration = _container.Configuration;
 			_userService = _container.UserService;
 
-			_applicationSettings.AdminRoleName = "Admin";
-			_applicationSettings.EditorRoleName = "Editor";
+			_configuration.SecuritySettings.AdminRoleName = "Admin";
+			_configuration.SecuritySettings.EditorRoleName = "Editor";
 		}
 
 		[Test]
@@ -41,7 +40,7 @@ namespace Roadkill.Tests.Unit.Mvc.Attributes
 			// Arrange
 			AdminRequiredAttributeMock attribute = new AdminRequiredAttributeMock();
 			attribute.AuthorizationProvider = new AuthorizationProviderMock() { IsAdminResult = true };
-			attribute.ApplicationSettings = _applicationSettings;
+			attribute.Configuration = _configuration;
 			attribute.UserService = _userService;
 
 			IdentityStub identity = new IdentityStub() { Name = Guid.NewGuid().ToString(), IsAuthenticated = true };

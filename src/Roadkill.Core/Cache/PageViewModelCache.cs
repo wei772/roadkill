@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Caching;
 using System.Text;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Logging;
 using Roadkill.Core.Mvc.ViewModels;
@@ -21,16 +22,16 @@ namespace Roadkill.Core.Cache
 		internal static readonly int LATEST_VERSION_NUMBER = 0;
 
 		private readonly ObjectCache _cache; 
-		private readonly ApplicationSettings _applicationSettings;
+		private readonly IConfiguration _configuration;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="PageViewModelCache"/> class.
 		/// </summary>
-		/// <param name="settings">The application settings.</param>
+		/// <param name="configurationStore">The configuration store.</param>
 		/// <param name="cache">The underlying OjectCache - a MemoryCache by default.</param>
-		public PageViewModelCache(ApplicationSettings settings, ObjectCache cache)
+		public PageViewModelCache(IConfigurationStore configurationStore, ObjectCache cache)
 		{
-			_applicationSettings = settings;
+			_configuration = configurationStore.Load();
 			_cache = cache;
 		}
 
@@ -52,7 +53,7 @@ namespace Roadkill.Core.Cache
 		/// <param name="item">The page.</param>
 		public void Add(int id, int version, PageViewModel item)
 		{
-			if (!_applicationSettings.UseObjectCache)
+			if (!_configuration.UseObjectCache.GetValueOrDefault())
 				return;
 
 			if (!item.IsCacheable)
@@ -70,7 +71,7 @@ namespace Roadkill.Core.Cache
 		/// <param name="item">The updated homepage item.</param>
 		public void UpdateHomePage(PageViewModel item)
 		{
-			if (!_applicationSettings.UseObjectCache)
+			if (!_configuration.UseObjectCache.GetValueOrDefault())
 				return;
 
 			_cache.Remove(CacheKeys.HomepageKey());
@@ -83,7 +84,7 @@ namespace Roadkill.Core.Cache
 		/// <returns>The cached <see cref="PageViewModel"/> for the homepage; or null if it doesn't exist.</returns>
 		public PageViewModel GetHomePage()
 		{
-			if (!_applicationSettings.UseObjectCache)
+			if (!_configuration.UseObjectCache.GetValueOrDefault())
 				return null;
 
 			Log("Get latest homepage");
@@ -109,7 +110,7 @@ namespace Roadkill.Core.Cache
 		/// <returns>The cached <see cref="PageViewModel"/>; or null if it doesn't exist.</returns>
 		public PageViewModel Get(int id, int version)
 		{
-			if (!_applicationSettings.UseObjectCache)
+			if (!_configuration.UseObjectCache.GetValueOrDefault())
 				return null;
 
 			string key = CacheKeys.PageViewModelKey(id, version);
@@ -123,7 +124,7 @@ namespace Roadkill.Core.Cache
 		/// </summary>
 		public void RemoveHomePage()
 		{
-			if (!_applicationSettings.UseObjectCache)
+			if (!_configuration.UseObjectCache.GetValueOrDefault())
 				return;
 
 			_cache.Remove(CacheKeys.HomepageKey());
@@ -147,7 +148,7 @@ namespace Roadkill.Core.Cache
 		/// <param name="version">The page content version.</param>
 		public void Remove(int id, int version)
 		{
-			if (!_applicationSettings.UseObjectCache)
+			if (!_configuration.UseObjectCache.GetValueOrDefault())
 				return;
 
 			string key = CacheKeys.PageViewModelKey(id, version);
@@ -161,7 +162,7 @@ namespace Roadkill.Core.Cache
 		/// </summary>
 		public void RemoveAll()
 		{
-			if (!_applicationSettings.UseObjectCache)
+			if (!_configuration.UseObjectCache.GetValueOrDefault())
 				return;
 
 			Log("RemoveAll from cache");

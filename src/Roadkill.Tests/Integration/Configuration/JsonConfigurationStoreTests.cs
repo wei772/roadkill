@@ -7,9 +7,9 @@ namespace Roadkill.Tests.Integration.Configuration
 {
 	public class JsonConfigurationStoreTests
 	{
-		private JsonConfigurationStore GetConfigurationStore(string configPath)
+		private JsonConfigurationStore GetConfigurationStore(string configPath = "", string pluginConfigPath = "")
 		{
-			return new JsonConfigurationStore($@"Integration\Configuration\TestConfigs\JSON\{configPath}");
+			return new JsonConfigurationStore($@"Integration\Configuration\TestConfigs\JSON\{configPath}", $@"Integration\Configuration\TestConfigs\JSON\{pluginConfigPath}");
 		}
 
 		[Test]
@@ -95,6 +95,21 @@ namespace Roadkill.Tests.Integration.Configuration
 			// Act
 			IConfiguration actualConfiguration1 = store.Load();
 			IConfiguration actualConfiguration2 = store.Load();
+
+			// Assert
+			Assert.True(Object.ReferenceEquals(actualConfiguration1, actualConfiguration2));
+		}
+
+
+		[Test]
+		public void LoadPluginConfiguration_should_return_cached_version()
+		{
+			// Arrange
+			JsonConfigurationStore store = GetConfigurationStore("", "plugin-test.json");
+
+			// Act
+			IPluginConfiguration actualConfiguration1 = store.LoadPluginConfiguration();
+			IPluginConfiguration actualConfiguration2 = store.LoadPluginConfiguration();
 
 			// Assert
 			Assert.True(Object.ReferenceEquals(actualConfiguration1, actualConfiguration2));

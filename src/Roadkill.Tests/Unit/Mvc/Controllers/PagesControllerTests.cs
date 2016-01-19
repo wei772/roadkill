@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.Mvc;
 using Moq;
 using NUnit.Framework;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Converters;
 using Roadkill.Core.Database;
@@ -21,45 +22,38 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 	{
 		private MocksAndStubsContainer _container;
 
-		private ApplicationSettings _applicationSettings;
+		private IConfigurationStore _configurationStore;
 		private PageRepositoryMock _pageRepository;
 		private UserServiceMock _userService;
 		private PageHistoryService _historyService;
-		private SettingsService _settingsService;
 		private PluginFactoryMock _pluginFactory;
 		private MarkupConverter _markupConverter;
-		private SearchServiceMock _searchService;
 
 		private UserContextStub _contextStub;
 		private Mock<IPageService> _pageServiceMock;
 		private IPageService _pageService;
-		private MvcMockContainer _mocksContainer;
 		private PagesController _pagesController;
-		private SettingsRepositoryMock _settingsRepository;
 
 		[SetUp]
 		public void Setup()
 		{
 			_container = new MocksAndStubsContainer();
 
-			_applicationSettings = _container.ApplicationSettings;
+			_configurationStore = _container.ConfigurationStoreMock;
 
-			_settingsRepository = _container.SettingsRepository;
 			_pageRepository = _container.PageRepository;
 			
 			_pluginFactory = _container.PluginFactory;
-			_settingsService = _container.SettingsService;
 			_userService = _container.UserService;
 			_historyService = _container.HistoryService;
 			_markupConverter = _container.MarkupConverter;
-			_searchService = _container.SearchService;
 
 			// Use a stub instead of the MocksAndStubsContainer's default
 			_contextStub = new UserContextStub();
 
 			// Customise the page service so we can verify what was called
 			_pageServiceMock = new Mock<IPageService>();
-			_pageServiceMock.Setup(x => x.GetMarkupConverter()).Returns(new MarkupConverter(_applicationSettings, _settingsRepository, _pageRepository, _pluginFactory));
+			_pageServiceMock.Setup(x => x.GetMarkupConverter()).Returns(new MarkupConverter(_configurationStore, _pageRepository, _pluginFactory));
 			_pageServiceMock.Setup(x => x.GetById(It.IsAny<int>(), false)).Returns<int, bool>((int id, bool loadContent) =>
 				{
 					Page page = _pageRepository.GetPageById(id);
@@ -77,8 +71,8 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 			_pageServiceMock.Setup(x => x.FindByTag(It.IsAny<string>()));
 			_pageService = _pageServiceMock.Object;
 
-			_pagesController = new PagesController(_applicationSettings, _userService, _settingsService, _pageService, _searchService, _historyService, _contextStub);
-			_mocksContainer = _pagesController.SetFakeControllerContext();
+			_pagesController = new PagesController(_configurationStore, _userService, _pageService, _historyService, _contextStub);
+			_pagesController.SetFakeControllerContext();
 		}
 
 		private Page AddDummyPage1()

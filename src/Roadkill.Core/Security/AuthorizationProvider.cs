@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Security;
 
@@ -11,18 +12,18 @@ namespace Roadkill.Core.Security
 {
 	public class AuthorizationProvider : IAuthorizationProvider
 	{
-		private readonly ApplicationSettings _applicationSettings;
+		private readonly IConfiguration _configuration;
 		private readonly UserServiceBase _userService;
 
-		public AuthorizationProvider(ApplicationSettings applicationSettings, UserServiceBase userService)
+		public AuthorizationProvider(IConfigurationStore configurationStore, UserServiceBase userService)
 		{
-			if (applicationSettings == null)
-				throw new ArgumentNullException("applicationSettings");
+			if (configurationStore == null)
+				throw new ArgumentNullException(nameof(configurationStore));
 
 			if (userService == null)
-				throw new ArgumentNullException("userService");
+				throw new ArgumentNullException(nameof(userService));
 
-			_applicationSettings = applicationSettings;
+			_configuration = configurationStore.Load();
 			_userService = userService;
 		}
 
@@ -36,7 +37,7 @@ namespace Roadkill.Core.Security
 			}
 
 			// An empty admin role name implies everyone is an admin - there's roles at all.
-			if (string.IsNullOrEmpty(_applicationSettings.AdminRoleName))
+			if (string.IsNullOrEmpty(_configuration.SecuritySettings.AdminRoleName))
 				return true;
 
 			// For custom IIdentity implementations, check the name (for Windows this should never happen)
@@ -59,7 +60,7 @@ namespace Roadkill.Core.Security
 			}
 
 			// An empty editor role name implies everyone is an editor - there's no page security.
-			if (string.IsNullOrEmpty(_applicationSettings.EditorRoleName))
+			if (string.IsNullOrEmpty(_configuration.SecuritySettings.EditorRoleName))
 				return true;
 
 			// Same as IsAdmin - for custom IIdentity implementations, check the name (for Windows this should never happen)

@@ -4,7 +4,6 @@ using System.Linq;
 using NUnit.Framework;
 using Roadkill.Core;
 using Roadkill.Core.Cache;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
 using Roadkill.Core.Mvc.ViewModels;
 using Roadkill.Core.Services;
@@ -32,14 +31,10 @@ namespace Roadkill.Tests.Unit.Services
 
 		private MocksAndStubsContainer _container;
 
-		private ApplicationSettings _applicationSettings;
 		private IUserContext _context;
 		private PageRepositoryMock _pageRepository;
 		private UserServiceMock _userService;
 		private PageService _pageService;
-		private PageHistoryService _historyService;
-		private SettingsService _settingsService;
-		private PluginFactoryMock _pluginFactory;
 		private ListCache _listCache;
 		private PageViewModelCache _pageViewModelCache;
 
@@ -48,14 +43,9 @@ namespace Roadkill.Tests.Unit.Services
 		{
 			_container = new MocksAndStubsContainer();
 
-			_applicationSettings = _container.ApplicationSettings;
-			_applicationSettings.ConnectionString = "connstring";
 			_context = _container.UserContext;
 			_pageRepository = _container.PageRepository;
-			_pluginFactory = _container.PluginFactory;
-			_settingsService = _container.SettingsService;
 			_userService = _container.UserService;
-			_historyService = _container.HistoryService;
 			_pageService = _container.PageService;
 			_listCache = _container.ListCache;
 			_pageViewModelCache = _container.PageViewModelCache;

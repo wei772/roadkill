@@ -8,7 +8,6 @@ using Roadkill.Core.Cache;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Converters;
 using Roadkill.Core.Database;
-using Roadkill.Core.Database.Repositories;
 using Roadkill.Core.Domain.Export;
 using Roadkill.Core.Email;
 using Roadkill.Core.Import;
@@ -83,7 +82,6 @@ namespace Roadkill.Core.DependencyResolution.StructureMap
 			scanner.AddAllTypesOf<NonConfigurableSettings>();
 
 			// Repositories
-			scanner.AddAllTypesOf<ISettingsRepository>();
 			scanner.AddAllTypesOf<IUserRepository>();
 			scanner.AddAllTypesOf<IPageRepository>();
 
@@ -91,7 +89,6 @@ namespace Roadkill.Core.DependencyResolution.StructureMap
 			scanner.With(new AbstractClassConvention<UserServiceBase>());
 			scanner.AddAllTypesOf<IPageService>();
 			scanner.AddAllTypesOf<ISearchService>();
-			scanner.AddAllTypesOf<ISettingsService>();
 			scanner.AddAllTypesOf<IActiveDirectoryProvider>();
 			scanner.AddAllTypesOf<IFileService>();
 			scanner.AddAllTypesOf<IInstallationService>();
@@ -197,15 +194,6 @@ namespace Roadkill.Core.DependencyResolution.StructureMap
 					return new RepositoryFactory(appSettings.DatabaseName, appSettings.ConnectionString);
 				});
 
-			For<ISettingsRepository>()
-				.HybridHttpOrThreadLocalScoped()
-				.Use("ISettingsRepository", x =>
-				{
-					ApplicationSettings appSettings = x.GetInstance<ApplicationSettings>();
-					return x.TryGetInstance<IRepositoryFactory>()
-						.GetSettingsRepository(appSettings.DatabaseName, appSettings.ConnectionString);
-				});
-
 			For<IUserRepository>()
 				.HybridHttpOrThreadLocalScoped()
 				.Use("IUserRepository", x =>
@@ -235,7 +223,6 @@ namespace Roadkill.Core.DependencyResolution.StructureMap
 
 			// Setter inject the *internal* properties for the text plugins
 			For<TextPlugin>().OnCreationForAll("set plugin cache", (ctx, plugin) => plugin.PluginCache = ctx.GetInstance<IPluginCache>());
-			For<TextPlugin>().OnCreationForAll("set plugin repository", (ctx, plugin) => plugin.Repository = ctx.GetInstance<ISettingsRepository>());
 		}
 
 		private void ConfigureFileService()

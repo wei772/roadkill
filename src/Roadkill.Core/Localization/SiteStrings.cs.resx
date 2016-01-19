@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:element name="data">
@@ -684,7 +684,7 @@
 	<value>Importovat ze Screwturn</value>
 </data>
 <data name="SiteSettings_Tools_ScrewTurnImport_Label" xml:space="preserve">
-	<value>Naimportuje veškerý obsah Screwturn 2 databáze. Kvůli kompatibilitě nastavte v souboru v settings/web.config značkovací jazyk na MediaWiki. Jelikož Screwturn nepoužívá přesnou syntaxi Mediawiki, nemusí se všechen obsah zobrazovat bezchybně. Týká se to zejména obrázků a odkazů.</value>
+	<value>Naimportuje veškerý obsah Screwturn 2 databáze. Kvůli kompatibilitě nastavte v souboru v configuration/web.config značkovací jazyk na MediaWiki. Jelikož Screwturn nepoužívá přesnou syntaxi Mediawiki, nemusí se všechen obsah zobrazovat bezchybně. Týká se to zejména obrázků a odkazů.</value>
 </data>
 <data name="SiteSettings_Tools_ScrewTurnImport_Connection" xml:space="preserve">
 	<value>Připojovají řetězec ke Screwturn:</value>

@@ -1,0 +1,7 @@
+{
+	"Id": "MyPlugin",
+	"IsEnabled" :  true,
+	"Settings": {
+		"Hello": "World"
+	}
+}

@@ -1,18 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Web;
 using System.Web.Mvc;
-using Newtonsoft.Json;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Cache;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Converters;
-using Roadkill.Core.Database;
-using Roadkill.Core.Database.Repositories;
 using Roadkill.Core.Logging;
-using StructureMap;
 using StructureMap.Attributes;
 
 namespace Roadkill.Core.Plugins
@@ -38,11 +32,6 @@ namespace Roadkill.Core.Plugins
 		private string _onLoadFunction;
 		private Guid _databaseId;
 		private string _pluginVirtualPath;
-
-		/// <summary>
-		/// The backing <see cref="Settings"/> instance for the <see cref="TextPlugin.Settings"/> property.
-		/// </summary>
-		protected internal Settings _settings;
 
 		/// <summary>
 		/// The unique ID for the plugin, which is also the directory it's stored in inside the /Plugins/ directory.
@@ -74,40 +63,11 @@ namespace Roadkill.Core.Plugins
 
 		// These are setter injected at creation time by the DI manager
 		internal IPluginCache PluginCache { get; set; }
-		internal ISettingsRepository Repository { get; set; }
 
 		/// <summary>
 		/// Gets or sets whether the plugin's HTML output can be cached by the inbuilt Roadkill caching.
 		/// </summary>
 		public virtual bool IsCacheable { get; set; }
-
-		/// <summary>
-		/// Gets the plugin's <see cref="Settings"/>. If cached, the settings are loaded from there, otherwise they 
-		/// are loaded from the database. If no settings exist in the database for the plugin, a new <see cref="Settings"/> 
-		/// instance is created, saved to the database and returned.
-		/// </summary>
-		public Settings Settings
-		{
-			get
-			{
-				EnsureSettings();
-				return _settings;
-			}
-		}
-
-		/// <summary>
-		///  Gets the current Roadkill <see cref="SiteSettings"/> from the repository.
-		/// </summary>
-		public SiteSettings SiteSettings
-		{
-			get
-			{
-				if (Repository != null)
-					return Repository.GetSiteSettings();
-				else
-					return null;
-			}
-		}
 
 		/// <summary>
 		/// Gets the virtual path for the plugin. This is in the format ~/Plugins/MyPlugin and does not contain a trailing slash.
@@ -171,6 +131,8 @@ namespace Roadkill.Core.Plugins
 			}
 		}
 
+		public IConfiguration Configuration { get; set; }
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="TextPlugin"/> class.
 		/// </summary>
@@ -180,54 +142,10 @@ namespace Roadkill.Core.Plugins
 			IsCacheable = true;
 		}
 
-		internal TextPlugin(ISettingsRepository repository, SiteCache siteCache) : this()
+		internal TextPlugin(IConfigurationStore configurationStore, SiteCache siteCache) : this()
 		{
-			Repository = repository;
+			Configuration = configurationStore.Load();
 			PluginCache = siteCache;
-		}
-
-		private void EnsureSettings()
-		{
-			if (_settings == null)
-			{
-				// Guard for null SiteCache
-				if (PluginCache == null)
-				{
-					throw new PluginException(null, "The PluginCache property is null for {0} when it should be injected by the DI container. " +
-											  "If you're unit testing, set the PluginCache and Repository properties with stubs before calling the Settings properties.", GetType().FullName);
-				}
-
-				_settings = PluginCache.GetPluginSettings(this);
-				if (_settings == null)
-				{
-					// Guard for null Repository
-					if (Repository == null)
-					{
-						throw new PluginException(null, "The Repository property is null for {0} and it wasn't found in the cache - it should be injected by the DI container. " +
-											  "If you're unit testing, set the PluginCache and Repository properties with stubs before calling the Settings properties.", GetType().FullName);
-					}
-
-					// Load from the database
-					_settings = Repository.GetTextPluginSettings(this.DatabaseId);
-
-					// If this is the first time the plugin has been used, new up the settings
-					if (_settings == null)
-					{
-						EnsureIdIsValid();
-						string version = EnsureValidVersion();
-						_settings = new Settings(Id, version);
-
-						// Allow derived classes to add custom setting values
-						OnInitializeSettings(_settings);
-
-						// Update the repository
-						Repository.SaveTextPluginSettings(this);
-					}
-
-					// Cache the settings
-					PluginCache.UpdatePluginSettings(this);
-				}
-			}
 		}
 
 		/// <summary>
@@ -262,15 +180,6 @@ namespace Roadkill.Core.Plugins
 		public virtual string AfterParse(string html)
 		{
 			return html;
-		}
-
-		/// <summary>
-		/// Gets plugin's current settings as a JSON string. This is a shortcut for <see cref="Settings.GetJson()"/>
-		/// </summary>
-		/// <returns></returns>
-		public string GetSettingsJson()
-		{
-			return this.Settings.GetJson();
 		}
 
 		/// <summary>

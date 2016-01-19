@@ -9,6 +9,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Runtime.Caching;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Database;
 using Roadkill.Core.DependencyResolution.StructureMap;
 using StructureMap;
@@ -17,7 +18,9 @@ namespace Roadkill.Tests.Unit
 {
 	public class MocksAndStubsContainer
 	{
-		public ApplicationSettings ApplicationSettings { get; set; }
+		public IConfiguration Configuration { get; set; }
+		public ConfigurationStoreMock ConfigurationStoreMock { get; set; }
+
 		public ConfigReaderWriterStub ConfigReaderWriter { get; set; }
 		public IUserContext UserContext { get; set; }
 
@@ -34,11 +37,9 @@ namespace Roadkill.Tests.Unit
 		public PageService PageService { get; set; }
 		public SearchServiceMock SearchService { get; set; }
 		public PageHistoryService HistoryService { get; set; }
-		public SettingsService SettingsService { get; set; }
 		public IFileService FileService { get; set; }
 
 		public RepositoryFactoryMock RepositoryFactory { get; set; }
-		public SettingsRepositoryMock SettingsRepository { get; set; }
 		public UserRepositoryMock UserRepository { get; set; }
 		public PageRepositoryMock PageRepository { get; set; }
 		public InstallerRepositoryMock InstallerRepository { get; set; }
@@ -55,28 +56,25 @@ namespace Roadkill.Tests.Unit
 		/// reflection of how the MemoryCache is used inside an ASP.NET environment.</param>
 		public MocksAndStubsContainer(bool useCacheMock = false)
 		{
-			ApplicationSettings = new ApplicationSettings();
-			ApplicationSettings.Installed = true;
-			ApplicationSettings.AttachmentsFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "attachments");
-			ConfigReaderWriter = new ConfigReaderWriterStub();
+			// New config
+			ConfigurationStoreMock = new ConfigurationStoreMock();
+			Configuration = ConfigurationStoreMock.Load();
+			Configuration.Installed = true;
+			Configuration.AttachmentSettings.AttachmentsFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "attachments");
 
 			// Cache
 			MemoryCache = useCacheMock ? new CacheMock() : CacheMock.RoadkillCache;
-			ListCache = new ListCache(ApplicationSettings, MemoryCache);
+			ListCache = new ListCache(ConfigurationStoreMock, MemoryCache);
 			SiteCache = new SiteCache(MemoryCache);
-			PageViewModelCache = new PageViewModelCache(ApplicationSettings, MemoryCache);
+			PageViewModelCache = new PageViewModelCache(ConfigurationStoreMock, MemoryCache);
 
 			// Repositories
-			SettingsRepository = new SettingsRepositoryMock();
-			SettingsRepository.SiteSettings = new SiteSettings();
-			SettingsRepository.SiteSettings.MarkupType = "Creole";
 			UserRepository = new UserRepositoryMock();
 			PageRepository = new PageRepositoryMock();
 			InstallerRepository = new InstallerRepositoryMock();
 
 			RepositoryFactory = new RepositoryFactoryMock()
 			{
-				SettingsRepository = SettingsRepository,
 				UserRepository = UserRepository,
 				PageRepository = PageRepository,
 				InstallerRepository = InstallerRepository
@@ -85,20 +83,19 @@ namespace Roadkill.Tests.Unit
 
 			// Plugins
 			PluginFactory = new PluginFactoryMock();
-			MarkupConverter = new MarkupConverter(ApplicationSettings, SettingsRepository, PageRepository, PluginFactory);
+			MarkupConverter = new MarkupConverter(ConfigurationStoreMock, PageRepository, PluginFactory);
 
 			// Services
 			// Dependencies for PageService. Be careful to make sure the class using this Container isn't testing the mock.
-			SettingsService = new SettingsService(RepositoryFactory, ApplicationSettings);
-			UserService = new UserServiceMock(ApplicationSettings, UserRepository);
+			UserService = new UserServiceMock(ConfigurationStoreMock, UserRepository);
 			UserContext = new UserContext(UserService);
-			SearchService = new SearchServiceMock(ApplicationSettings, SettingsRepository, PageRepository, PluginFactory);
+			SearchService = new SearchServiceMock(ConfigurationStoreMock, PageRepository, PluginFactory);
 			SearchService.PageContents = PageRepository.PageContents;
 			SearchService.Pages = PageRepository.Pages;
-			HistoryService = new PageHistoryService(ApplicationSettings, SettingsRepository, PageRepository, UserContext,
+			HistoryService = new PageHistoryService(ConfigurationStoreMock, PageRepository, UserContext,
 				PageViewModelCache, PluginFactory);
 			FileService = new FileServiceMock();
-			PageService = new PageService(ApplicationSettings, SettingsRepository, PageRepository, SearchService, HistoryService,
+			PageService = new PageService(ConfigurationStoreMock, PageRepository, SearchService, HistoryService,
 				UserContext, ListCache, PageViewModelCache, SiteCache, PluginFactory);
 
 			StructureMapContainer = new Container(x =>

@@ -5,6 +5,7 @@ using System.Web.Mvc;
 using Moq;
 using MvcContrib.TestHelper;
 using NUnit.Framework;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
 using Roadkill.Core.DependencyResolution;
@@ -19,34 +20,30 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 	[Category("Unit")]
 	public class InstallControllerTests
 	{
-		private ApplicationSettings _applicationSettings;
+		private ConfigurationStoreMock _configurationStore;
 		private ConfigReaderWriterStub _configReaderWriter;
 		private InstallController _installController;
-		private RepositoryFactoryMock _repositoryFactory;
 		private MocksAndStubsContainer _container;
-		private SettingsService _settingsService;
-		private UserServiceMock _userService;
 		private InstallationService _installationService;
 		private DatabaseTesterMock _databaseTester;
 		private InstallerRepositoryMock _installerRepository;
+		private IConfiguration _configuration;
 
 		[SetUp]
 		public void Setup()
 		{
 			_container = new MocksAndStubsContainer();
 
-			_applicationSettings = _container.ApplicationSettings;
-			_applicationSettings.Installed = false;
+			_configurationStore = _container.ConfigurationStoreMock;
+			_configuration = _container.Configuration;
+			_configuration.Installed = false;
 
-			_settingsService = _container.SettingsService;
-			_userService = _container.UserService;
 			_configReaderWriter = _container.ConfigReaderWriter;
-			_repositoryFactory = _container.RepositoryFactory;
 			_installationService = _container.InstallationService;
 			_databaseTester = _container.DatabaseTester;
 			_installerRepository = _container.InstallerRepository;
 
-            _installController = new InstallController(_applicationSettings, _configReaderWriter, _installationService, _databaseTester);
+            _installController = new InstallController(_configurationStore, _configReaderWriter, _installationService);
 		}
 
 		[Test]
@@ -331,7 +328,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 			model.Theme = "ConcupiscentGoatOnHolidayTheme";
 
 			var installationServiceMock = new Mock<IInstallationService>();
-			_installController = new InstallController(_applicationSettings, _configReaderWriter, installationServiceMock.Object, _databaseTester);
+			_installController = new InstallController(_configurationStore, _configReaderWriter, installationServiceMock.Object);
 
 			// Act
 			_installController.FinalizeInstall(model);

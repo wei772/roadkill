@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
 using Roadkill.Core.Mvc.ViewModels;
@@ -21,8 +22,8 @@ namespace Roadkill.Plugins
 
 		}
 
-		public TestUserService(ApplicationSettings settings, IUserRepository userRepository)
-			: base(settings, userRepository)
+		public TestUserService(IConfigurationStore configurationStore, IUserRepository userRepository)
+			: base(configurationStore, userRepository)
 		{
 
 		}

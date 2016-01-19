@@ -5,6 +5,7 @@ using System.Web;
 using Moq;
 using NUnit.Framework;
 using Roadkill.Core;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Exceptions;
 using Roadkill.Core.Mvc.ViewModels;
@@ -17,37 +18,38 @@ namespace Roadkill.Tests.Unit.Services
 	public class LocalFileServiceTests
 	{
 		private MocksAndStubsContainer _container;
-		private ApplicationSettings _applicationSettings;
-		private SettingsService _settingsService;
+		private IConfigurationStore _configurationStore;
+		private IConfiguration _configuration;
 		private IFileService _fileService;
 
 		[SetUp]
 		public void Setup()
 		{
 			_container = new MocksAndStubsContainer();
-			_applicationSettings = _container.ApplicationSettings;
-			_settingsService = _container.SettingsService;
-			_fileService = new LocalFileService(_applicationSettings, _settingsService);
+			_configurationStore = _container.ConfigurationStoreMock;
+			_configuration = _container.Configuration;
+
+			_fileService = new LocalFileService(_configurationStore);
 
 			try
 			{
 				// Delete any existing attachments folder
-				DirectoryInfo directoryInfo = new DirectoryInfo(_applicationSettings.AttachmentsFolder);
+				DirectoryInfo directoryInfo = new DirectoryInfo(_configuration.AttachmentSettings.AttachmentsFolder);
 				if (directoryInfo.Exists)
 				{
 					directoryInfo.Attributes = FileAttributes.Normal;
 					directoryInfo.Delete(true);
 				}
 
-				Directory.CreateDirectory(_applicationSettings.AttachmentsFolder);
+				Directory.CreateDirectory(_configuration.AttachmentSettings.AttachmentsFolder);
 			}
 			catch (IOException e)
 			{
-				Assert.Fail("Unable to delete the attachments folder " + _applicationSettings.AttachmentsFolder + ", does it have a lock/explorer window open?" + e);
+				Assert.Fail("Unable to delete the attachments folder " + _configuration.AttachmentSettings.AttachmentsFolder + ", does it have a lock/explorer window open?" + e);
 			}
 			catch (ArgumentException e)
 			{
-				Assert.Fail("Unable to delete the attachments folder " + _applicationSettings.AttachmentsFolder + ", is EasyMercurial open?" + e);
+				Assert.Fail("Unable to delete the attachments folder " + _configuration.AttachmentSettings.AttachmentsFolder + ", is EasyMercurial open?" + e);
 			}
 		}
 
@@ -142,7 +144,7 @@ namespace Roadkill.Tests.Unit.Services
 		{
 			// Arrange
 			CreateTestDirectoryInAttachments("folder1");
-			string fullPath = Path.Combine(_applicationSettings.AttachmentsDirectoryPath, "folder1", "test.txt");
+			string fullPath = Path.Combine(_configuration.AttachmentSettings.GetAttachmentsDirectoryPath(), "folder1", "test.txt");
 			File.WriteAllText(fullPath, "test");
 
 			// Act, Assert
@@ -255,7 +257,7 @@ namespace Roadkill.Tests.Unit.Services
 		{
 			// Arrange
 			string folderName = "newfolder with spaces in it";
-			string fullPath = Path.Combine(_applicationSettings.AttachmentsDirectoryPath, folderName);
+			string fullPath = Path.Combine(_configuration.AttachmentSettings.GetAttachmentsDirectoryPath(), folderName);
 
 			// Act
 			bool result = _fileService.CreateFolder("/", folderName);
@@ -308,7 +310,7 @@ namespace Roadkill.Tests.Unit.Services
 		public void upload_with_single_file_to_root_should_save_file_to_disk_and_return_filename()
 		{
 			// Arrange
-			string file1FullPath = Path.Combine(_applicationSettings.AttachmentsDirectoryPath, "file1.png");
+			string file1FullPath = Path.Combine(_configuration.AttachmentSettings.GetAttachmentsDirectoryPath(), "file1.png");
 			HttpFileCollectionBase fileCollection = CreateFileCollection("file1.png");
 
 			// Act
@@ -323,11 +325,10 @@ namespace Roadkill.Tests.Unit.Services
 		public void upload_should_overwrite_existing_file_whenoverwritefiles_setting_is_true()
 		{
 			// Arrange
-			SiteSettings siteSettings = _settingsService.GetSiteSettings();
-			siteSettings.OverwriteExistingFiles = true;
+			_configuration.AttachmentSettings.OverwriteExistingFiles = true;
 
 			CreateTestFileInAttachments("file1.png", "the original file");
-			string file1FullPath = Path.Combine(_applicationSettings.AttachmentsDirectoryPath, "file1.png");
+			string file1FullPath = Path.Combine(_configuration.AttachmentSettings.GetAttachmentsDirectoryPath(), "file1.png");
 
 			HttpFileCollectionBase fileCollection = CreateFileCollection("file1.png");
 
@@ -345,7 +346,7 @@ namespace Roadkill.Tests.Unit.Services
 		{
 			// Arrange
 			HttpFileCollectionBase fileCollection = CreateFileCollection("file1.PNG");
-			string file1FullPath = Path.Combine(_applicationSettings.AttachmentsDirectoryPath, "file1.PNG");
+			string file1FullPath = Path.Combine(_configuration.AttachmentSettings.GetAttachmentsDirectoryPath(), "file1.PNG");
 
 			// Act
 			string filename = _fileService.Upload("/", fileCollection);
@@ -361,8 +362,8 @@ namespace Roadkill.Tests.Unit.Services
 		{
 			// Arrange
 			HttpFileCollectionBase fileCollection = CreateFileCollection("file1.png", "file2.png");
-			string file1FullPath = Path.Combine(_applicationSettings.AttachmentsDirectoryPath, "file1.png");
-			string file2FullPath = Path.Combine(_applicationSettings.AttachmentsDirectoryPath, "file2.png");
+			string file1FullPath = Path.Combine(_configuration.AttachmentSettings.GetAttachmentsDirectoryPath(), "file1.png");
+			string file2FullPath = Path.Combine(_configuration.AttachmentSettings.GetAttachmentsDirectoryPath(), "file2.png");
 
 			// Act
 			string filename = _fileService.Upload("/", fileCollection);
@@ -436,7 +437,6 @@ namespace Roadkill.Tests.Unit.Services
 		{
 			// Arrange
 			HttpFileCollectionBase fileCollection = CreateFileCollection("virus.exe");
-			string file1FullPath = Path.Combine(_applicationSettings.AttachmentsDirectoryPath, "virus.exe");
 
 			// Act + Assert
 			_fileService.Upload("/", fileCollection);
@@ -447,12 +447,10 @@ namespace Roadkill.Tests.Unit.Services
 		public void FileUpload_Should_Throw_FileException_When_File_Exists_And_OverWriteFiles_Setting_Is_False()
 		{
 			// Arrange
-			SiteSettings siteSettings = _settingsService.GetSiteSettings();
-			siteSettings.OverwriteExistingFiles = false;
+			_configuration.AttachmentSettings.OverwriteExistingFiles = false;
 			CreateTestFileInAttachments("file1.png", "the original file");
 
 			HttpFileCollectionBase fileCollection = CreateFileCollection("file1.png.exe");
-			string file1FullPath = Path.Combine(_applicationSettings.AttachmentsDirectoryPath, "file1.png");
 
 			// Act + Assert
 			_fileService.Upload("/", fileCollection);
@@ -462,17 +460,16 @@ namespace Roadkill.Tests.Unit.Services
 		public void fileupload_should_throw_fileexception_when_file_exists_and_overwritefiles_setting_is_false_for_multiple_files()
 		{
 			// Arrange
-			SiteSettings siteSettings = _settingsService.GetSiteSettings();
-			siteSettings.OverwriteExistingFiles = false;
+			_configuration.AttachmentSettings.OverwriteExistingFiles = false;
 			CreateTestFileInAttachments("file3.png", "the original file"); // just 1 existing file
 
 			HttpFileCollectionBase fileCollection = CreateFileCollection("file1.png", "file2.png", "file3.png", "file4.png", "file5.png");
 
-			string file1FullPath = Path.Combine(_applicationSettings.AttachmentsDirectoryPath, "file1.png");
-			string file2FullPath = Path.Combine(_applicationSettings.AttachmentsDirectoryPath, "file2.png");
-			string file3FullPath = Path.Combine(_applicationSettings.AttachmentsDirectoryPath, "file3.png");
-			string file4FullPath = Path.Combine(_applicationSettings.AttachmentsDirectoryPath, "file4.png");
-			string file5FullPath = Path.Combine(_applicationSettings.AttachmentsDirectoryPath, "file5.png");
+			string file1FullPath = Path.Combine(_configuration.AttachmentSettings.GetAttachmentsDirectoryPath(), "file1.png");
+			string file2FullPath = Path.Combine(_configuration.AttachmentSettings.GetAttachmentsDirectoryPath(), "file2.png");
+			string file3FullPath = Path.Combine(_configuration.AttachmentSettings.GetAttachmentsDirectoryPath(), "file3.png");
+			string file4FullPath = Path.Combine(_configuration.AttachmentSettings.GetAttachmentsDirectoryPath(), "file4.png");
+			string file5FullPath = Path.Combine(_configuration.AttachmentSettings.GetAttachmentsDirectoryPath(), "file5.png");
 
 			// Act
 			try
@@ -497,7 +494,7 @@ namespace Roadkill.Tests.Unit.Services
 		// Helpers
 		private string CreateTestFileInAttachments(string filename, string filecontent = "test")
 		{
-			string fullPath = Path.Combine(_applicationSettings.AttachmentsDirectoryPath, filename);
+			string fullPath = Path.Combine(_configuration.AttachmentSettings.GetAttachmentsDirectoryPath(), filename);
 			File.WriteAllText(fullPath, filecontent);
 
 			return fullPath;
@@ -505,7 +502,7 @@ namespace Roadkill.Tests.Unit.Services
 
 		private string CreateTestDirectoryInAttachments(string directoryName)
 		{
-			string fullPath = Path.Combine(_applicationSettings.AttachmentsDirectoryPath, directoryName);
+			string fullPath = Path.Combine(_configuration.AttachmentSettings.GetAttachmentsDirectoryPath(), directoryName);
 			Directory.CreateDirectory(fullPath);
 
 			return fullPath;
@@ -527,7 +524,7 @@ namespace Roadkill.Tests.Unit.Services
 				Mock<HttpPostedFileBase> postedfile = new Mock<HttpPostedFileBase>();
 				postedfile.Setup(f => f.ContentLength).Returns(8192);
 				postedfile.Setup(f => f.FileName).Returns(fileNames[i]);
-				postedfile.Setup(f => f.SaveAs(It.IsAny<string>())).Callback<string>(filename => File.WriteAllText(Path.Combine(_applicationSettings.AttachmentsDirectoryPath, filename), "test contents"));
+				postedfile.Setup(f => f.SaveAs(It.IsAny<string>())).Callback<string>(filename => File.WriteAllText(Path.Combine(_configuration.AttachmentSettings.GetAttachmentsDirectoryPath(), filename), "test contents"));
 
 				// Setup the files[i] indexer
 				fileCollection.SetupGet(x => x[i]).Returns(postedfile.Object);

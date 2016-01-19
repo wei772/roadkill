@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Net.Mail;
 using System.Net.Mime;
 using System.Web;
-using Roadkill.Core.Configuration;
-using System.Configuration;
 using Roadkill.Core.Mvc.ViewModels;
 using System.IO;
 using System.Globalization;
-using Roadkill.Core.Database;
-using Roadkill.Core.Database.Repositories;
+using Roadkill.Core.AmazingConfig;
 
 namespace Roadkill.Core.Email
 {
@@ -30,10 +24,8 @@ namespace Roadkill.Core.Email
 	/// </remarks>
 	public abstract class EmailTemplate
 	{
-		protected NonConfigurableSettings Settings;
-		protected SiteSettings SiteSettings;
+		protected IConfiguration Configuration;
 		protected IEmailClient EmailClient;
-		protected ISettingsRepository SettingsRepository;
 
 		/// <summary>
 		/// The HTML template for the email.
@@ -48,21 +40,19 @@ namespace Roadkill.Core.Email
 		/// <summary>
 		/// Initializes a new instance of the <see cref="EmailTemplate"/> class.
 		/// </summary>
-		/// <param name="settings">Application wide settings</param>
-		/// <param name="settingsRepository">The repository retrieve the site settings from</param>
+		/// <param name="configurationStore"></param>
 		/// <param name="emailClient">The <see cref="IEmailClient"/> to send the mail through. If this 
 		/// parameter is null, then <see cref="EmailClient"/> is used</param>
-		protected EmailTemplate(NonConfigurableSettings settings, ISettingsRepository settingsRepository, IEmailClient emailClient)
+		protected EmailTemplate(IConfigurationStore configurationStore, IEmailClient emailClient)
 		{
-			if (settings == null)
-				throw new ArgumentNullException(nameof(settings));
+			if (configurationStore == null)
+				throw new ArgumentNullException(nameof(configurationStore));
 
-			if (settingsRepository == null)
-				throw new ArgumentNullException(nameof(settingsRepository));
+			if (emailClient == null)
+				throw new ArgumentNullException(nameof(emailClient));
 
-			Settings = settings;
-			SettingsRepository = settingsRepository;
-			
+			Configuration = configurationStore.Load();
+
 			EmailClient = emailClient;
 			if (EmailClient == null)
 				EmailClient = new EmailClient();
@@ -122,7 +112,7 @@ namespace Roadkill.Core.Email
 		/// </summary>
 		protected internal string ReadTemplateFile(string filename)
 		{
-			string templatePath = Settings.EmailTemplateFolder;
+			string templatePath = Configuration.InternalSettings.EmailTemplateFolder;
 			string textfilePath = Path.Combine(templatePath, filename);
 			string culturePath = Path.Combine(templatePath, CultureInfo.CurrentUICulture.Name);
 
@@ -144,20 +134,18 @@ namespace Roadkill.Core.Email
 		/// <param name="template"></param>
 		protected internal virtual string ReplaceTokens(UserViewModel model, string template)
 		{
-			if (SiteSettings == null)
-				SiteSettings = SettingsRepository.GetSiteSettings();
-
 			string result = template;
 
 			result = result.Replace("{FIRSTNAME}", model.Firstname);
 			result = result.Replace("{LASTNAME}", model.Lastname);
 			result = result.Replace("{EMAIL}", model.NewEmail);
 			result = result.Replace("{USERNAME}", model.NewUsername);
-			result = result.Replace("{SITEURL}", SiteSettings.SiteUrl);
 			result = result.Replace("{ACTIVATIONKEY}", model.ActivationKey);
 			result = result.Replace("{RESETKEY}", model.PasswordResetKey);
 			result = result.Replace("{USERID}", model.Id.ToString());
-			result = result.Replace("{SITENAME}", SiteSettings.SiteName);
+
+			result = result.Replace("{SITEURL}", Configuration.SiteUrl);
+			result = result.Replace("{SITENAME}", Configuration.SiteName);
 
 			if (HttpContext.Current != null)
 				result = result.Replace("{REQUEST_IP}", HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"]);

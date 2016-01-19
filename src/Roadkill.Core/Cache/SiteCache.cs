@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Caching;
 using Roadkill.Core.Configuration;
@@ -95,8 +96,10 @@ namespace Roadkill.Core.Cache
 		/// <param name="plugin">The text plugin.</param>
 		public void UpdatePluginSettings(TextPlugin plugin)
 		{
-			_cache.Remove(CacheKeys.PluginSettingsKey(plugin));
-			_cache.Add(CacheKeys.PluginSettingsKey(plugin), plugin.Settings, new CacheItemPolicy());
+			throw new NotImplementedException();
+
+			//_cache.Remove(CacheKeys.PluginSettingsKey(plugin));
+			//_cache.Add(CacheKeys.PluginSettingsKey(plugin), plugin.Settings, new CacheItemPolicy());
 		}
 
 		/// <summary>

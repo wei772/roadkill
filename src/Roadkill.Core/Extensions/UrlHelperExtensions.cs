@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Web.Mvc;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Configuration;
 
 namespace Roadkill.Core.Extensions
@@ -15,9 +16,9 @@ namespace Roadkill.Core.Extensions
 		/// <param name="helper">The helper.</param>
 		/// <param name="relativePath">The filename or path inside the current theme directory.</param>
 		/// <returns>A url path to the item, e.g. '/MySite/Themes/Mediawiki/logo.png'</returns>
-		public static string ThemeContent(this UrlHelper helper, string relativePath, SiteSettings settings)
+		public static string ThemeContent(this UrlHelper helper, string relativePath, IConfiguration configuration)
 		{
-			return helper.Content(settings.ThemePath + "/" + relativePath);
+			return helper.Content(configuration.ThemePath + "/" + relativePath);
 		}
 
 		/// <summary>

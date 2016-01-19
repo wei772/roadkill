@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Security;
 using System.Web;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
 using Roadkill.Core.Mvc.ViewModels;
@@ -16,8 +17,8 @@ namespace Roadkill.Core.Security
 	{
 		private readonly IPageRepository _pageRepository;
 
-		public FormsAuthUserService(ApplicationSettings settings, IUserRepository userRepository, IPageRepository pageRepository)
-			: base(settings, userRepository)
+		public FormsAuthUserService(IConfigurationStore configurationStore, IUserRepository userRepository, IPageRepository pageRepository)
+			: base(configurationStore, userRepository)
 		{
 			_pageRepository = pageRepository;
 		}

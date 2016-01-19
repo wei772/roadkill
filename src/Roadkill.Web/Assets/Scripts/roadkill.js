@@ -7696,13 +7696,13 @@ jQuery.extend({
 		}
 	},
 
-	// Creates a full fledged settings object into target
-	// with both ajaxSettings and settings fields.
+	// Creates a full fledged configuration object into target
+	// with both ajaxSettings and configuration fields.
 	// If target is omitted, writes into ajaxSettings.
 	ajaxSetup: function( target, settings ) {
 		return settings ?
 
-			// Building a settings object
+			// Building a configuration object
 			ajaxExtend( ajaxExtend( target, jQuery.ajaxSettings ), settings ) :
 
 			// Extending ajaxSettings
@@ -7838,7 +7838,7 @@ jQuery.extend({
 
 		// Remove hash character (#7531: and string promotion)
 		// Add protocol if not provided (#5866: IE7 issue with protocol-less urls)
-		// Handle falsy url in the settings object (#10093: consistency with old signature)
+		// Handle falsy url in the configuration object (#10093: consistency with old signature)
 		// We also use the url parameter if available
 		s.url = ( ( url || s.url || ajaxLocation ) + "" ).replace( rhash, "" ).replace( rprotocol, ajaxLocParts[ 1 ] + "//" );
 
@@ -8347,7 +8347,7 @@ jQuery.ajaxTransport( "script", function(s) {
 var oldCallbacks = [],
 	rjsonp = /(=)\?(?=&|$)|\?\?/;
 
-// Default jsonp settings
+// Default jsonp configuration
 jQuery.ajaxSetup({
 	jsonp: "callback",
 	jsonpCallback: function() {
@@ -15351,7 +15351,7 @@ $.widget( "ui.accordion", {
 		if ( typeof options === "string" ) {
 			easing = options;
 		}
-		// fall back from options to animation in case of partial down settings
+		// fall back from options to animation in case of partial down configuration
 		easing = easing || options.easing || animate.easing;
 		duration = duration || options.duration || animate.duration;
 
@@ -16416,7 +16416,7 @@ var PROP_NAME = "datepicker",
 /* Date picker manager.
    Use the singleton instance of this class, $.datepicker, to interact with the date picker.
    Settings for (groups of) date pickers are maintained in an instance object,
-   allowing multiple different settings on the same page. */
+   allowing multiple different configuration on the same page. */
 
 function Datepicker() {
 	this._curInst = null; // The current instance in use
@@ -16433,8 +16433,8 @@ function Datepicker() {
 	this._unselectableClass = "ui-datepicker-unselectable"; // The name of the unselectable cell marker class
 	this._currentClass = "ui-datepicker-current-day"; // The name of the current day marker class
 	this._dayOverClass = "ui-datepicker-days-cell-over"; // The name of the day hover marker class
-	this.regional = []; // Available regional settings, indexed by language code
-	this.regional[""] = { // Default regional settings
+	this.regional = []; // Available regional configuration, indexed by language code
+	this.regional[""] = { // Default regional configuration
 		closeText: "Done", // Display text for close link
 		prevText: "Prev", // Display text for previous month link
 		nextText: "Next", // Display text for next month link
@@ -16487,7 +16487,7 @@ function Datepicker() {
 			// [0] = true if selectable, false if not, [1] = custom CSS class name(s) or "",
 			// [2] = cell title (optional), e.g. $.datepicker.noWeekends
 		beforeShow: null, // Function that takes an input field and
-			// returns a set of custom settings for the date picker
+			// returns a set of custom configuration for the date picker
 		onSelect: null, // Define a callback function when a date is selected
 		onChangeMonthYear: null, // Define a callback function when the month or year is changed
 		onClose: null, // Define a callback function when the datepicker is closed
@@ -16518,8 +16518,8 @@ $.extend(Datepicker.prototype, {
 		return this.dpDiv;
 	},
 
-	/* Override the default settings for all instances of the date picker.
-	 * @param  settings  object - the new settings to use as defaults (anonymous object)
+	/* Override the default configuration for all instances of the date picker.
+	 * @param  configuration  object - the new configuration to use as defaults (anonymous object)
 	 * @return the manager object
 	 */
 	setDefaults: function(settings) {
@@ -16529,7 +16529,7 @@ $.extend(Datepicker.prototype, {
 
 	/* Attach the date picker to a jQuery selection.
 	 * @param  target	element - the target input field or division or span
-	 * @param  settings  object - the new settings to use for this date picker instance (anonymous)
+	 * @param  configuration  object - the new configuration to use for this date picker instance (anonymous)
 	 */
 	_attachDatepicker: function(target, settings) {
 		var nodeName, inline, inst;
@@ -16578,7 +16578,7 @@ $.extend(Datepicker.prototype, {
 		}
 	},
 
-	/* Make attachments based on settings. */
+	/* Make attachments based on configuration. */
 	_attachments: function(input, inst) {
 		var showOn, buttonText, buttonImage,
 			appendText = this._get(inst, "appendText"),
@@ -16678,7 +16678,7 @@ $.extend(Datepicker.prototype, {
 	 * @param  input element - ignored
 	 * @param  date	string or Date - the initial date to display
 	 * @param  onSelect  function - the function to call when a date is selected
-	 * @param  settings  object - update the dialog date picker instance's settings (anonymous object)
+	 * @param  configuration  object - update the dialog date picker instance's configuration (anonymous object)
 	 * @param  pos int[2] - coordinates for the dialog's position within the screen or
 	 *					event - with x/y coordinates or
 	 *					leave empty for default (screen centre)
@@ -16840,11 +16840,11 @@ $.extend(Datepicker.prototype, {
 		}
 	},
 
-	/* Update or retrieve the settings for a date picker attached to an input field or division.
+	/* Update or retrieve the configuration for a date picker attached to an input field or division.
 	 * @param  target  element - the target input field or division or span
-	 * @param  name	object - the new settings to update or
+	 * @param  name	object - the new configuration to update or
 	 *				string - the name of the setting to change or retrieve,
-	 *				when retrieving also "all" for all instance settings or
+	 *				when retrieving also "all" for all instance configuration or
 	 *				"defaults" for all global defaults
 	 * @param  value   any - the new value for the setting
 	 *				(omit if above is an object or to retrieve a value)
@@ -17454,7 +17454,7 @@ $.extend(Datepicker.prototype, {
 	 *
 	 * @param  format string - the expected format of the date
 	 * @param  value string - the date in the above format
-	 * @param  settings Object - attributes include:
+	 * @param  configuration Object - attributes include:
 	 *					shortYearCutoff  number - the cutoff year for determining the century (optional)
 	 *					dayNamesShort	string[7] - abbreviated names of the days from Sunday (optional)
 	 *					dayNames		string[7] - names of the days from Sunday (optional)
@@ -17663,7 +17663,7 @@ $.extend(Datepicker.prototype, {
 	 *
 	 * @param  format string - the desired format of the date
 	 * @param  date Date - the date value to format
-	 * @param  settings Object - attributes include:
+	 * @param  configuration Object - attributes include:
 	 *					dayNamesShort	string[7] - abbreviated names of the days from Sunday (optional)
 	 *					dayNames		string[7] - names of the days from Sunday (optional)
 	 *					monthNamesShort string[12] - abbreviated names of the months (optional)
@@ -18321,7 +18321,7 @@ $.extend(Datepicker.prototype, {
 			(!maxYear || date.getFullYear() <= maxYear));
 	},
 
-	/* Provide the configuration settings for formatting/parsing. */
+	/* Provide the configuration configuration for formatting/parsing. */
 	_getFormatConfig: function(inst) {
 		var shortYearCutoff = this._get(inst, "shortYearCutoff");
 		shortYearCutoff = (typeof shortYearCutoff !== "string" ? shortYearCutoff :
@@ -18388,7 +18388,7 @@ function extendRemove(target, props) {
 
 /* Invoke the datepicker functionality.
    @param  options  string - a command, optionally followed by additional parameters or
-					Object - settings for attaching new datepicker functionality
+					Object - configuration for attaching new datepicker functionality
    @return  jQuery object */
 $.fn.datepicker = function(options){
 
@@ -24870,7 +24870,7 @@ $.effects.effect.transfer = function( o, done ) {
             //
             // The upload starts when the submit method is invoked on the data parameter.
             // The data object contains a files property holding the added files
-            // and allows you to override plugin options as well as define ajax settings.
+            // and allows you to override plugin options as well as define ajax configuration.
             //
             // Listeners for this callback can also be bound the following way:
             // .bind('fileuploadadd', func);
@@ -24943,8 +24943,8 @@ $.effects.effect.transfer = function( o, done ) {
             // Callback for completed (success, abort or error) chunk upload requests:
             // chunkalways: function (e, data) {}, // .bind('fileuploadchunkalways', func);
 
-            // The plugin options are used as settings object for the ajax calls.
-            // The following are jQuery ajax settings required for the file uploads:
+            // The plugin options are used as configuration object for the ajax calls.
+            // The following are jQuery ajax configuration required for the file uploads:
             processData: false,
             contentType: false,
             cache: false
@@ -28187,7 +28187,7 @@ jQuery.validator.addMethod("url2", function(value, element, param) {
 
 // NOTICE: Modified version of Castle.Components.Validator.CreditCardValidator
 // Redistributed under the the Apache License 2.0 at http://www.apache.org/licenses/LICENSE-2.0
-// Valid Types: mastercard, visa, amex, dinersclub, enroute, discover, jcb, unknown, all (overrides all other settings)
+// Valid Types: mastercard, visa, amex, dinersclub, enroute, discover, jcb, unknown, all (overrides all other configuration)
 jQuery.validator.addMethod("creditcardtypes", function(value, element, param) {
 	if (/[^0-9\-]+/.test(value)) {
 		return false;
@@ -29388,127 +29388,6 @@ var Roadkill;
     })(Web = Roadkill.Web || (Roadkill.Web = {}));
 })(Roadkill || (Roadkill = {}));
 //# sourceMappingURL=util.js.map
-/// <reference path="../typescript-ref/references.ts" />
-var Roadkill;
-(function (Roadkill) {
-    var Web;
-    (function (Web) {
-        var Admin;
-        (function (Admin) {
-            var SettingsMessages = (function () {
-                function SettingsMessages() {
-                }
-                return SettingsMessages;
-            })();
-            Admin.SettingsMessages = SettingsMessages;
-            var Settings = (function () {
-                function Settings(messages) {
-                    var _this = this;
-                    // Test button messages
-                    this._messages = messages;
-                    // Help popovers
-                    $("input[rel=popover][type!=checkbox]").popover({ container: "body", placement: "right", trigger: "hover", html: true });
-                    $("input[type=checkbox][rel=popover],textarea[rel=popover],select[rel=popover]").popover({ container: "body", placement: "right", trigger: "hover", html: true });
-                    // Make the windows auth checkbox toggle the forms-auth/windows-auth sections.
-                    this.ToggleUserSettings(); // initial display
-                    $("#UseWindowsAuth").click(function (e) {
-                        _this.ToggleUserSettings();
-                    });
-                    // Button clicks
-                    $("#testdbconnection").click(function (e) {
-                        _this.OnTestDatabaseClick();
-                    });
-                    $("#testattachments").click(function (e) {
-                        _this.OnTestAttachmentsClick();
-                    });
-                    // Form validation
-                    var validationRules = {
-                        AllowedFileTypes: {
-                            required: true
-                        },
-                        AttachmentsFolder: {
-                            required: true
-                        }
-                    };
-                    var validation = new Roadkill.Web.Validation();
-                    validation.Configure("#settings-form", validationRules);
-                }
-                Settings.prototype.OnTestDatabaseClick = function () {
-                    var _this = this;
-                    $("#db-loading").removeClass("hidden");
-                    $("#db-loading").show();
-                    var jsonData = {
-                        "connectionString": $("#ConnectionString").val(),
-                        "databaseType": $("#DatabaseName").val()
-                    };
-                    // Make sure to use a lambda, so the "this" references is kept intact
-                    this.makeAjaxRequest(ROADKILL_TESTDB_URL, jsonData, this._messages.unexpectedError, function (data) { _this.TestDatabaseSuccess(data); });
-                };
-                Settings.prototype.TestDatabaseSuccess = function (data) {
-                    $("#db-loading").hide();
-                    if (data.Success) {
-                        toastr.success(this._messages.dbSuccessTitle);
-                    }
-                    else {
-                        this.showFailure(this._messages.dbFailureTitle, data.ErrorMessage);
-                    }
-                };
-                Settings.prototype.OnTestAttachmentsClick = function () {
-                    var _this = this;
-                    var jsonData = {
-                        "folder": $("#AttachmentsFolder").val()
-                    };
-                    // Make sure to use a lambda, so the "this" references is kept intact
-                    this.makeAjaxRequest(ROADKILL_TESTATTACHMENTS_URL, jsonData, this._messages.unexpectedError, function (data) { _this.TestAttachmentsSuccess(data); });
-                };
-                Settings.prototype.TestAttachmentsSuccess = function (data) {
-                    if (data.Success) {
-                        toastr.success(this._messages.attachmentsSuccess);
-                    }
-                    else {
-                        this.showFailure(this._messages.attachmentsFailureTitle, data.ErrorMessage);
-                    }
-                };
-                Settings.prototype.makeAjaxRequest = function (url, data, errorMessage, successFunction) {
-                    var request = $.ajax({
-                        type: "GET",
-                        url: url,
-                        data: data,
-                        dataType: "json"
-                    });
-                    request.done(successFunction);
-                    request.fail(function (jqXHR, textStatus, errorThrown) {
-                        // Logged out since the call was made
-                        if (errorThrown.message.indexOf("unexpected character") !== -1) {
-                            window.location = window.location;
-                        }
-                        else {
-                            toastr.error(errorMessage + errorThrown);
-                        }
-                    });
-                };
-                Settings.prototype.ToggleUserSettings = function () {
-                    if ($("#UseWindowsAuth").is(":checked")) {
-                        $("#aspnetuser-settings").hide();
-                        $("#ldapsettings").show();
-                        $("#ldapsettings").removeClass("hidden");
-                    }
-                    else {
-                        $("#ldapsettings").hide();
-                        $("#aspnetuser-settings").show();
-                        $("#aspnetuser-settings").removeClass("hidden");
-                    }
-                };
-                Settings.prototype.showFailure = function (title, errorMessage) {
-                    bootbox.alert("<h2>" + title + "<h2><pre style='max-height:500px;overflow-y:scroll;'>" + errorMessage + "</pre>");
-                };
-                return Settings;
-            })();
-            Admin.Settings = Settings;
-        })(Admin = Web.Admin || (Web.Admin = {}));
-    })(Web = Roadkill.Web || (Roadkill.Web = {}));
-})(Roadkill || (Roadkill = {}));
-//# sourceMappingURL=settings.js.map
 /**
  * bootbox.js [v4.1.0]
  *

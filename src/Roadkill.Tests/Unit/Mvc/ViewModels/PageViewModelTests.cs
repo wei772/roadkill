@@ -18,8 +18,6 @@ namespace Roadkill.Tests.Unit.Mvc.ViewModels
 		private MocksAndStubsContainer _container;
 
 		private ApplicationSettings _appSettings;
-		private PageRepositoryMock _pageRepository;
-		private SettingsRepositoryMock _settingsRepository;
 		private MarkupConverter _markupConverter;
 		private PluginFactoryMock _pluginFactory;
 
@@ -29,10 +27,7 @@ namespace Roadkill.Tests.Unit.Mvc.ViewModels
 			_container = new MocksAndStubsContainer();
 
 			_pluginFactory = _container.PluginFactory;
-			_appSettings = _container.ApplicationSettings;
 			_appSettings.Installed = true;
-			_pageRepository = _container.PageRepository;
-			_settingsRepository = _container.SettingsRepository;
 			_markupConverter = _container.MarkupConverter;
 			_markupConverter.UrlResolver = new UrlResolverMock();
 		}
@@ -138,8 +133,6 @@ namespace Roadkill.Tests.Unit.Mvc.ViewModels
 			plugin.PreContainerHtml = "pre container";
 			plugin.PostContainerHtml = "post container";
 			plugin.PluginCache = new SiteCache(CacheMock.RoadkillCache);
-			plugin.Repository = _settingsRepository;
-			plugin.Settings.IsEnabled = true;
 			_pluginFactory.RegisterTextPlugin(plugin);
 
 			// Act

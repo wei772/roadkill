@@ -9,13 +9,11 @@ using System.Web.Mvc;
 using Moq;
 using NUnit.Framework;
 using Roadkill.Core;
-using Roadkill.Core.Attachments;
-using Roadkill.Core.Configuration;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Exceptions;
 using Roadkill.Core.Mvc.Attributes;
 using Roadkill.Core.Mvc.Controllers;
 using Roadkill.Core.Mvc.ViewModels;
-using Roadkill.Core.Services;
 using Roadkill.Tests.Unit.StubsAndMocks;
 using Roadkill.Tests.Unit.StubsAndMocks.Mvc;
 
@@ -27,16 +25,11 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 	{
 		private MocksAndStubsContainer _container;
 
-		private ApplicationSettings _applicationSettings;
+		private IConfigurationStore _configurationStore;
+		private IConfiguration _configuration;
+
 		private IUserContext _context;
-		private PageRepositoryMock _pageRepository;
 		private UserServiceMock _userService;
-		private PageService _pageService;
-		private PageHistoryService _historyService;
-		private SettingsService _settingsService;
-		private PluginFactoryMock _pluginFactory;
-		private AttachmentFileHandler _attachmentFileHandler;
-		private MvcMockContainer _mvcMockContainer;
 		private FileServiceMock _fileService;
 
 		private FileManagerController _filesController;
@@ -45,41 +38,35 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void Setup()
 		{
 			_container = new MocksAndStubsContainer();
+			_configurationStore = _container.ConfigurationStoreMock;
+			_configuration = _container.Configuration;
 
-			_applicationSettings = _container.ApplicationSettings;
 			_context = _container.UserContext;
-			_pageRepository = _container.PageRepository;
-			_pluginFactory = _container.PluginFactory;
-			_settingsService = _container.SettingsService;
 			_userService = _container.UserService;
-			_historyService = _container.HistoryService;
-			_pageService = _container.PageService;
-			_attachmentFileHandler = new AttachmentFileHandler(_applicationSettings,_container.FileService);
 			_fileService = _container.FileService as FileServiceMock;
 
 			try
 			{
 				// Delete any existing attachments folder
-				DirectoryInfo directoryInfo = new DirectoryInfo(_applicationSettings.AttachmentsFolder);
+				DirectoryInfo directoryInfo = new DirectoryInfo(_configuration.AttachmentSettings.AttachmentsFolder);
 				if (directoryInfo.Exists)
 				{
 					directoryInfo.Attributes = FileAttributes.Normal;
 					directoryInfo.Delete(true);
 				}
 
-				Directory.CreateDirectory(_applicationSettings.AttachmentsFolder);
+				Directory.CreateDirectory(_configuration.AttachmentSettings.AttachmentsFolder);
 			}
 			catch (IOException e)
 			{
-				Assert.Fail("Unable to delete the attachments folder " + _applicationSettings.AttachmentsFolder + ", does it have a lock/explorer window open, or Mercurial open?" + e.ToString());
+				Assert.Fail("Unable to delete the attachments folder " + _configuration.AttachmentSettings.AttachmentsFolder + ", does it have a lock/explorer window open, or Mercurial open?" + e.ToString());
 			}
 			catch (ArgumentException e)
 			{
-				Assert.Fail("Unable to delete the attachments folder " + _applicationSettings.AttachmentsFolder + ", is EasyMercurial open?" + e.ToString());
+				Assert.Fail("Unable to delete the attachments folder " + _configuration.AttachmentSettings.AttachmentsFolder + ", is EasyMercurial open?" + e.ToString());
 			}
 
-			_filesController = new FileManagerController(_applicationSettings, _userService, _context, _settingsService, _attachmentFileHandler, _fileService);
-			_mvcMockContainer = _filesController.SetFakeControllerContext();
+			_filesController = new FileManagerController(_configurationStore, _userService, _context, _fileService);
 		}
 
 		[Test]
@@ -402,7 +389,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 					Mock<HttpPostedFileBase> postedfile = new Mock<HttpPostedFileBase>();
 					postedfile.Setup(f => f.ContentLength).Returns(8192);
 					postedfile.Setup(f => f.FileName).Returns(fileNames[i]);
-					postedfile.Setup(f => f.SaveAs(It.IsAny<string>())).Callback<string>(filename => File.WriteAllText(Path.Combine(_applicationSettings.AttachmentsDirectoryPath, filename), "test contents"));
+					postedfile.Setup(f => f.SaveAs(It.IsAny<string>())).Callback<string>(filename => File.WriteAllText(Path.Combine(_configuration.AttachmentSettings.GetAttachmentsDirectoryPath(), filename), "test contents"));
 					container.Request.Setup(x => x.Files[i]).Returns(postedfile.Object);
 				}
 			}

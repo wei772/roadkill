@@ -54,6 +54,27 @@ namespace Roadkill.Core.AmazingConfig
 		public bool UseWindowsAuthentication { get; set; }
 
 		/// <summary>
+		/// Whether users can register themselves, or if the administrators should do it. 
+		/// If windows authentication is enabled, this setting is ignored.
+		/// </summary>
+		public bool AllowUserSignup { get; set; }
+
+		/// <summary>
+		/// Whether to Recaptcha is enabled for user signups and password resets.
+		/// </summary>
+		public bool IsRecaptchaEnabled { get; set; }
+
+		/// <summary>
+		/// The private key for the recaptcha service, if enabled. This is optained when you sign up for the free service at https://www.google.com/recaptcha/.
+		/// </summary>
+		public string RecaptchaPrivateKey { get; set; }
+
+		/// <summary>
+		/// The public key for the recaptcha service, if enabled. This is optained when you sign up for the free service at https://www.google.com/recaptcha/.
+		/// </summary>
+		public string RecaptchaPublicKey { get; set; }
+
+		/// <summary>
 		/// The type used for the managing users, in the format "MyNamespace.Type".
 		/// This class should inherit from the <see cref="UserServiceBase"/> class or a one of its derived types.
 		/// </summary>

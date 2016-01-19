@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:element name="data">
@@ -684,7 +684,7 @@
 	<value>Importar des de screwturn</value>
 </data>
 <data name="SiteSettings_Tools_ScrewTurnImport_Label" xml:space="preserve">
-	<value>Importa tot el contingut des de una base de dades Screwturn 2/3. Necessitareu fixar el markuptype com a MediaWiki a settings/web.config per tal que el format sigui compatible. Degut a que screwturn utilitza una variació de la sintaxi mediawiki, pot haver contingut que no es mostri correctament. Això inclou imatges i enllaços.</value>
+	<value>Importa tot el contingut des de una base de dades Screwturn 2/3. Necessitareu fixar el markuptype com a MediaWiki a configuration/web.config per tal que el format sigui compatible. Degut a que screwturn utilitza una variació de la sintaxi mediawiki, pot haver contingut que no es mostri correctament. Això inclou imatges i enllaços.</value>
 </data>
 <data name="SiteSettings_Tools_ScrewTurnImport_Connection" xml:space="preserve">
 	<value>Cadena de connexió Screwturn:</value>

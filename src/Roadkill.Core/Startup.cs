@@ -2,6 +2,7 @@
 using System.Web.Mvc;
 using System.Web.Routing;
 using Owin;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Attachments;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.DependencyResolution;
@@ -18,15 +19,18 @@ namespace Roadkill.Core
 
 		public void Configuration(IAppBuilder app)
 		{
-			var appSettings = LocatorStartup.Locator.GetInstance<ApplicationSettings>();
-			app.Use<InstallCheckMiddleware>(appSettings);
+			var configurationStore = LocatorStartup.Locator.GetInstance<IConfigurationStore>();
+			var configuration = configurationStore.Load();
+
+			// Check Roadkill is installed, redirect if it's not.
+			app.Use<InstallCheckMiddleware>(configuration);
 
 			// Register the "/Attachments/" route handler. This needs to be called before the other routing setup.
-			if (appSettings.Installed)
+			if (configuration.Installed)
 			{
 				// InstallService.Install also performs this
 				var fileService = LocatorStartup.Locator.GetInstance<IFileService>();
-				AttachmentRouteHandler.RegisterRoute(appSettings, RouteTable.Routes, fileService);
+				AttachmentRouteHandler.RegisterRoute(configurationStore, RouteTable.Routes, fileService);
 			}
 
 			// Filters
@@ -37,7 +41,7 @@ namespace Roadkill.Core
 			AreaRegistration.RegisterAllAreas();
 
 			// Register WebApi/MVC routes, including Swashbuckle
-			if (appSettings.IsRestApiEnabled)
+			if (configuration.SecuritySettings.IsRestApiEnabled)
 			{
 				Routing.RegisterWebApi(GlobalConfiguration.Configuration);
 			}
@@ -49,7 +53,7 @@ namespace Roadkill.Core
 			ExtendedRazorViewEngine.Register();
 
 			// Self-hosting setup for WebApi (WebApi Owin Self Host).
-			if (appSettings.IsRestApiEnabled)
+			if (configuration.SecuritySettings.IsRestApiEnabled)
 			{
 				app.UseWebApi(new HttpConfiguration());
 			}

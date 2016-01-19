@@ -3,7 +3,6 @@ using System.Threading;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Roadkill.Core.Attachments;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Exceptions;
 using Roadkill.Core.Localization;
 using Roadkill.Core.Logging;
@@ -14,20 +13,19 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
+using Roadkill.Core.AmazingConfig;
 using WebGrease.Css.Extensions;
 
 namespace Roadkill.Core.Services
 {
 	public class AzureFileService : IFileService
 	{
-		private readonly ApplicationSettings _applicationSettings;
-		private readonly SettingsService _settingsService;
+		private readonly IConfiguration _configuration;
 		private static readonly string[] FilesToExclude = new string[] { "emptyfile.txt", "_installtest.txt" }; // installer/publish files
 
-		public AzureFileService(ApplicationSettings applicationSettings, SettingsService settingsService)
+		public AzureFileService(IConfigurationStore configurationStore)
 		{
-			_applicationSettings = applicationSettings;
-			_settingsService = settingsService;
+			_configuration = configurationStore.Load();
 		}
 
 		public void Delete(string filePath, string fileName)
@@ -152,9 +150,7 @@ namespace Roadkill.Core.Services
 				string fileName = "";
 
 				// For checking the setting to overwrite existing files
-				SiteSettings siteSettings = _settingsService.GetSiteSettings();
-				IEnumerable<string> allowedExtensions = siteSettings.AllowedFileTypesList
-													.Select(x => x.ToLower());
+				IEnumerable<string> allowedExtensions = _configuration.AttachmentSettings.AllowedFileTypesList.Select(x => x.ToLower());
 
 				for (int i = 0; i < files.Count; i++)
 				{
@@ -172,7 +168,7 @@ namespace Roadkill.Core.Services
 						CloudBlockBlob blob = container.GetBlockBlobReference(filePath);
 
 						// Check if it exists on disk already
-						if (!siteSettings.OverwriteExistingFiles)
+						if (!_configuration.AttachmentSettings.OverwriteExistingFiles)
 						{
 							if (blob.Exists())
 							{
@@ -212,7 +208,7 @@ namespace Roadkill.Core.Services
 				}
 
 				CloudBlobContainer container = GetCloudBlobContainer();
-				string blobPath = CleanPath(localPath.Replace(_applicationSettings.AttachmentsRoutePath, String.Empty));
+				string blobPath = CleanPath(localPath.Replace(_configuration.AttachmentSettings.AttachmentsRoutePath, String.Empty));
 
 				// Add leading slash if necessary
 				if (blobPath.Contains("/") && !blobPath.StartsWith("/"))
@@ -307,19 +303,19 @@ namespace Roadkill.Core.Services
 
 		private CloudBlobContainer GetCloudBlobContainer()
 		{
-			return GetCloudBlobContainer(_applicationSettings.AzureContainer);
+			return GetCloudBlobContainer(_configuration.AttachmentSettings.AzureContainer);
 		}
 
 		private CloudBlobContainer GetCloudBlobContainer(string container)
 		{
 			CloudStorageAccount cloudStorageAccount;
-			if (_applicationSettings.AzureConnectionString.Contains("UseDevelopmentStorage"))
+			if (_configuration.AttachmentSettings.AzureConnectionString.Contains("UseDevelopmentStorage"))
 			{
 				cloudStorageAccount = CloudStorageAccount.DevelopmentStorageAccount;
 			}
 			else
 			{
-				cloudStorageAccount = CloudStorageAccount.Parse(_applicationSettings.AzureConnectionString);
+				cloudStorageAccount = CloudStorageAccount.Parse(_configuration.AttachmentSettings.AzureConnectionString);
 			}
 
 			CloudBlobClient cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();

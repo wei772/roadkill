@@ -31,15 +31,6 @@ namespace Roadkill.Plugins.Text.BuiltIn
 			}
 		}
 
-		public override string Version
-		{
-
-			get
-			{
-				return "1.0";
-			}
-		}
-
 		public override string GetHeadContent()
 		{
 			return GetCssLink("resizeimages.css");

@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Caching;
-using Roadkill.Core.Plugins;
-using PluginSettings = Roadkill.Core.Plugins.Settings;
 
 namespace Roadkill.Core.Cache
 {
 	/// <summary>
 	/// Caches items used across the entire Roadkill site.
 	/// </summary>
-	public class SiteCache : IPluginCache
+	public class SiteCache
 	{
-		private ObjectCache _cache;
+		private readonly ObjectCache _cache;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SiteCache"/> class.
@@ -75,39 +72,6 @@ namespace Roadkill.Core.Cache
 		public string GetAdminMenu()
 		{
 			return _cache.Get(CacheKeys.AdminMenuKey()) as string;
-		}
-
-		/// <summary>
-		/// Gets the plugin settings.
-		/// </summary>
-		/// <param name="plugin">The text plugin.</param>
-		/// <returns>
-		/// Returns the <see cref="Settings" /> or null if the plugin is not in the cache.
-		/// </returns>
-		public PluginSettings GetPluginSettings(TextPlugin plugin)
-		{
-			return _cache.Get(CacheKeys.PluginSettingsKey(plugin)) as PluginSettings;
-		}
-
-		/// <summary>
-		/// Updates the plugin settings.
-		/// </summary>
-		/// <param name="plugin">The text plugin.</param>
-		public void UpdatePluginSettings(TextPlugin plugin)
-		{
-			throw new NotImplementedException();
-
-			//_cache.Remove(CacheKeys.PluginSettingsKey(plugin));
-			//_cache.Add(CacheKeys.PluginSettingsKey(plugin), plugin.Settings, new CacheItemPolicy());
-		}
-
-		/// <summary>
-		/// Removes the settings for given plugin from the cache.
-		/// </summary>
-		/// <param name="plugin">The plugin to remove the cached settings for.</param>
-		public void RemovePluginSettings(TextPlugin plugin)
-		{
-			_cache.Remove(CacheKeys.PluginSettingsKey(plugin));
 		}
 
 		/// <summary>

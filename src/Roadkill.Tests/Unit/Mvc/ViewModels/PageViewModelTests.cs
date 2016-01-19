@@ -129,7 +129,6 @@ namespace Roadkill.Tests.Unit.Mvc.ViewModels
 			plugin.FooterContent = "footer content";
 			plugin.PreContainerHtml = "pre container";
 			plugin.PostContainerHtml = "post container";
-			plugin.PluginCache = new SiteCache(CacheMock.RoadkillCache);
 			_pluginFactory.RegisterTextPlugin(plugin);
 
 			// Act

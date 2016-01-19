@@ -32,15 +32,6 @@ namespace Roadkill.Plugins.Text.BuiltIn
 			}
 		}
 
-		public override string Version
-		{
-
-			get
-			{
-				return "1.0";
-			}
-		}
-
 		static MathJax()
 		{
 			PARSER_SAFE_TOKEN = ParserSafeToken(TOKEN);

@@ -370,7 +370,7 @@
     <Compile Include="AmazingConfig\IConfiguration.cs" />
     <Compile Include="AmazingConfig\JSON\JsonConfiguration.cs" />
     <Compile Include="AmazingConfig\InternalSettings.cs" />
-    <Compile Include="AmazingConfig\Plugins\PluginSettings.cs" />
+    <Compile Include="AmazingConfig\Plugins\TextPluginSettings.cs" />
     <Compile Include="AmazingConfig\SecuritySettings.cs" />
     <Compile Include="Database\IRepositoryFactory.cs" />
     <Compile Include="Database\Repositories\IDatabaseTester.cs" />
@@ -401,7 +401,6 @@
     <Compile Include="Database\Export\SqlExportBuilder.cs" />
     <Compile Include="Database\Repositories\LightSpeed\DatabaseLogger.cs" />
     <Compile Include="Cache\CacheKeys.cs" />
-    <Compile Include="Cache\IPluginCache.cs" />
     <Compile Include="Cache\SiteCache.cs" />
     <Compile Include="Export\WikiExporter.cs" />
     <Compile Include="Extensions\UrlHelperExtensions.cs" />
@@ -501,10 +500,9 @@
     <Compile Include="Mvc\Controllers\WikiController.cs" />
     <Compile Include="Mvc\Controllers\HelpController.cs" />
     <Compile Include="Plugins\IPluginFactory.cs" />
-    <Compile Include="Plugins\SettingFormType.cs" />
+    <Compile Include="AmazingConfig\Plugins\SettingFormType.cs" />
     <Compile Include="Plugins\SpecialPagePlugin.cs" />
-    <Compile Include="Plugins\Settings.cs" />
-    <Compile Include="Plugins\SettingValue.cs" />
+    <Compile Include="AmazingConfig\Plugins\SettingValue.cs" />
     <Compile Include="Plugins\TextPlugin.cs" />
     <Compile Include="Plugins\PluginFactory.cs" />
     <Compile Include="Services\ISearchService.cs" />

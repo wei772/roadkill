@@ -157,7 +157,6 @@ namespace Roadkill.Tests.Unit.DependencyResolution
 			AssertDefaultType<ListCache, ListCache>();
 			AssertDefaultType<PageViewModelCache, PageViewModelCache>();
 			AssertDefaultType<ObjectCache, MemoryCache>();
-			AssertDefaultType<IPluginCache, SiteCache>();
 		}
 
 		[Test]

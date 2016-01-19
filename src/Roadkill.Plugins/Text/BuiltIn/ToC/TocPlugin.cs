@@ -19,15 +19,6 @@ namespace Roadkill.Plugins.Text.BuiltIn.ToC
 			get { return "Add a table of contents using the {TOC} tag"; }
 		}
 
-		public override string Version
-		{
-
-			get
-			{
-				return "1.0";
-			}
-		}
-
 		public TocPlugin()
 		{
 			AddScript("toc.js");

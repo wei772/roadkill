@@ -154,7 +154,6 @@ namespace Roadkill.Core.DependencyResolution.StructureMap
 			For<ListCache>().Singleton();
 			For<SiteCache>().Singleton();
 			For<PageViewModelCache>().Singleton();
-			For<IPluginCache>().Use<SiteCache>();
 
 			// Services
 			For<IPageService>().HybridHttpOrThreadLocalScoped().Use<PageService>();
@@ -214,14 +213,12 @@ namespace Roadkill.Core.DependencyResolution.StructureMap
 
 		private void ConfigureSetterInjection()
 		{
+			Policies.SetAllProperties(x => x.OfType<TextPlugin>());
 			Policies.SetAllProperties(x => x.OfType<ApiKeyAuthorizeAttribute>());
 			Policies.SetAllProperties(x => x.OfType<ISetterInjected>());
 			Policies.SetAllProperties(x => x.OfType<IAuthorizationAttribute>());
 			Policies.SetAllProperties(x => x.TypeMatches(t => t == typeof (RoadkillViewPage<>)));
 			Policies.SetAllProperties(x => x.TypeMatches(t => t == typeof (RoadkillLayoutPage)));
-
-			// Setter inject the *internal* properties for the text plugins
-			For<TextPlugin>().OnCreationForAll("set plugin cache", (ctx, plugin) => plugin.PluginCache = ctx.GetInstance<IPluginCache>());
 		}
 
 		private void ConfigureFileService()

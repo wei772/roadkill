@@ -1,7 +1,5 @@
 ﻿using Roadkill.Core.AmazingConfig;
-using Roadkill.Core.Cache;
 using Roadkill.Core.Plugins;
-using PluginSettings = Roadkill.Core.Plugins.Settings;
 
 namespace Roadkill.Tests.Unit.StubsAndMocks
 {
@@ -16,8 +14,6 @@ namespace Roadkill.Tests.Unit.StubsAndMocks
 		public string PreContainerHtml { get; set; }
 		public string PostContainerHtml { get; set; }
 
-		public override string Version { get; }
-
 		public TextPluginStub()
 		{
 			Id = "Amazing plugin";
@@ -25,24 +21,18 @@ namespace Roadkill.Tests.Unit.StubsAndMocks
 			Description = "Amazing stubbed plugin";
 		}
 
-		internal TextPluginStub(IConfigurationStore configurationStore, SiteCache siteCache) : base(configurationStore, siteCache)
+		internal TextPluginStub(IConfigurationStore configurationStore) : base(configurationStore)
 		{
 			Id = "Amazing plugin";
 			Name = "An amazing plugin";
 			Description = "Amazing stubbed plugin";
 		}
 
-		public TextPluginStub(string id, string name, string description, string version = "1.0")
+		public TextPluginStub(string id, string name, string description)
 		{
 			Id = id;
 			Name = name;
 			Description = description;
-			Version = version;
-		}
-
-		public override void OnInitializeSettings(PluginSettings settings)
-		{
-			
 		}
 
 		public override string BeforeParse(string markupText)

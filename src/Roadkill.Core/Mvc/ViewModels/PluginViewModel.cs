@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Plugins;
-using SettingValue = Roadkill.Core.Plugins.SettingValue;
 
 namespace Roadkill.Core.Mvc.ViewModels
 {
@@ -41,6 +41,7 @@ namespace Roadkill.Core.Mvc.ViewModels
 
 		public PluginViewModel(TextPlugin plugin) : this()
 		{
+			// TODO
 			throw new NotImplementedException();
 
 			//Id = plugin.Id;

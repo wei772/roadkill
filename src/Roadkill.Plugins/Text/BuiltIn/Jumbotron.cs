@@ -37,15 +37,6 @@ namespace Roadkill.Plugins.Text.BuiltIn
 			}
 		}
 
-		public override string Version
-		{
-
-			get
-			{
-				return "1.0";
-			}
-		}
-
 		public Jumbotron(MarkupConverter converter) : base()
 		{
 			_converter = converter;

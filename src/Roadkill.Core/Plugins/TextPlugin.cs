@@ -16,13 +16,13 @@ namespace Roadkill.Core.Plugins
 	public abstract class TextPlugin
 	{
 		/// <summary>
-		/// The token injected before the token, to ensure the current markup parser doesn't parse the token.
+		/// The reserved token injected before the plugin token, to ensure the current markup parser doesn't parse the token.
 		/// This is used in the <see cref="ParserSafeToken"/> method.
 		/// </summary>
 		public static readonly string PARSER_IGNORE_STARTTOKEN = "{{{roadkillinternal";
 
 		/// <summary>
-		/// The token injected after the token, to ensure the current markup parser doesn't parse the token.
+		/// The reserved token injected after the plugin token, to ensure the current markup parser doesn't parse the token.
 		/// This is used in the <see cref="ParserSafeToken"/> method.
 		/// </summary>
 		public static readonly string PARSER_IGNORE_ENDTOKEN = "roadkillinternal}}}";
@@ -49,14 +49,6 @@ namespace Roadkill.Core.Plugins
 		public abstract string Description { get; }
 
 		/// <summary>
-		/// The current plugin version, using the standard .NET version format.
-		/// </summary>
-		public abstract string Version { get; }
-		
-		// These are setter injected at creation time by the DI manager
-		internal IPluginCache PluginCache { get; set; }
-
-		/// <summary>
 		/// Gets or sets whether the plugin's HTML output can be cached by the inbuilt Roadkill caching.
 		/// </summary>
 		public virtual bool IsCacheable { get; set; }
@@ -78,52 +70,8 @@ namespace Roadkill.Core.Plugins
 			}
 		}
 
-		/// <summary>
-		/// Gets the unique id used for storing the plugin settings in the database. This is a Guid generated based on the 
-		/// plugin ID and version number.
-		/// </summary>
-		public Guid DatabaseId
-		{
-			get
-			{
-				// Generate an ID for use in the database in the format:
-				// {aaaaaaaa-bbbb-0000-0000-000000000000}
-				// Where 
-				//		a = hashcode of the plugin id
-				//		b = hashcode of version number 
-				// 
-				// It's not globally unique, but it doesn't matter as it's 
-				// being used for the site_configuration database table only. The only 
-				// way the Guid could clash is if two plugins have the same ID.
-				// This should never happen, as the IDs will be like nuget ids.
-				//
-				if (_databaseId == Guid.Empty)
-				{
-					EnsureIdIsValid();
-					string versionText = EnsureValidVersion();
-
-					// Don't use GetHashCode, it's not guaranteed to return the same hash the next time.
-					int idNumber = 0;
-					foreach (char c in Id)
-					{
-						idNumber += c;
-					}
-
-					short versionNum = 0;
-					versionText = versionText.Replace(".", "");
-					short.TryParse(versionText, out versionNum);
-
-					short zero = (short)0;
-					byte[] lastChunk = new byte[8] { 0, 0, 0, 0, 0, 0, 0, 0 };
-
-					_databaseId = new Guid(idNumber, versionNum, zero, lastChunk);
-				}
-
-				return _databaseId;
-			}
-		}
-
-		public IConfiguration Configuration { get; set; }
+		[SetterProperty]
+		public IConfigurationStore ConfigurationStore { get; set; }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="TextPlugin"/> class.
@@ -134,19 +82,9 @@ namespace Roadkill.Core.Plugins
 			IsCacheable = true;
 		}
 
-		internal TextPlugin(IConfigurationStore configurationStore, SiteCache siteCache) : this()
+		internal TextPlugin(IConfigurationStore configurationStore) : this()
 		{
-			Configuration = configurationStore.Load();
-			PluginCache = siteCache;
-		}
-
-		/// <summary>
-		/// Called when settings are first initialized by the <see cref="Settings"/> property. When overriden this 
-		/// method allows you add settings and their defaults that the plugin requires.
-		/// </summary>
-		/// <param name="settings">The plugin settings.</param>
-		public virtual void OnInitializeSettings(Settings settings)
-		{
+			ConfigurationStore = configurationStore;
 		}
 
 		/// <summary>
@@ -297,11 +235,11 @@ namespace Roadkill.Core.Plugins
 			if (HttpContext.Current != null)
 			{
 				UrlHelper urlHelper = new UrlHelper(HttpContext.Current.Request.RequestContext);
-				html = string.Format(cssLink, urlHelper.Content(PluginVirtualPath), filename, Version);
+				html = string.Format(cssLink, urlHelper.Content(PluginVirtualPath), filename, InternalSettings.ProductVersion);
 			}
 			else
 			{
-				html = string.Format(cssLink, PluginVirtualPath, filename, Version);
+				html = string.Format(cssLink, PluginVirtualPath, filename, InternalSettings.ProductVersion);
 			}
 
 			return html;
@@ -323,14 +261,6 @@ namespace Roadkill.Core.Plugins
 		{
 			if (string.IsNullOrEmpty(Id))
 				throw new PluginException(null, "The ID is empty or null for plugin {0}. Please remove this plugin from the bin and plugins folder.", this.GetType().Name);
-		}
-
-		private string EnsureValidVersion()
-		{
-			if (string.IsNullOrWhiteSpace(Version))
-				return "1.0";
-			else
-				return Version;
 		}
 	}
 }

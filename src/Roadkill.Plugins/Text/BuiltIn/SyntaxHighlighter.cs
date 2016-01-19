@@ -35,15 +35,6 @@ namespace Roadkill.Plugins.Text.BuiltIn
 			}
 		}
 
-		public override string Version
-		{
-
-			get
-			{
-				return "1.0";
-			}
-		}
-
 		static SyntaxHighlighter()
 		{
 			ReplacementPattern = ParserSafeToken(ReplacementPattern);

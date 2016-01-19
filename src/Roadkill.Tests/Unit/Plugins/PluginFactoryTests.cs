@@ -7,7 +7,6 @@ using NUnit.Framework;
 using Roadkill.Core.Plugins;
 using Roadkill.Tests.Unit.StubsAndMocks;
 using StructureMap;
-using PluginSettings = Roadkill.Core.Plugins.Settings;
 
 namespace Roadkill.Tests.Unit.Plugins
 {

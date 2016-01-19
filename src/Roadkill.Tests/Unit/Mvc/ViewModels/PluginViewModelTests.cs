@@ -36,7 +36,6 @@ namespace Roadkill.Tests.Unit.Mvc.ViewModels
 			Assert.That(model.Id, Is.EqualTo(plugin.Id));
 			Assert.That(model.Name, Is.EqualTo(plugin.Name));
 			Assert.That(model.IsEnabled, Is.True);
-			Assert.That(model.DatabaseId, Is.EqualTo(plugin.DatabaseId));
 			Assert.That(model.Description, Is.EqualTo("my description<br/><br/>some new text"));
 		}
 	}

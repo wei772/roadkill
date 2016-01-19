@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using NUnit.Framework;
 using Roadkill.Core;
 using Roadkill.Core.AmazingConfig;
@@ -100,7 +101,6 @@ namespace Roadkill.Tests.Integration.Configuration
 			Assert.True(Object.ReferenceEquals(actualConfiguration1, actualConfiguration2));
 		}
 
-
 		[Test]
 		public void LoadPluginConfiguration_should_return_cached_version()
 		{
@@ -145,6 +145,39 @@ namespace Roadkill.Tests.Integration.Configuration
 			Assert.That(actualConfiguration.AttachmentSettings, Is.Not.Null);
 			Assert.That(actualConfiguration.SecuritySettings, Is.Not.Null);
 			Assert.That(actualConfiguration.Settings, Is.Not.Null);
+		}
+
+		[Test]
+		public void SavePluginConfiguration_should_serialize_configuration()
+		{
+			// Arrange
+			var pluginSettings1 = new TextPluginSettings() { Id = "plugin1", IsEnabled = true };
+			var pluginSettings2 = new TextPluginSettings() { Id = "plugin2", IsEnabled = false };
+			pluginSettings2.Settings.Add(new SettingValue() { Name = "Hello", Value = "World", FormType = SettingFormType.Password});
+
+			var configuration = new JsonPluginConfiguration();
+			configuration.TextPluginSettings.Add(pluginSettings1);
+			configuration.TextPluginSettings.Add(pluginSettings2);
+
+			JsonConfigurationStore store = new JsonConfigurationStore("configuration.json", "plugins.json");
+
+			// Act
+			store.SavePluginConfiguration(configuration);
+
+			// Assert
+			IPluginConfiguration actualConfiguration = store.LoadPluginConfiguration();
+
+			var actualPluginSettings1 = actualConfiguration.TextPluginSettings.FirstOrDefault(x => x.Id == "plugin1");
+			Assert.That(actualPluginSettings1, Is.Not.Null);
+			Assert.That(actualPluginSettings1.IsEnabled, Is.True);
+			Assert.That(actualPluginSettings1.Settings.Count, Is.EqualTo(0));
+
+			var actualPluginSettings2 = actualConfiguration.TextPluginSettings.FirstOrDefault(x => x.Id == "plugin2");
+			Assert.That(actualPluginSettings2, Is.Not.Null);
+			Assert.That(actualPluginSettings2.IsEnabled, Is.False);
+			Assert.That(actualPluginSettings2.Settings[0].Name, Is.EqualTo("World"));
+			Assert.That(actualPluginSettings2.Settings[0].Value, Is.EqualTo("Hello"));
+			Assert.That(actualPluginSettings2.Settings[0].FormType, Is.EqualTo(SettingFormType.Password));
 		}
 	}
 }

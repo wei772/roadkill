@@ -9,11 +9,11 @@ namespace Roadkill.Core.AmazingConfig
 	public class JsonPluginConfiguration : IPluginConfiguration
 	{
 		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-		public IList<PluginSettings> PluginSettings { get; set; }
+		public IList<TextPluginSettings> TextPluginSettings { get; set; }
 
 		public JsonPluginConfiguration()
 		{
-			PluginSettings = new List<PluginSettings>();
+			TextPluginSettings = new List<TextPluginSettings>();
 		}
 	}
 }

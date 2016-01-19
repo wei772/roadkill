@@ -470,7 +470,6 @@ here is my C#code
 			string expectedHtml = "<p>This is my <span>usertoken</span>\n</p>";
 
 			TextPluginStub plugin = new TextPluginStub();
-			plugin.PluginCache = new SiteCache(CacheMock.RoadkillCache);
 			_pluginFactory.RegisterTextPlugin(plugin);
 
 			// Act
@@ -488,7 +487,6 @@ here is my C#code
 			string expectedHtml = "<p>Here is some markup <strong style='color:green'><iframe src='javascript:alert(test)'>some bold</strong>\n</p>";
 
 			TextPluginStub plugin = new TextPluginStub();
-			plugin.PluginCache = new SiteCache(CacheMock.RoadkillCache);
 			_pluginFactory.RegisterTextPlugin(plugin);
 
 			// Act
@@ -506,7 +504,6 @@ here is my C#code
 			string expectedHtml = "<p>This is my <span>usertoken</span>\n</p>";
 
 			TextPluginStub plugin = new TextPluginStub();
-			plugin.PluginCache = new SiteCache(CacheMock.RoadkillCache);
 			_pluginFactory.RegisterTextPlugin(plugin);
 
 			// Act
@@ -524,7 +521,6 @@ here is my C#code
 			string expectedHtml = "<p>Here is some markup <strong style='color:green'><iframe src='javascript:alert(test)'>some bold</strong>\n</p>";
 
 			TextPluginStub plugin = new TextPluginStub();
-			plugin.PluginCache = new SiteCache(CacheMock.RoadkillCache);
 			_pluginFactory.RegisterTextPlugin(plugin);
 
 			// Act

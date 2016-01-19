@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.DependencyResolution.StructureMap;
 using StructureMap;
+using StructureMap.Pipeline;
+using StructureMap.Query;
 
 namespace Roadkill.Core.Plugins
 {
@@ -35,12 +38,25 @@ namespace Roadkill.Core.Plugins
 		}
 
 		/// <summary>
-		/// Retrieves all text plugins from the IoC container.
+		/// Retrieves all text plugins from the IoC container that are enabled according to the plugin settings file.
 		/// </summary>
 		public IEnumerable<TextPlugin> GetEnabledTextPlugins()
 		{
-			throw new NotImplementedException();
-			//return _container.GetAllInstances<TextPlugin>().Where(x => x.Settings.IsEnabled);
+			var configurationStore = _container.GetInstance<IConfigurationStore>();
+			IPluginConfiguration configuration = configurationStore.LoadPluginConfiguration();
+
+			var list = new List<TextPlugin>();
+			foreach (TextPluginSettings setting in configuration.TextPluginSettings.Where(x => x.IsEnabled))
+			{
+				InstanceRef instanceRef = _container.Model.InstancesOf(Type.GetType(setting.TypeName)).FirstOrDefault();
+
+				if (instanceRef != null)
+				{
+					list.Add(_container.GetInstance<TextPlugin>(instanceRef.Instance));
+				}
+			}
+
+			return list;
 		}
 
 		/// <summary>

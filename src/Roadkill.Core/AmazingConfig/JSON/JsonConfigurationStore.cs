@@ -9,6 +9,7 @@ namespace Roadkill.Core.AmazingConfig
 		private string _configPath;
 		private string _pluginConfigPath;
 		private IConfiguration _cachedConfiguration;
+		private IPluginConfiguration _cachedPluginConfiguration;
 
 		public JsonConfigurationStore() : this("~/App_Data/configuration.json", "~/App_Data/plugins.json")
 		{
@@ -58,7 +59,15 @@ namespace Roadkill.Core.AmazingConfig
 
 		public IPluginConfiguration LoadPluginConfiguration()
 		{
-			return null;
+			if (_cachedPluginConfiguration == null)
+			{
+				string json = File.ReadAllText(_pluginConfigPath);
+				JsonPluginConfiguration pluginConfiguration = JsonConvert.DeserializeObject<JsonPluginConfiguration>(json);
+
+				_cachedPluginConfiguration = pluginConfiguration;
+			}
+
+			return _cachedPluginConfiguration;
 		}
 
 		public void Save(IConfiguration configuration)
@@ -71,6 +80,10 @@ namespace Roadkill.Core.AmazingConfig
 
 		public void SavePluginConfiguration(IPluginConfiguration configuration)
 		{
+			string json = JsonConvert.SerializeObject(configuration);
+			File.WriteAllText(_pluginConfigPath, json);
+
+			_cachedPluginConfiguration = null;
 		}
 	}
 }

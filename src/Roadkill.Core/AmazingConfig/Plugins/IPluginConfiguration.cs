@@ -5,6 +5,6 @@ namespace Roadkill.Core.AmazingConfig
 {
 	public interface IPluginConfiguration
 	{
-		IList<PluginSettings> PluginSettings { get; set; }
+		IList<TextPluginSettings> TextPluginSettings { get; set; }
 	}
 }

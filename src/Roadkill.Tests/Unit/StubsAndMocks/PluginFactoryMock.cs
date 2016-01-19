@@ -28,7 +28,8 @@ namespace Roadkill.Tests.Unit.StubsAndMocks
 
 		public IEnumerable<TextPlugin> GetEnabledTextPlugins()
 		{
-			return TextPlugins.Where(x => x.Settings.IsEnabled);
+			throw new NotImplementedException();
+			//return TextPlugins.Where(x => x.Settings.IsEnabled);
 		}
 
 		public void RegisterTextPlugin(TextPlugin plugin)

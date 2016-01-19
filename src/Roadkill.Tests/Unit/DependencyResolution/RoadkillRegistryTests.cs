@@ -96,7 +96,6 @@ namespace Roadkill.Tests.Unit.DependencyResolution
 		public void should_use_lightspeedrepositories_by_default()
 		{
 			// Arrange + Act + Assert
-			AssertDefaultType<ISettingsRepository, LightSpeedSettingsRepository>();
 			AssertDefaultType<IUserRepository, LightSpeedUserRepository>();
 			AssertDefaultType<IPageRepository, LightSpeedPageRepository>();
 		}
@@ -120,7 +119,6 @@ namespace Roadkill.Tests.Unit.DependencyResolution
 			var container = new Container(registry);
 
 			// Act +  Assert
-			AssertDefaultType<ISettingsRepository, MongoDBSettingsRepository>(container);
 			AssertDefaultType<IUserRepository, MongoDBUserRepository>(container);
 			AssertDefaultType<IPageRepository, MongoDBPageRepository>(container);
 		}
@@ -331,7 +329,7 @@ namespace Roadkill.Tests.Unit.DependencyResolution
 			ISetterInjected setterInjected = container.GetInstance<AdminRequiredAttribute>();
 
 			// Assert
-			Assert.That(setterInjected.Configuration, Is.Not.Null);
+			Assert.That(setterInjected.ConfigurationStore, Is.Not.Null);
 			Assert.That(setterInjected.Context, Is.Not.Null);
 			Assert.That(setterInjected.UserService, Is.Not.Null);
 			Assert.That(setterInjected.PageService, Is.Not.Null);

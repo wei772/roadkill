@@ -3,7 +3,9 @@ using System.IO;
 using NUnit;
 using NUnit.Framework;
 using Roadkill.Core;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Configuration;
+using Roadkill.Tests.Unit.StubsAndMocks;
 
 namespace Roadkill.Tests.Unit.Text
 {
@@ -11,19 +13,26 @@ namespace Roadkill.Tests.Unit.Text
 	[Category("Unit")]
 	public class CustomTokenParserTests
 	{
+		private MocksAndStubsContainer _container;
+		private ConfigurationStoreMock _configurationStore;
+		private IConfiguration _configuration;
+
 		[TestFixtureSetUp]
 		public void TestFixtureSetUp()
 		{
 			CustomTokenParser.CacheTokensFile = false;
+
+			_container = new MocksAndStubsContainer();
+			_configurationStore = _container.ConfigurationStoreMock;
+			_configuration = _container.Configuration;
 		}
 
 		[Test]
 		public void should_contain_empty_list_when_tokens_file_not_found()
 		{
 			// Arrange
-			NonConfigurableSettings settings = new NonConfigurableSettings();
-			settings.CustomTokensPath = Path.Combine(TestConstants.WEB_PATH, "doesntexist.xml");
-			CustomTokenParser parser = new CustomTokenParser(settings);
+			_configuration.InternalSettings.CustomTokensPath = Path.Combine(TestConstants.WEB_PATH, "doesntexist.xml");
+			CustomTokenParser parser = new CustomTokenParser(_configurationStore);
 
 			string expectedHtml = "@@warningbox:ENTER YOUR CONTENT HERE {{some link}}@@";
 
@@ -38,12 +47,11 @@ namespace Roadkill.Tests.Unit.Text
 		public void should_contain_empty_list_when_when_deserializing_bad_xml_file()
 		{
 			// Arrange
-			NonConfigurableSettings settings = new NonConfigurableSettings();
-			settings.CustomTokensPath = Path.Combine(TestConstants.ROOT_FOLDER, "readme.md"); // use a markdown file
+			_configuration.InternalSettings.CustomTokensPath = Path.Combine(TestConstants.ROOT_FOLDER, "readme.md"); // use a markdown file
 			string expectedHtml = "@@warningbox:ENTER YOUR CONTENT HERE {{some link}}@@";
 
 			// Act
-			CustomTokenParser parser = new CustomTokenParser(settings);
+			CustomTokenParser parser = new CustomTokenParser(_configurationStore);
 			string actualHtml = parser.ReplaceTokensAfterParse("@@warningbox:ENTER YOUR CONTENT HERE {{some link}}@@");
 
 			// Assert
@@ -54,9 +62,8 @@ namespace Roadkill.Tests.Unit.Text
 		public void warningbox_token_should_return_html_fragment()
 		{
 			// Arrange
-			NonConfigurableSettings settings = new NonConfigurableSettings();
-			settings.CustomTokensPath = Path.Combine(TestConstants.WEB_PATH, "App_Data", "customvariables.xml");
-			CustomTokenParser parser = new CustomTokenParser(settings);
+			_configuration.InternalSettings.CustomTokensPath = Path.Combine(TestConstants.WEB_PATH, "App_Data", "customvariables.xml");
+			CustomTokenParser parser = new CustomTokenParser(_configurationStore);
 
 			string expectedHtml = @"<div class=""alert alert-warning"">ENTER YOUR CONTENT HERE {{some link}}</div><br style=""clear:both""/>";
 

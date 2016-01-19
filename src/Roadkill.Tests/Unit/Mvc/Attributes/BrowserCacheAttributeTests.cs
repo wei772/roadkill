@@ -19,21 +19,24 @@ namespace Roadkill.Tests.Unit.Mvc.Attributes
 	[Category("Unit")]
 	public class BrowserCacheAttributeTests
 	{
+		private MocksAndStubsContainer _container;
+		private IConfigurationStore _configurationStore;
+		private IConfiguration _configuration;
+
 		private PluginFactoryMock _pluginFactory;
 		private PageRepositoryMock _pageRepository;
 
 		private readonly DateTime _pageCreatedDate = DateTime.Today;
 		private readonly DateTime _pageModifiedDate = DateTime.Today;
 		private readonly DateTime _pluginLastSavedDate = DateTime.Today;
-		private MocksAndStubsContainer _container;
-		private IConfiguration _configuration;
 
 		[SetUp]
 		public void Setup()
 		{
 			_container = new MocksAndStubsContainer();
-			_container.Configuration.PluginLastSaveDate = _pluginLastSavedDate;
+			_configurationStore = _container.ConfigurationStoreMock;
 			_configuration = _container.Configuration;
+			_configuration.PluginLastSaveDate = _pluginLastSavedDate;
 
 			_pluginFactory = _container.PluginFactory;
 			_pageRepository = _container.PageRepository;
@@ -44,12 +47,12 @@ namespace Roadkill.Tests.Unit.Mvc.Attributes
 		{
 			// Arrange
 			BrowserCacheAttribute attribute = new BrowserCacheAttribute();
-			attribute.Configuration = _configuration;
+			attribute.ConfigurationStore = _configurationStore;
 
 			WikiController controller = CreateWikiController(attribute);
 			ResultExecutedContext filterContext = CreateContext(controller);
 
-			attribute.Configuration.Installed = false;
+			_configuration.Installed = false;
 
 			// Act
 			attribute.OnResultExecuted(filterContext);
@@ -63,12 +66,12 @@ namespace Roadkill.Tests.Unit.Mvc.Attributes
 		{
 			// Arrange
 			BrowserCacheAttribute attribute = new BrowserCacheAttribute();
-			attribute.Configuration = _configuration;
+			attribute.ConfigurationStore = _configurationStore;
 
 			WikiController controller = CreateWikiController(attribute);
 			ResultExecutedContext filterContext = CreateContext(controller);
 
-			attribute.Configuration.UseBrowserCache = false;
+			_configuration.UseBrowserCache = false;
 
 			// Act
 			attribute.OnResultExecuted(filterContext);
@@ -82,7 +85,7 @@ namespace Roadkill.Tests.Unit.Mvc.Attributes
 		{
 			// Arrange
 			BrowserCacheAttribute attribute = new BrowserCacheAttribute();
-			attribute.Configuration = _configuration;
+			attribute.ConfigurationStore = _configurationStore;
 
 			WikiController controller = CreateWikiController(attribute);
 			ResultExecutedContext filterContext = CreateContext(controller);
@@ -101,7 +104,7 @@ namespace Roadkill.Tests.Unit.Mvc.Attributes
 		{
 			// Arrange
 			BrowserCacheAttribute attribute = new BrowserCacheAttribute();
-			attribute.Configuration = _configuration;
+			attribute.ConfigurationStore = _configurationStore;
 
 			WikiController controller = CreateWikiController(attribute);
 			ResultExecutedContext filterContext = CreateContext(controller);
@@ -119,7 +122,7 @@ namespace Roadkill.Tests.Unit.Mvc.Attributes
 		{
 			// Arrange
 			BrowserCacheAttribute attribute = new BrowserCacheAttribute();
-			attribute.Configuration = _configuration;
+			attribute.ConfigurationStore = _configurationStore;
 			_configuration.PluginLastSaveDate = DateTime.UtcNow;
 
 			WikiController controller = CreateWikiController(attribute);
@@ -139,7 +142,7 @@ namespace Roadkill.Tests.Unit.Mvc.Attributes
 		{
 			// Arrange
 			BrowserCacheAttribute attribute = new BrowserCacheAttribute();
-			attribute.Configuration = _configuration;
+			attribute.ConfigurationStore = _configurationStore;
 			_configuration.PluginLastSaveDate = DateTime.Today.ToUniversalTime().AddHours(1);
 
 			WikiController controller = CreateWikiController(attribute);
@@ -187,24 +190,23 @@ namespace Roadkill.Tests.Unit.Mvc.Attributes
 			UserContextStub userContext = new UserContextStub() { IsLoggedIn = false };
 
 			// PageService
-			PageViewModelCache pageViewModelCache = new PageViewModelCache(appSettings, CacheMock.RoadkillCache);
-			ListCache listCache = new ListCache(_configuration, CacheMock.RoadkillCache);
+			PageViewModelCache pageViewModelCache = new PageViewModelCache(_configurationStore, CacheMock.RoadkillCache);
+			ListCache listCache = new ListCache(_configurationStore, CacheMock.RoadkillCache);
 			SiteCache siteCache = new SiteCache(CacheMock.RoadkillCache);
-			SearchServiceMock searchService = new SearchServiceMock(appSettings, _settingsRepository, _pageRepository, _pluginFactory);
-			PageHistoryService historyService = new PageHistoryService(appSettings, _settingsRepository, _pageRepository, userContext, pageViewModelCache, _pluginFactory);
-			PageService pageService = new PageService(appSettings, _settingsRepository, _pageRepository, searchService, historyService, userContext, listCache, pageViewModelCache, siteCache, _pluginFactory);
+			SearchServiceMock searchService = new SearchServiceMock(_configurationStore, _pageRepository, _pluginFactory);
+			PageHistoryService historyService = new PageHistoryService(_configurationStore, _pageRepository, userContext, pageViewModelCache, _pluginFactory);
+			PageService pageService = new PageService(_configurationStore, _pageRepository, searchService, historyService, userContext, listCache, pageViewModelCache, siteCache, _pluginFactory);
 
 			// WikiController
-			SettingsService settingsService = new SettingsService(new RepositoryFactoryMock(), appSettings);
-			UserServiceStub userManager = new UserServiceStub();
-			WikiController wikiController = new WikiController(appSettings, userManager, pageService, userContext, settingsService);
+			var userManager = new UserServiceStub();
+			var wikiController = new WikiController(_configurationStore, userManager, pageService, userContext);
 
 			// Create a page that the request is for
 			Page page = new Page() { Title = "title", ModifiedOn = _pageModifiedDate };
 			_pageRepository.AddNewPage(page, "text", "user", _pageCreatedDate);
 
 			// Update the BrowserCacheAttribute
-			attribute.Configuration = _configuration;
+			attribute.ConfigurationStore = _configurationStore;
 			attribute.Context = userContext;
 			attribute.PageService = pageService;
 

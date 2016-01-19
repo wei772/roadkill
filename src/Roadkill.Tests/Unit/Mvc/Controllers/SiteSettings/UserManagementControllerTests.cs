@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.Mvc;
 using NUnit.Framework;
 using Roadkill.Core;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
 using Roadkill.Core.Mvc.Controllers;
@@ -19,13 +20,10 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers.Admin
 	{
 		private MocksAndStubsContainer _container;
 
-		private ApplicationSettings _applicationSettings;
+		private IConfigurationStore _configurationStore;
 		private IUserContext _context;
-		private PageRepositoryMock _pageRepository;
-		private UserRepositoryMock _userRepository;
 
 		private UserServiceMock _userService;
-		private SettingsService _settingsService;
 
 		private UserManagementController _controller;
 
@@ -34,16 +32,11 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers.Admin
 		{
 			_container = new MocksAndStubsContainer();
 
-			_applicationSettings = _container.ApplicationSettings;
+			_configurationStore = _container.ConfigurationStoreMock;
 			_context = _container.UserContext;
 
-			_pageRepository = _container.PageRepository;
-			_userRepository = _container.UserRepository;
-
-			_settingsService = _container.SettingsService;
 			_userService = _container.UserService;
-
-			_controller = new UserManagementController(_applicationSettings, _userService, _settingsService, _context);
+			_controller = new UserManagementController(_configurationStore, _userService, _context);
 		}
 
 		[Test]

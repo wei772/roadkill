@@ -19,12 +19,14 @@ namespace Roadkill.Core.Converters
 		private static readonly Regex _imgFileRegex = new Regex("^File:", RegexOptions.IgnoreCase);
 		private static readonly Regex _anchorRegex = new Regex("(?<hash>(#|%23).+)", RegexOptions.IgnoreCase);
 
+		private IConfigurationStore _configurationStore;
 		private readonly IConfiguration _configuration;
+
 		private readonly IPageRepository _pageRepository;
 		private IMarkupParser _parser;
 		private readonly List<string> _externalLinkPrefixes;
 		private readonly IPluginFactory _pluginFactory;
-		
+
 		/// <summary>
 		/// The current <see cref="IMarkupParser"/> being used by this instance, which is taken from 
 		/// the configuration markdown type setting.
@@ -58,6 +60,7 @@ namespace Roadkill.Core.Converters
 
 			_pluginFactory = pluginFactory;
 			_pageRepository = pageRepository;
+			_configurationStore = configurationStore;
 			_configuration = configurationStore.Load();
 
 			// Create the UrlResolver for all wiki urls
@@ -88,7 +91,7 @@ namespace Roadkill.Core.Converters
 			switch (markupType)
 			{
 				case "creole":
-					_parser = new CreoleParser(_configuration);
+					_parser = new CreoleParser(_configurationStore);
 					break;
 
 				case "mediawiki":
@@ -120,7 +123,7 @@ namespace Roadkill.Core.Converters
 		/// <returns>The wiki markup converted to HTML.</returns>
 		public PageHtml ToHtml(string text)
 		{
-			CustomTokenParser tokenParser = new CustomTokenParser(_configuration.InternalSettings);
+			CustomTokenParser tokenParser = new CustomTokenParser(_configurationStore);
 			PageHtml pageHtml = new PageHtml();
 			TextPluginRunner runner = new TextPluginRunner(_pluginFactory);
 

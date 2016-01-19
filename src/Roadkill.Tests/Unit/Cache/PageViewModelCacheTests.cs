@@ -24,11 +24,14 @@ namespace Roadkill.Tests.Unit.Cache
 		public void removeall_should_remove_pageviewmodelcache_keys_only()
 		{
 			// Arrange
+			MocksAndStubsContainer container = new MocksAndStubsContainer();
+			ConfigurationStoreMock configurationStore = container.ConfigurationStoreMock;
+			container.Configuration.UseObjectCache = false;
+
 			CacheMock cache = new CacheMock();
 			cache.Add("site.blah", "xyz", new CacheItemPolicy());
 
-			ApplicationSettings settings = new ApplicationSettings() { UseObjectCache = false };
-			PageViewModelCache pageCache = new PageViewModelCache(settings, cache);
+			PageViewModelCache pageCache = new PageViewModelCache(configurationStore, cache);
 			pageCache.Add(1, 1, new PageViewModel());
 
 			// Act

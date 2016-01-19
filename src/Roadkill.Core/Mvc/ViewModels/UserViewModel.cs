@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Localization;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Security;
@@ -19,7 +20,7 @@ namespace Roadkill.Core.Mvc.ViewModels
 	public class UserViewModel : IEquatable<UserViewModel>
 	{
 		// These services are required by the static validation methods
-		protected ApplicationSettings Settings;
+		protected IConfiguration Configuration;
 		protected UserServiceBase UserService;
 
 		/// <summary>
@@ -142,15 +143,15 @@ namespace Roadkill.Core.Mvc.ViewModels
 		/// </summary>
 		/// <param name="settings"></param>
 		/// <param name="userManager"></param>
-		public UserViewModel(ApplicationSettings settings, UserServiceBase userManager)
+		public UserViewModel(IConfigurationStore configurationStore, UserServiceBase userManager)
 		{
-			if (settings == null)
-				throw new ArgumentNullException("settings");
+			if (configurationStore == null)
+				throw new ArgumentNullException(nameof(configurationStore));
 
 			if (userManager == null)
-				throw new ArgumentNullException("userManager");
+				throw new ArgumentNullException(nameof(userManager));
 
-			Settings = settings;
+			Configuration = configurationStore.Load();
 			UserService = userManager;
 		}
 
@@ -265,10 +266,10 @@ namespace Roadkill.Core.Mvc.ViewModels
 				// Existing user, a blank password indicates no change is occurring.
 				return ValidationResult.Success;
 			}
-			else if (string.IsNullOrEmpty(user.Password) || user.Password.Length < user.Settings.NonConfigurableSettings.MinimumPasswordLength)
+			else if (string.IsNullOrEmpty(user.Password) || user.Password.Length < user.Configuration.InternalSettings.MinimumPasswordLength)
 			{
 				// New or existing users with invalid passwords
-				return new ValidationResult(string.Format(SiteStrings.User_Validation_PasswordTooShort, user.Settings.NonConfigurableSettings.MinimumPasswordLength));
+				return new ValidationResult(string.Format(SiteStrings.User_Validation_PasswordTooShort, user.Configuration.InternalSettings.MinimumPasswordLength));
 			}
 
 			return ValidationResult.Success;

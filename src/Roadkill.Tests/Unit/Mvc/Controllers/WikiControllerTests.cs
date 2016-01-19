@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using MvcContrib.TestHelper;
 using NUnit.Framework;
 using Roadkill.Core;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
 using Roadkill.Core.Mvc.Controllers;
@@ -20,14 +21,11 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 	{
 		private MocksAndStubsContainer _container;
 
-		private ApplicationSettings _applicationSettings;
+		private IConfigurationStore _configurationStore;
 		private IUserContext _context;
 		private PageRepositoryMock _pageRepository;
 		private UserServiceMock _userService;
 		private PageService _pageService;
-		private PageHistoryService _historyService;
-		private SettingsService _settingsService;
-		private PluginFactoryMock _pluginFactory;
 
 		private WikiController _wikiController;
 
@@ -36,16 +34,13 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		{
 			_container = new MocksAndStubsContainer();
 
-			_applicationSettings = _container.ApplicationSettings;
+			_configurationStore = _container.ConfigurationStoreMock;
 			_context = _container.UserContext;	
 			_pageRepository = _container.PageRepository;
-			_pluginFactory = _container.PluginFactory;
-			_settingsService = _container.SettingsService;
 			_userService = _container.UserService;
-			_historyService = _container.HistoryService;
 			_pageService = _container.PageService;
 
-			_wikiController = new WikiController(_applicationSettings, _userService, _pageService, _context, _settingsService);
+			_wikiController = new WikiController(_configurationStore, _userService, _pageService, _context);
 			_wikiController.SetFakeControllerContext();
 		}
 

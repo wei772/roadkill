@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Caching;
-using System.Text;
 using NUnit.Framework;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Cache;
 using Roadkill.Core.Configuration;
-using Roadkill.Core.Database;
 using Roadkill.Tests.Unit.StubsAndMocks;
 
 namespace Roadkill.Tests.Unit.Cache
@@ -15,15 +13,26 @@ namespace Roadkill.Tests.Unit.Cache
 	[Category("Unit")]
 	public class ListCacheTests
 	{
+		private MocksAndStubsContainer _container;
+		private ConfigurationStoreMock _configurationStore;
+		private IConfiguration _configuration;
+
+		[SetUp]
+		public void Setup()
+		{
+			_container = new MocksAndStubsContainer();
+			_configurationStore = _container.ConfigurationStoreMock;
+			_configuration = _container.Configuration;
+		}
+
 		[Test]
 		public void should_add_item()
 		{
 			// Arrange
 			CacheMock cache = new CacheMock();
-			ApplicationSettings settings = new ApplicationSettings() { UseObjectCache = true };
 
 			List<string> tagCacheItems = new List<string>() { "1", "2" };
-			ListCache listCache = new ListCache(settings, cache);
+			ListCache listCache = new ListCache(_configurationStore, cache);
 
 			// Act
 			listCache.Add("all.tags", tagCacheItems);
@@ -42,7 +51,7 @@ namespace Roadkill.Tests.Unit.Cache
 			List<string> tagCacheItems = new List<string>() { "1", "2" };
 			AddToCache(cache, "all.tags", tagCacheItems);
 			
-			ListCache listCache = new ListCache(settings, cache);
+			ListCache listCache = new ListCache(_configurationStore, cache);
 
 			// Act
 			var tags = listCache.Get<string>("all.tags");
@@ -60,7 +69,7 @@ namespace Roadkill.Tests.Unit.Cache
 
 			List<string> tagCacheItems1 = new List<string>() { "1", "2" };
 			List<string> tagCacheItems2 = new List<string>() { "a", "b" };
-			ListCache listCache = new ListCache(settings, cache);
+			ListCache listCache = new ListCache(_configurationStore, cache);
 
 			// Act
 			listCache.Add("all.tags1", tagCacheItems1);
@@ -82,7 +91,7 @@ namespace Roadkill.Tests.Unit.Cache
 			List<string> tagCacheItems = new List<string>() { "1", "2" };
 			AddToCache(cache, "all.tags", tagCacheItems);
 
-			ListCache listCache = new ListCache(settings, cache);
+			ListCache listCache = new ListCache(_configurationStore, cache);
 
 			// Act
 			listCache.Remove("all.tags");
@@ -104,7 +113,7 @@ namespace Roadkill.Tests.Unit.Cache
 			AddToCache(cache, "all.tags1", tagCacheItems1);
 			AddToCache(cache, "all.tags2", tagCacheItems2);
 
-			ListCache listCache = new ListCache(settings, cache);
+			ListCache listCache = new ListCache(_configurationStore, cache);
 
 			// Act
 			listCache.RemoveAll();
@@ -121,7 +130,7 @@ namespace Roadkill.Tests.Unit.Cache
 			ApplicationSettings settings = new ApplicationSettings() { UseObjectCache = false };
 			
 			List<string> tagCacheItems = new List<string>() { "1", "2" };			
-			ListCache listCache = new ListCache(settings, cache);
+			ListCache listCache = new ListCache(_configurationStore, cache);
 
 			// Act
 			listCache.Add("all.tags", tagCacheItems);
@@ -144,7 +153,7 @@ namespace Roadkill.Tests.Unit.Cache
 			List<string> tagCacheItems = new List<string>() { "1", "2" };
 			AddToCache(cache, "all.tags", tagCacheItems);
 
-			ListCache listCache = new ListCache(settings, cache);
+			ListCache listCache = new ListCache(_configurationStore, cache);
 			
 			// Act
 			listCache.Remove("all.tags");
@@ -166,7 +175,7 @@ namespace Roadkill.Tests.Unit.Cache
 			AddToCache(cache, "all.tags1", tagCacheItems1);
 			AddToCache(cache, "all.tags2", tagCacheItems2);
 
-			ListCache listCache = new ListCache(settings, cache);
+			ListCache listCache = new ListCache(_configurationStore, cache);
 
 			// Act
 			listCache.RemoveAll();
@@ -193,7 +202,7 @@ namespace Roadkill.Tests.Unit.Cache
 			AddToCache(cache, "all.tags1", tagCacheItems1);
 			AddToCache(cache, "all.tags2", tagCacheItems2);
 
-			ListCache listCache = new ListCache(settings, cache);
+			ListCache listCache = new ListCache(_configurationStore, cache);
 
 			// Act
 			listCache.RemoveAll();

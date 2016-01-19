@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Converters;
+using Roadkill.Tests.Unit.StubsAndMocks;
 
 // Reference:
 // http://www.wikicreole.org/attach/Creole1.0TestCases/creole1.0test.txt
@@ -11,16 +12,18 @@ namespace Roadkill.Tests.Unit.Text
 	[Category("Unit")]
 	public class CreoleParserTests
 	{
-		private ApplicationSettings _applicationSettings;
-		private SiteSettings _siteSettings;
+		private MocksAndStubsContainer _container;
+		private ConfigurationStoreMock _configurationStore;
+
 		private CreoleParser _parser;
 
 		[SetUp]
 		public void Setup()
 		{
-			_applicationSettings = new ApplicationSettings();
-			_siteSettings = new SiteSettings();
-			_parser = new CreoleParser(_applicationSettings, _siteSettings);
+			_container = new MocksAndStubsContainer();
+			_configurationStore = _container.ConfigurationStoreMock;
+
+			_parser = new CreoleParser(_configurationStore);
 		}
 
 		[Test]

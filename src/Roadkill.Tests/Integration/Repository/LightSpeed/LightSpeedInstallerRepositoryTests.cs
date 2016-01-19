@@ -42,15 +42,13 @@ namespace Roadkill.Tests.Integration.Repository.LightSpeed
 		{
 			IUnitOfWork unitOfWork = CreateUnitOfWork();
 
-			var settingsRepository = new LightSpeedSettingsRepository(unitOfWork);
 			var userRepository = new LightSpeedUserRepository(unitOfWork);
 			var pageRepository = new LightSpeedPageRepository(unitOfWork);
 
 			return pageRepository.AllPages().Count() == 0 &&
 				   pageRepository.AllPageContents().Count() == 0 &&
 				   userRepository.FindAllAdmins().Count() == 0 &&
-				   userRepository.FindAllEditors().Count() == 0 &&
-				   settingsRepository.GetSiteSettings() != null;
+				   userRepository.FindAllEditors().Count() == 0;
 		}
 
 		protected override bool HasAdminUser()
@@ -59,13 +57,6 @@ namespace Roadkill.Tests.Integration.Repository.LightSpeed
 			var userRepository = new LightSpeedUserRepository(unitOfWork);
 
 			return userRepository.FindAllAdmins().Count() == 1;
-		}
-
-		protected override SiteSettings GetSiteSettings()
-		{
-			IUnitOfWork unitOfWork = CreateUnitOfWork();
-			var settingsRepository = new LightSpeedSettingsRepository(unitOfWork);
-			return settingsRepository.GetSiteSettings();
 		}
 
 		private IUnitOfWork CreateUnitOfWork()

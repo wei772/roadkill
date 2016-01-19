@@ -38,27 +38,19 @@ namespace Roadkill.Tests.Integration.Repository.MongoDb
 
 		protected override bool HasEmptyTables()
 		{
-			var settingsRepository = new MongoDBSettingsRepository(ConnectionString);
 			var userRepository = new MongoDBUserRepository(ConnectionString);
 			var pageRepository = new MongoDBPageRepository(ConnectionString);
 
 			return pageRepository.AllPages().Count() == 0 &&
-				   pageRepository.AllPageContents().Count() == 0 &&
-				   userRepository.FindAllAdmins().Count() == 0 &&
-				   userRepository.FindAllEditors().Count() == 0 &&
-				   settingsRepository.GetSiteSettings() != null;
+			       pageRepository.AllPageContents().Count() == 0 &&
+			       userRepository.FindAllAdmins().Count() == 0 &&
+			       userRepository.FindAllEditors().Count() == 0;
 		}
 
 		protected override bool HasAdminUser()
 		{
 			var userRepository = new MongoDBUserRepository(ConnectionString);
 			return userRepository.FindAllAdmins().Count() == 1;
-		}
-
-		protected override SiteSettings GetSiteSettings()
-		{
-			var settingsRepository = new MongoDBSettingsRepository(ConnectionString);
-			return settingsRepository.GetSiteSettings();
 		}
 	}
 }

@@ -22,8 +22,6 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 	public class HomeControllerTests
 	{
 		private MocksAndStubsContainer _container;
-
-		private IConfiguration _configuration;
 		private ConfigurationStoreMock _configurationStore;
 
 		private IUserContext _context;
@@ -39,7 +37,6 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void Setup()
 		{
 			_container = new MocksAndStubsContainer();
-			_configuration = _container.Configuration;
 			_configurationStore = _container.ConfigurationStoreMock;
 
 			_context = _container.UserContext;

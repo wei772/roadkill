@@ -89,7 +89,7 @@ namespace Roadkill.Tests.Unit.Mvc.ViewModels
 		public void Constructor_Should_Throw_ArgumentException_When_UserService_Is_Null()
 		{
 			// Arrange + Act + Assert
-			UserViewModel model = new UserViewModel(new ApplicationSettings(), null);
+			UserViewModel model = new UserViewModel(new ConfigurationStoreMock(), null);
 		}
 
 		[Test]

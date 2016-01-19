@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using Recaptcha;
 using Roadkill.Core.AmazingConfig;
-using Roadkill.Core.Configuration;
 
 namespace Roadkill.Core.Mvc.Attributes
 {
@@ -24,13 +19,13 @@ namespace Roadkill.Core.Mvc.Attributes
 			if (controller != null)
 			{
 				IConfiguration config = controller.ConfigurationStore.Load();
-				if (config.IsRecaptchaEnabled)
+				if (config.SecuritySettings.IsRecaptchaEnabled)
 				{
 					string challengeValue = filterContext.HttpContext.Request.Form[CHALLENGE_KEY];
 					string responseValue = filterContext.HttpContext.Request.Form[RESPONSE_KEY];
 
 					RecaptchaValidator validator = new RecaptchaValidator();
-					validator.PrivateKey = config.RecaptchaPrivateKey;
+					validator.PrivateKey = config.SecuritySettings.RecaptchaPrivateKey;
 					validator.RemoteIP = filterContext.HttpContext.Request.UserHostAddress;
 					validator.Challenge = challengeValue;
 					validator.Response = responseValue;

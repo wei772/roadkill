@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Security.Principal;
 using NUnit.Framework;
-using Roadkill.Core;
 using Roadkill.Core.AmazingConfig;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
 using Roadkill.Core.Security;
-using Roadkill.Core.Services;
 using Roadkill.Tests.Unit.StubsAndMocks;
 
 namespace Roadkill.Tests.Unit.Security
@@ -15,21 +12,23 @@ namespace Roadkill.Tests.Unit.Security
 	[Category("Unit")]
 	public class AuthorizationProviderTests
 	{
+		private ConfigurationStoreMock _configurationStore;
 		private MocksAndStubsContainer _container;
-
 		private IConfiguration _configuration;
+
 		private UserServiceMock _userService;
 
 		[SetUp]
 		public void Setup()
 		{
 			_container = new MocksAndStubsContainer();
-
+			_configurationStore = _container.ConfigurationStoreMock;
 			_configuration = _container.Configuration;
-			_userService = _container.UserService;
-
 			_configuration.SecuritySettings.AdminRoleName = "Admin";
 			_configuration.SecuritySettings.EditorRoleName = "Editor";
+
+			_userService = _container.UserService;
+
 		}
 
 		[Test]
@@ -45,7 +44,7 @@ namespace Roadkill.Tests.Unit.Security
 		public void Should_Throw_Argument_Null_Exception_For_Null_UserService()
 		{
 			// Arrange + Act + Assert
-			AuthorizationProvider provider = new AuthorizationProvider(_configuration, null);
+			AuthorizationProvider provider = new AuthorizationProvider(_configurationStore, null);
 		}
 
 		//
@@ -59,7 +58,7 @@ namespace Roadkill.Tests.Unit.Security
 			User editorUser = CreateEditorUser();
 			IdentityStub identity = new IdentityStub() { IsAuthenticated = false };
 			IPrincipal principal = new PrincipalStub() { Identity = identity };
-			AuthorizationProvider provider = new AuthorizationProvider(_configuration, _userService);
+			AuthorizationProvider provider = new AuthorizationProvider(_configurationStore, _userService);
 
 			// Act
 			bool isAuthenticated = provider.IsViewer(principal);
@@ -79,7 +78,7 @@ namespace Roadkill.Tests.Unit.Security
 			User adminUser = CreateAdminUser();
 			IdentityStub identity = new IdentityStub() { Name = adminUser.Id.ToString(), IsAuthenticated = true };
 			PrincipalStub principal = new PrincipalStub() { Identity = identity };
-			AuthorizationProvider provider = new AuthorizationProvider(_configuration, _userService);
+			AuthorizationProvider provider = new AuthorizationProvider(_configurationStore, _userService);
 
 			// Act
 			bool isAuthenticated = provider.IsAdmin(principal);
@@ -95,7 +94,7 @@ namespace Roadkill.Tests.Unit.Security
 			User editorUser = CreateEditorUser();
 			IdentityStub identity = new IdentityStub() { Name = editorUser.Id.ToString(), IsAuthenticated = true };
 			PrincipalStub principal = new PrincipalStub() { Identity = identity };
-			AuthorizationProvider provider = new AuthorizationProvider(_configuration, _userService);
+			AuthorizationProvider provider = new AuthorizationProvider(_configurationStore, _userService);
 
 			// Act
 			bool isAuthenticated = provider.IsAdmin(principal);
@@ -111,7 +110,7 @@ namespace Roadkill.Tests.Unit.Security
 			User adminUser = CreateAdminUser();
 			IdentityStub identity = new IdentityStub() { Name = adminUser.Id.ToString(), IsAuthenticated = false	};
 			PrincipalStub principal = new PrincipalStub() { Identity = identity };
-			AuthorizationProvider provider = new AuthorizationProvider(_configuration, _userService);
+			AuthorizationProvider provider = new AuthorizationProvider(_configurationStore, _userService);
 
 			// Act
 			bool isAuthenticated = provider.IsAdmin(principal);
@@ -129,7 +128,7 @@ namespace Roadkill.Tests.Unit.Security
 			User adminUser = CreateAdminUser();
 			IdentityStub identity = new IdentityStub() { Name = adminUser.Id.ToString(), IsAuthenticated = true };
 			PrincipalStub principal = new PrincipalStub() { Identity = identity };
-			AuthorizationProvider provider = new AuthorizationProvider(_configuration, _userService);
+			AuthorizationProvider provider = new AuthorizationProvider(_configurationStore, _userService);
 
 			// Act
 			bool isAuthenticated = provider.IsAdmin(principal);
@@ -144,7 +143,7 @@ namespace Roadkill.Tests.Unit.Security
 			// Arrange
 			IdentityStub identity = new IdentityStub() { Name = "", IsAuthenticated = true };
 			PrincipalStub principal = new PrincipalStub() { Identity = identity };
-			AuthorizationProvider provider = new AuthorizationProvider(_configuration, _userService);
+			AuthorizationProvider provider = new AuthorizationProvider(_configurationStore, _userService);
 
 			// Act
 			bool isAuthenticated = provider.IsAdmin(principal);
@@ -164,7 +163,7 @@ namespace Roadkill.Tests.Unit.Security
 			User editorUser = CreateEditorUser();
 			IdentityStub identity = new IdentityStub() { Name = editorUser.Id.ToString(), IsAuthenticated = true };
 			PrincipalStub principal = new PrincipalStub() { Identity = identity };
-			AuthorizationProvider provider = new AuthorizationProvider(_configuration, _userService);
+			AuthorizationProvider provider = new AuthorizationProvider(_configurationStore, _userService);
 
 			// Act
 			bool isAuthenticated = provider.IsEditor(principal);
@@ -180,7 +179,7 @@ namespace Roadkill.Tests.Unit.Security
 			User adminUser = CreateAdminUser();
 			IdentityStub identity = new IdentityStub() { Name = adminUser.Id.ToString(), IsAuthenticated = true };
 			PrincipalStub principal = new PrincipalStub() { Identity = identity };
-			AuthorizationProvider provider = new AuthorizationProvider(_configuration, _userService);
+			AuthorizationProvider provider = new AuthorizationProvider(_configurationStore, _userService);
 
 			// Act
 			bool isAuthenticated = provider.IsEditor(principal);
@@ -196,7 +195,7 @@ namespace Roadkill.Tests.Unit.Security
 			User editorUser = CreateEditorUser();
 			IdentityStub identity = new IdentityStub() { Name = editorUser.Id.ToString(), IsAuthenticated = false };
 			PrincipalStub principal = new PrincipalStub() { Identity = identity };
-			AuthorizationProvider provider = new AuthorizationProvider(_configuration, _userService);
+			AuthorizationProvider provider = new AuthorizationProvider(_configurationStore, _userService);
 
 			// Act
 			bool isAuthenticated = provider.IsEditor(principal);
@@ -214,7 +213,7 @@ namespace Roadkill.Tests.Unit.Security
 			User editorUser = CreateEditorUser();
 			IdentityStub identity = new IdentityStub() { Name = editorUser.Id.ToString(), IsAuthenticated = true };
 			PrincipalStub principal = new PrincipalStub() { Identity = identity };
-			AuthorizationProvider provider = new AuthorizationProvider(_configuration, _userService);
+			AuthorizationProvider provider = new AuthorizationProvider(_configurationStore, _userService);
 
 			// Act
 			bool isAuthenticated = provider.IsEditor(principal);
@@ -229,7 +228,7 @@ namespace Roadkill.Tests.Unit.Security
 			// Arrange
 			IdentityStub identity = new IdentityStub() { Name = "", IsAuthenticated = true };
 			PrincipalStub principal = new PrincipalStub() { Identity = identity };
-			AuthorizationProvider provider = new AuthorizationProvider(_configuration, _userService);
+			AuthorizationProvider provider = new AuthorizationProvider(_configurationStore, _userService);
 
 			// Act
 			bool isAuthenticated = provider.IsEditor(principal);
@@ -247,7 +246,7 @@ namespace Roadkill.Tests.Unit.Security
 
 			IdentityStub identity = new IdentityStub() { Name = user.Id.ToString(), IsAuthenticated = true };
 			PrincipalStub principal = new PrincipalStub() { Identity = identity };
-			AuthorizationProvider provider = new AuthorizationProvider(_configuration, _userService);
+			AuthorizationProvider provider = new AuthorizationProvider(_configurationStore, _userService);
 
 			// Act
 			bool isAuthenticated = provider.IsEditor(principal);

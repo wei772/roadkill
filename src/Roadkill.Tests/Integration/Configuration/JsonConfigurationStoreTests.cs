@@ -64,14 +64,14 @@ namespace Roadkill.Tests.Integration.Configuration
 			// Assert
 			Assert.That(actualConfiguration.Installed, Is.True);
 			Assert.That(actualConfiguration.DatabaseProvider, Is.EqualTo("SqlServer2008"));
-			Assert.That(actualConfiguration.AllowUserSignup, Is.False);
-			Assert.That(actualConfiguration.IsRecaptchaEnabled, Is.False);
+			Assert.That(actualConfiguration.SecuritySettings.AllowUserSignup, Is.False);
+			Assert.That(actualConfiguration.SecuritySettings.IsRecaptchaEnabled, Is.False);
 			Assert.That(actualConfiguration.Theme, Is.EqualTo("Mediawiki"));
 			Assert.That(actualConfiguration.MarkupType, Is.EqualTo("Creole"));
 			Assert.That(actualConfiguration.SiteName, Is.EqualTo("Your site"));
 			Assert.That(actualConfiguration.SiteUrl, Is.EqualTo(""));
-			Assert.That(actualConfiguration.RecaptchaPrivateKey, Is.EqualTo(""));
-			Assert.That(actualConfiguration.RecaptchaPublicKey, Is.EqualTo(""));
+			Assert.That(actualConfiguration.SecuritySettings.RecaptchaPrivateKey, Is.EqualTo(""));
+			Assert.That(actualConfiguration.SecuritySettings.RecaptchaPublicKey, Is.EqualTo(""));
 			Assert.That(actualConfiguration.HeadContent, Is.EqualTo(""));
 			Assert.That(actualConfiguration.MenuMarkup, Is.EqualTo("* %mainpage%\r\n* %categories%\r\n* %allpages%\r\n* %newpage%\r\n* %managefiles%\r\n* %sitesettings%\r\n\r\n"));
 
@@ -128,13 +128,13 @@ namespace Roadkill.Tests.Integration.Configuration
 
 			configuration.Settings["Hello"] = "World";
 
-			JsonConfigurationStore store = new JsonConfigurationStore("configuration.json");
+			JsonConfigurationStore store = new JsonConfigurationStore("configuration.json", "plugins.json");
 
 			// Act
 			store.Save(configuration);
 
 			// Assert
-			var actualConfiguration = store.Load();
+			IConfiguration actualConfiguration = store.Load();
 
 			Assert.That(actualConfiguration.Installed, Is.True);
 			Assert.That(actualConfiguration.ConnectionString, Is.EqualTo("foo"));

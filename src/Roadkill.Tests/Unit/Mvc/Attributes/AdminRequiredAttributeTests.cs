@@ -21,17 +21,19 @@ namespace Roadkill.Tests.Unit.Mvc.Attributes
 
 		private IConfiguration _configuration;
 		private UserServiceMock _userService;
+		private ConfigurationStoreMock _configurationStore;
 
 		[SetUp]
 		public void Setup()
 		{
 			_container = new MocksAndStubsContainer();
-
+			_configurationStore = _container.ConfigurationStoreMock;
 			_configuration = _container.Configuration;
-			_userService = _container.UserService;
 
 			_configuration.SecuritySettings.AdminRoleName = "Admin";
 			_configuration.SecuritySettings.EditorRoleName = "Editor";
+
+			_userService = _container.UserService;
 		}
 
 		[Test]
@@ -40,7 +42,7 @@ namespace Roadkill.Tests.Unit.Mvc.Attributes
 			// Arrange
 			AdminRequiredAttributeMock attribute = new AdminRequiredAttributeMock();
 			attribute.AuthorizationProvider = new AuthorizationProviderMock() { IsAdminResult = true };
-			attribute.Configuration = _configuration;
+			attribute.ConfigurationStore = _configurationStore;
 			attribute.UserService = _userService;
 
 			IdentityStub identity = new IdentityStub() { Name = Guid.NewGuid().ToString(), IsAuthenticated = true };

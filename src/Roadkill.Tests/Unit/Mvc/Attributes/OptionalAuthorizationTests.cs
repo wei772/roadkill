@@ -2,6 +2,7 @@
 using System.Web;
 using NUnit.Framework;
 using Roadkill.Core;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
 using Roadkill.Core.Mvc.Attributes;
@@ -18,33 +19,32 @@ namespace Roadkill.Tests.Unit.Mvc.Attributes
 	public class OptionalAuthorizationTests
 	{
 		private MocksAndStubsContainer _container;
+		private ConfigurationStoreMock _configurationStore;
+		private IConfiguration _configuration;
 
-		private ApplicationSettings _applicationSettings;
-		private IUserContext _context;
 		private UserServiceMock _userService;
 
 		[SetUp]
 		public void Setup()
 		{
 			_container = new MocksAndStubsContainer();
+			_configurationStore = _container.ConfigurationStoreMock;
+			_configuration = _container.Configuration;
+			_configuration.SecuritySettings.AdminRoleName = "Admin";
+			_configuration.SecuritySettings.EditorRoleName = "Editor";
 
-			_applicationSettings = _container.ApplicationSettings;
-			_context = _container.UserContext;
 			_userService = _container.UserService;
-
-			_applicationSettings.AdminRoleName = "Admin";
-			_applicationSettings.EditorRoleName = "Editor";
 		}
 
 		[Test]
 		public void should_return_true_if_installed_is_false()
 		{
 			// Arrange
-			_applicationSettings.Installed = false;
+			_configuration.Installed = false;
 
 			OptionalAuthorizationAttributeMock attribute = new OptionalAuthorizationAttributeMock();
 			attribute.AuthorizationProvider = new AuthorizationProviderMock();
-			attribute.Configuration = _applicationSettings;
+			attribute.ConfigurationStore = _configurationStore;
 			attribute.UserService = _userService;
 
 			IdentityStub identity = new IdentityStub() { Name = Guid.NewGuid().ToString(), IsAuthenticated = true };
@@ -62,11 +62,11 @@ namespace Roadkill.Tests.Unit.Mvc.Attributes
 		public void should_return_true_if_publicsite_is_true()
 		{
 			// Arrange
-			_applicationSettings.IsPublicSite = true;
+			_configuration.IsPublicSite = true;
 
 			OptionalAuthorizationAttributeMock attribute = new OptionalAuthorizationAttributeMock();
 			attribute.AuthorizationProvider = new AuthorizationProviderMock();
-			attribute.Configuration = _applicationSettings;
+			attribute.ConfigurationStore = _configurationStore;
 			attribute.UserService = _userService;
 
 			IdentityStub identity = new IdentityStub() { Name = Guid.NewGuid().ToString(), IsAuthenticated = true };
@@ -88,7 +88,7 @@ namespace Roadkill.Tests.Unit.Mvc.Attributes
 
 			OptionalAuthorizationAttributeMock attribute = new OptionalAuthorizationAttributeMock();
 			attribute.AuthorizationProvider = new AuthorizationProviderMock() { IsEditorResult = true };
-			attribute.Configuration = _applicationSettings;
+			attribute.ConfigurationStore = _configurationStore;
 			attribute.UserService = _userService;
 
 			IdentityStub identity = new IdentityStub() { Name = editorUser.Id.ToString(), IsAuthenticated = true };
@@ -110,7 +110,7 @@ namespace Roadkill.Tests.Unit.Mvc.Attributes
 
 			OptionalAuthorizationAttributeMock attribute = new OptionalAuthorizationAttributeMock();
 			attribute.AuthorizationProvider = new AuthorizationProviderMock() { IsEditorResult = true };
-			attribute.Configuration = _applicationSettings;
+			attribute.ConfigurationStore = _configurationStore;
 			attribute.UserService = _userService;
 
 			IdentityStub identity = new IdentityStub() { Name = adminUser.Id.ToString(), IsAuthenticated = true };

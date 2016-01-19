@@ -2,6 +2,7 @@
 using System.Web;
 using NUnit.Framework;
 using Roadkill.Core;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Mvc.Attributes;
 using Roadkill.Tests.Unit.StubsAndMocks;
@@ -17,22 +18,22 @@ namespace Roadkill.Tests.Unit.Mvc.Attributes
 	public class EditorRequiredAttributeTests
 	{
 		private MocksAndStubsContainer _container;
+		private ConfigurationStoreMock _configurationStore;
+		private IConfiguration _configuration;
 
-		private ApplicationSettings _applicationSettings;
-		private IUserContext _context;
 		private UserServiceMock _userService;
 
 		[SetUp]
 		public void Setup()
 		{
 			_container = new MocksAndStubsContainer();
+			_configurationStore = _container.ConfigurationStoreMock;
+			_configuration = _container.Configuration;
 
-			_applicationSettings = _container.ApplicationSettings;
-			_context = _container.UserContext;
 			_userService = _container.UserService;
 
-			_applicationSettings.AdminRoleName = "Admin";
-			_applicationSettings.EditorRoleName = "Editor";
+			_configuration.SecuritySettings.AdminRoleName = "Admin";
+			_configuration.SecuritySettings.EditorRoleName = "Editor";
 		}
 
 		[Test]
@@ -41,7 +42,7 @@ namespace Roadkill.Tests.Unit.Mvc.Attributes
 			// Arrange
 			EditorRequiredAttributeMock attribute = new EditorRequiredAttributeMock();
 			attribute.AuthorizationProvider = new AuthorizationProviderMock() { IsEditorResult = true };
-			attribute.Configuration = _applicationSettings;
+			attribute.ConfigurationStore = _configurationStore;
 			attribute.UserService = _userService;
 
 			IdentityStub identity = new IdentityStub() { Name = Guid.NewGuid().ToString(), IsAuthenticated = true };

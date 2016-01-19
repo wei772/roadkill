@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.DependencyResolution;
 using Roadkill.Core.Localization;
 using ControllerBase = Roadkill.Core.Mvc.Controllers.ControllerBase;
@@ -82,7 +83,7 @@ namespace Roadkill.Core.Extensions
 			if (controller == null)
 				return MvcHtmlString.Empty;
 
-			var config = controller.ConfigurationStore.Load();
+			IConfiguration config = controller.ConfigurationStore.Load();
 			if (config.SecuritySettings.UseWindowsAuthentication)
 				return MvcHtmlString.Empty;
 
@@ -97,7 +98,7 @@ namespace Roadkill.Core.Extensions
 				string redirectPath = helper.ViewContext.HttpContext.Request.Path;
 				link = helper.ActionLink(SiteStrings.Navigation_Login, "Login", "User", new { ReturnUrl = redirectPath }, null).ToString();
 
-				if (config.AllowUserSignup)
+				if (config.SecuritySettings.AllowUserSignup)
 					link += "&nbsp;/&nbsp;" + helper.ActionLink(SiteStrings.Navigation_Register, "Signup", "User").ToString();
 			}
 

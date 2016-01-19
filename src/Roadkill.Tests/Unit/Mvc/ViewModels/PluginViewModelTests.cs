@@ -23,11 +23,12 @@ namespace Roadkill.Tests.Unit.Mvc.ViewModels
 		[Test]
 		public void constructor_should_convert_textplugin_to_properties_and_description_newlines_to_br()
 		{
+			// TODO
 			// Arrange
 			TextPluginStub plugin = new TextPluginStub("myid", "my name", "my description\r\nsome new text");
-			plugin.Repository = new SettingsRepositoryMock();
-			plugin.PluginCache = new SiteCache(CacheMock.RoadkillCache);
-			plugin.Settings.IsEnabled = true;
+			//plugin.Repository = new SettingsRepositoryMock();
+			//plugin.PluginCache = new SiteCache(CacheMock.RoadkillCache);
+			//plugin.Settings.IsEnabled = true;
 
 			// Act
 			PluginViewModel model = new PluginViewModel(plugin);

@@ -2,6 +2,7 @@
 using System.Web.Mvc;
 using NUnit.Framework;
 using Roadkill.Core;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Mvc.Controllers;
 using Roadkill.Core.Mvc.ViewModels;
@@ -14,8 +15,9 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 	public class ConfigurationTesterControllerTests
 	{
 		private MocksAndStubsContainer _container;
+		private ConfigurationStoreMock _configurationStore;
+		private IConfiguration _configuration;
 
-		private ApplicationSettings _applicationSettings;
 		private IUserContext _context;
 		private UserServiceMock _userService;
 		private ConfigReaderWriterStub _configReaderWriter;
@@ -28,9 +30,10 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void Setup()
 		{
 			_container = new MocksAndStubsContainer();
+			_configurationStore = _container.ConfigurationStoreMock;
+			_configuration = _container.Configuration;
 
-			_applicationSettings = _container.ApplicationSettings;
-			_applicationSettings.Installed = false;
+			_configuration.Installed = false;
 
 			_context = _container.UserContext;
 			_userService = _container.UserService;
@@ -39,7 +42,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 
 			_databaseTester = _container.DatabaseTester;
 
-			_configTesterController = new ConfigurationTesterController(_applicationSettings, _context, _configReaderWriter, _activeDirectoryProviderMock, _userService, _databaseTester);
+			_configTesterController = new ConfigurationTesterController(_configurationStore, _context, _configReaderWriter, _activeDirectoryProviderMock, _userService, _databaseTester);
 		}
 
 		[Test]
@@ -64,7 +67,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void testwebconfig_should_return_empty_content_when_installed_is_true()
 		{
 			// Arrange
-			_applicationSettings.Installed = true;
+			_configuration.Installed = true;
 
 			// Act
 			ActionResult result = _configTesterController.TestWebConfig();
@@ -79,7 +82,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void testattachments_should_return_empty_content_when_installed_is_true()
 		{
 			// Arrange
-			_applicationSettings.Installed = true;
+			_configuration.Installed = true;
 
 			// Act
 			ActionResult result = _configTesterController.TestAttachments(AppDomain.CurrentDomain.BaseDirectory);
@@ -94,7 +97,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void testdatabaseconnection_should_return_empty_content_when_installed_is_true()
 		{
 			// Arrange
-			_applicationSettings.Installed = true;
+			_configuration.Installed = true;
 
 			// Act
 			ActionResult result = _configTesterController.TestDatabaseConnection("connectionstring", "SqlServer2008");
@@ -127,7 +130,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void testldap_should_return_empty_content_when_installed_is_true()
 		{
 			// Arrange
-			_applicationSettings.Installed = true;
+			_configuration.Installed = true;
 
 			// Act
 			ActionResult result = _configTesterController.TestLdap("connectionstring", "username", "password", "groupname");

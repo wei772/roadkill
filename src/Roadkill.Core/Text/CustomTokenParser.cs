@@ -31,17 +31,19 @@ namespace Roadkill.Core
 			CacheTokensFile = true;
 		}
 
-		public CustomTokenParser(InternalSettings settings)
+		public CustomTokenParser(IConfigurationStore configurationStore)
 		{
+			IConfiguration configuration = configurationStore.Load();
+
 			if (CacheTokensFile && !_isTokensFileCached)
 			{
-				_tokens = Deserialize(settings);
+				_tokens = Deserialize(configuration.InternalSettings);
 				ParseTokenRegexes();
 				_isTokensFileCached = true;
 			}
 			else
 			{
-				_tokens = Deserialize(settings);
+				_tokens = Deserialize(configuration.InternalSettings);
 				ParseTokenRegexes();
 			}
 		}

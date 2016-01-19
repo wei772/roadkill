@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Roadkill.Core;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
 using Roadkill.Core.Mvc.ViewModels;
@@ -20,8 +21,9 @@ namespace Roadkill.Tests.Unit.Services
 		public static string AdminPassword = "password";
 
 		private MocksAndStubsContainer _container;
+		private ConfigurationStoreMock _configurationStore;
+		private IConfiguration _configuration;
 
-		private ApplicationSettings _applicationSettings;
 		private PageRepositoryMock _pageRepository;
 		private UserServiceMock _userService;
 		private PageHistoryService _historyService;
@@ -33,8 +35,10 @@ namespace Roadkill.Tests.Unit.Services
 		public void Setup()
 		{
 			_container = new MocksAndStubsContainer();
+			_container = new MocksAndStubsContainer();
+			_configurationStore = _container.ConfigurationStoreMock;
+			_configuration = _container.Configuration;
 
-			_applicationSettings = _container.ApplicationSettings;
 			_context = _container.UserContext;	
 			_pageRepository = _container.PageRepository;
 			_userService = _container.UserService;

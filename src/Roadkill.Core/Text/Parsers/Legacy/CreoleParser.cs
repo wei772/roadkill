@@ -145,8 +145,10 @@ namespace Roadkill.Core.Converters
 			}
 		}
 
-		public CreoleParser(IConfiguration configuration)
+		public CreoleParser(IConfigurationStore configurationStore)
 		{
+			IConfiguration configuration = configurationStore.Load();
+
 			MarkupParserHelp = new MarkupParserHelp()
 			{
 				BoldToken = "**",

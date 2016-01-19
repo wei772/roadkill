@@ -14,11 +14,9 @@ namespace Roadkill.Tests.Unit.Mvc.ViewModels
 	public class UserViewModelUsernameValidationTests
 	{
 		private MocksAndStubsContainer _container;
+		private ConfigurationStoreMock _configurationStore;
 
-		private ApplicationSettings _applicationSettings;
-		private PageRepositoryMock _pageRepository;
 		private UserServiceMock _userService;
-		private IUserContext _context;
 
 		private UserViewModel _userViewModel;
 
@@ -26,14 +24,12 @@ namespace Roadkill.Tests.Unit.Mvc.ViewModels
 		public void Setup()
 		{
 			_container = new MocksAndStubsContainer();
+			_configurationStore = _container.ConfigurationStoreMock;
 
-			_applicationSettings = _container.ApplicationSettings;
-			_context = _container.UserContext;
-			_pageRepository = _container.PageRepository;
 			_userService = _container.UserService;
 
 			_userService.Users.Add(new User() { Username = "username-exists" });
-			_userViewModel = new UserViewModel(_applicationSettings, _userService);
+			_userViewModel = new UserViewModel(_configurationStore, _userService);
 		}
 
 		[Test]

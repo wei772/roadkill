@@ -4,6 +4,7 @@ using NUnit.Framework;
 using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Attachments;
 using Roadkill.Core.Configuration;
+using Roadkill.Tests.Unit.StubsAndMocks;
 
 namespace Roadkill.Tests.Unit.Attachments
 {
@@ -11,15 +12,21 @@ namespace Roadkill.Tests.Unit.Attachments
 	[Category("Unit")]
 	public class AttachmentPathUtilTests
 	{
+		private MocksAndStubsContainer _container;
+		private ConfigurationStoreMock _configurationStore;
 		private IConfiguration _configuration;
+
 		private AttachmentPathUtil _attachmentPathUtil;
 
 		[SetUp]
 		public void Setup()
 		{
-			_configuration = new JsonConfiguration();
+			_container = new MocksAndStubsContainer();
+			_configurationStore = _container.ConfigurationStoreMock;
+			_configuration = _container.Configuration;
 			_configuration.AttachmentSettings.AttachmentsFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Attachments");
-			_attachmentPathUtil = new AttachmentPathUtil(_configuration);
+
+			_attachmentPathUtil = new AttachmentPathUtil(_configurationStore);
 
 			try
 			{

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using NUnit.Framework;
 using Roadkill.Core;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
 using Roadkill.Core.Email;
@@ -20,18 +21,18 @@ namespace Roadkill.Tests.Unit.Email
 	public class EmailTemplateTests
 	{
 		private MocksAndStubsContainer _container;
-
-		private NonConfigurableSettings _settings;
-		private EmailClientMock _emailClientMock;
 		private ConfigurationStoreMock _configurationStore;
+		private IConfiguration _configuration;
+
+		private EmailClientMock _emailClientMock;
 
 		[SetUp]
 		public void Setup()
 		{
 			_container = new MocksAndStubsContainer();
 			_configurationStore = _container.ConfigurationStoreMock;
+			_configuration = _container.Configuration;
 
-			_settings = new NonConfigurableSettings();
 			_emailClientMock = _container.EmailClient;
 		}
 
@@ -39,7 +40,7 @@ namespace Roadkill.Tests.Unit.Email
 		public void should_use_default_smtpclient_when_client_is_null_in_constructor()
 		{
 			// Arrange
-			EmailTemplateStub emailTemplate = new EmailTemplateStub(_settings, null);
+			EmailTemplateStub emailTemplate = new EmailTemplateStub(_configurationStore, null);
 
 			// Act +  Assert
 			Assert.That(emailTemplate.GetEmailClient(), Is.TypeOf<EmailClient>());
@@ -49,7 +50,7 @@ namespace Roadkill.Tests.Unit.Email
 		public void send_should_use_emailclient_to_send()
 		{
 			// Arrange
-			EmailTemplateStub emailTemplate = new EmailTemplateStub(_settings, _emailClientMock);
+			EmailTemplateStub emailTemplate = new EmailTemplateStub(_configurationStore, _emailClientMock);
 			UserViewModel userModel = new UserViewModel();
 			userModel.ExistingEmail = "someone@localhost";
 			userModel.NewEmail = "someone@localhost";
@@ -66,7 +67,7 @@ namespace Roadkill.Tests.Unit.Email
 		public void Send_Should_Throw_EmailException_When_Model_Is_Null()
 		{
 			// Arrange
-			EmailTemplateStub emailTemplate = new EmailTemplateStub(_settings, _emailClientMock);
+			EmailTemplateStub emailTemplate = new EmailTemplateStub(_configurationStore, _emailClientMock);
 			UserViewModel userModel = null;
 
 			// Act + Assert
@@ -78,7 +79,7 @@ namespace Roadkill.Tests.Unit.Email
 		public void Send_Should_Throw_EmailException_When_Model_Email_And_NewEmail_Is_Empty()
 		{
 			// Arrange
-			EmailTemplateStub emailTemplate = new EmailTemplateStub(_settings, _emailClientMock);
+			EmailTemplateStub emailTemplate = new EmailTemplateStub(_configurationStore, _emailClientMock);
 			UserViewModel userModel = new UserViewModel();
 			userModel.ExistingEmail = null;
 			userModel.NewEmail = "";
@@ -92,7 +93,7 @@ namespace Roadkill.Tests.Unit.Email
 		public void Send_Should_Throw_EmailException_When_PlainTextView_Is_Empty()
 		{
 			// Arrange
-			EmailTemplateStub emailTemplate = new EmailTemplateStub(_settings, _emailClientMock);
+			EmailTemplateStub emailTemplate = new EmailTemplateStub(_configurationStore, _emailClientMock);
 			emailTemplate.PlainTextView = "";
 			UserViewModel userModel = new UserViewModel();
 			userModel.ExistingEmail = "someone@localhost";
@@ -106,7 +107,7 @@ namespace Roadkill.Tests.Unit.Email
 		public void send_should_set_two_alternative_views_with_plaintext_and_html()
 		{
 			// Arrange
-			EmailTemplateStub emailTemplate = new EmailTemplateStub(_settings, _emailClientMock);
+			EmailTemplateStub emailTemplate = new EmailTemplateStub(_configurationStore, _emailClientMock);
 			UserViewModel userModel = new UserViewModel();
 			userModel.ExistingEmail = "someone@localhost";
 			userModel.NewEmail = "someone@localhost";
@@ -129,7 +130,7 @@ namespace Roadkill.Tests.Unit.Email
 		public void send_should_change_pickupdirectory_to_appdomainroot_when_starting_with_virtualpath_and_deliverytype_is_pickuplocation()
 		{
 			// Arrange
-			EmailTemplateStub emailTemplate = new EmailTemplateStub(_settings, _emailClientMock);
+			EmailTemplateStub emailTemplate = new EmailTemplateStub(_configurationStore, _emailClientMock);
 			_emailClientMock.PickupDirectoryLocation = "~/App_Data/EmailDrop";
 			_emailClientMock.DeliveryMethod = SmtpDeliveryMethod.SpecifiedPickupDirectory;
 
@@ -148,11 +149,11 @@ namespace Roadkill.Tests.Unit.Email
 		public void readtemplatefile_should_read_textfile_contents()
 		{
 			// Arrange
-			_settings.EmailTemplateFolder = AppDomain.CurrentDomain.BaseDirectory;
+			_configuration.InternalSettings.EmailTemplateFolder = AppDomain.CurrentDomain.BaseDirectory;
 			string expectedContents = DateTime.UtcNow.ToString();
 			string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "emailtemplate.txt");
 			File.WriteAllText(path, expectedContents);
-			EmailTemplateStub emailTemplate = new EmailTemplateStub(_settings, _emailClientMock);
+			EmailTemplateStub emailTemplate = new EmailTemplateStub(_configurationStore, _emailClientMock);
 
 			// Act
 			string actualContents = emailTemplate.ReadTemplateFile("emailtemplate.txt");
@@ -165,7 +166,7 @@ namespace Roadkill.Tests.Unit.Email
 		public void readtemplatefile_should_read_cultureui_textfile_contents()
 		{
 			// Arrange
-			_settings.EmailTemplateFolder = AppDomain.CurrentDomain.BaseDirectory;
+			_configuration.InternalSettings.EmailTemplateFolder = AppDomain.CurrentDomain.BaseDirectory;
 			string expectedContents = DateTime.UtcNow.ToString();
 			string cultureDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "fr-FR");
 			if (!Directory.Exists(cultureDir))
@@ -175,7 +176,7 @@ namespace Roadkill.Tests.Unit.Email
 			Thread.CurrentThread.CurrentUICulture = new CultureInfo("fr-FR");
 
 			File.WriteAllText(cultureFilePath, expectedContents);
-			EmailTemplateStub emailTemplate = new EmailTemplateStub(_settings, _emailClientMock);
+			EmailTemplateStub emailTemplate = new EmailTemplateStub(_configurationStore, _emailClientMock);
 
 			// Act
 			string actualContents = emailTemplate.ReadTemplateFile("emailtemplate.txt");
@@ -188,7 +189,7 @@ namespace Roadkill.Tests.Unit.Email
 		public void replacetokens_should_replace_all_tokens_from_model()
 		{
 			// Arrange
-			EmailTemplateStub emailTemplate = new EmailTemplateStub(_settings, _emailClientMock);
+			EmailTemplateStub emailTemplate = new EmailTemplateStub(_configurationStore, _emailClientMock);
 			UserViewModel userModel = new UserViewModel();
 			userModel.ActivationKey = "key";
 			userModel.ExistingUsername = "username";
@@ -198,10 +199,8 @@ namespace Roadkill.Tests.Unit.Email
 			userModel.NewEmail = "NewEmail";
 			userModel.PasswordResetKey = "resetkey";
 
-			SiteSettings siteSettings = new SiteSettings();
-			siteSettings.SiteName = "MySite";
-			siteSettings.SiteUrl = "http://www.roadkillwiki.iz.de.biz";
-			_.SaveSiteSettings(siteSettings);
+			_configuration.SiteName = "MySite";
+			_configuration.SiteUrl = "http://www.roadkillwiki.iz.de.biz";
 
 			StringBuilder templateBuilder = new StringBuilder();
 			templateBuilder.AppendLine("{FIRSTNAME}");
@@ -222,8 +221,8 @@ namespace Roadkill.Tests.Unit.Email
 			expectedContent.AppendLine(userModel.ActivationKey);
 			expectedContent.AppendLine(userModel.PasswordResetKey);
 			expectedContent.AppendLine(userModel.Id.ToString());
-			expectedContent.AppendLine(siteSettings.SiteName);
-			expectedContent.AppendLine(siteSettings.SiteUrl);
+			expectedContent.AppendLine(_configuration.SiteName);
+			expectedContent.AppendLine(_configuration.SiteUrl);
 
 			// Act
 			string actualTemplate = emailTemplate.ReplaceTokens(userModel, templateBuilder.ToString());
@@ -233,31 +232,28 @@ namespace Roadkill.Tests.Unit.Email
 		}
 
 		[Test]
-		public void replacetokens_should_get_sitesettings_from_repository()
+		public void replacetokens_should_use_settings()
 		{
 			// Issue #229
 			// Arrange
-			EmailTemplateStub emailTemplate = new EmailTemplateStub(_settings, _emailClientMock);
+			EmailTemplateStub emailTemplate = new EmailTemplateStub(_configurationStore, _emailClientMock);
 			UserViewModel userModel = new UserViewModel();
 
-			SiteSettings expectedSettings = new SiteSettings();
-			expectedSettings.SiteName = "MySite";
-			expectedSettings.SiteUrl = "http://www.roadkillwiki.iz.de.biz";
-			_settingsRepository.SaveSiteSettings(expectedSettings);
+			_configuration.SiteName = "MySite";
+			_configuration.SiteUrl = "http://www.roadkillwiki.iz.da.biz";
 
 			// Act
-			emailTemplate.ReplaceTokens(userModel, "not used");
-			SiteSettings actualSettings = emailTemplate.GetSiteSettings();
+			string text = emailTemplate.ReplaceTokens(userModel, "not used");
 
 			// Assert
-			Assert.That(actualSettings, Is.EqualTo(expectedSettings));
+			Assert.That(text, Is.EqualTo(""));
 		}
 
 		[Test]
 		public void resetpasswordemail_send_should_read_resetpassword_txt_and_html_file_templates()
 		{
 			// Arrange
-			_settings.EmailTemplateFolder = AppDomain.CurrentDomain.BaseDirectory;
+			_configuration.InternalSettings.EmailTemplateFolder = AppDomain.CurrentDomain.BaseDirectory;
 
 			UserViewModel userModel = new UserViewModel();
 			userModel.Id = Guid.NewGuid();
@@ -268,7 +264,7 @@ namespace Roadkill.Tests.Unit.Email
 			string expectedHtmlContents = "html" + DateTime.UtcNow.ToString();
 			CreateDummyTemplates("resetpassword", expectedPlainContents, expectedHtmlContents);
 
-			ResetPasswordEmail resetPassword = new ResetPasswordEmail(_settings, _emailClientMock);
+			ResetPasswordEmail resetPassword = new ResetPasswordEmail(_configurationStore, _emailClientMock);
 
 			// Act
 			resetPassword.Send(userModel);
@@ -284,7 +280,7 @@ namespace Roadkill.Tests.Unit.Email
 		public void signupemail_send_should_read_signup_txt_and_html_file_templates()
 		{
 			// Arrange
-			_settings.EmailTemplateFolder = AppDomain.CurrentDomain.BaseDirectory;
+			_configuration.InternalSettings.EmailTemplateFolder = AppDomain.CurrentDomain.BaseDirectory;
 
 			UserViewModel userModel = new UserViewModel();
 			userModel.Id = Guid.NewGuid();
@@ -295,7 +291,7 @@ namespace Roadkill.Tests.Unit.Email
 			string expectedHtmlContents = "html" + DateTime.UtcNow.ToString();
 			CreateDummyTemplates("Signup", expectedPlainContents, expectedHtmlContents);
 
-			SignupEmail signupEmail = new SignupEmail(_settings,  _emailClientMock);
+			SignupEmail signupEmail = new SignupEmail(_configurationStore,  _emailClientMock);
 
 			// Act
 			signupEmail.Send(userModel);

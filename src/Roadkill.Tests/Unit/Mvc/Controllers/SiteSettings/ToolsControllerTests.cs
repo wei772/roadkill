@@ -269,7 +269,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers.Admin
 		public void exportattachments_should_call_wikiexporter_exportattachments()
 		{
 			// Arrange
-			var mockWikiExporter = new Mock<WikiExporter>(_configuration, _pageService, _settingsRepository, _pageRepository, _userRepository, _pluginFactory);
+			var mockWikiExporter = new Mock<WikiExporter>(_configuration, _pageService, _pageRepository, _userRepository, _pluginFactory);
 			_toolsController._wikiExporter = mockWikiExporter.Object;
 
 			// Act
@@ -283,7 +283,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers.Admin
 		public void exportaswikifiles_should_call_wikiexporter_exportaswikifiles()
 		{
 			// Arrange
-			var mockWikiExporter = new Mock<WikiExporter>(_configuration, _pageService, _settingsRepository, _pageRepository, _userRepository, _pluginFactory);
+			var mockWikiExporter = new Mock<WikiExporter>(_configuration, _pageService, _pageRepository, _userRepository, _pluginFactory);
 			_toolsController._wikiExporter = mockWikiExporter.Object;
 
 			// Act
@@ -297,7 +297,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers.Admin
 		public void exportassql_should_call_wikiexporter_exportassql()
 		{
 			// Arrange
-			var mockWikiExporter = new Mock<WikiExporter>(_configuration, _pageService, _settingsRepository, _pageRepository, _userRepository, _pluginFactory);
+			var mockWikiExporter = new Mock<WikiExporter>(_configuration, _pageService, _pageRepository, _userRepository, _pluginFactory);
 			_toolsController._wikiExporter = mockWikiExporter.Object;
 			mockWikiExporter.Setup(x => x.ExportAsSql()).Returns(new MemoryStream());
 
@@ -312,7 +312,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers.Admin
 		public void exportasxml_should_call_wikiexporter_exportasxml()
 		{
 			// Arrange
-			var mockWikiExporter = new Mock<WikiExporter>(_configuration, _pageService, _settingsRepository, _pageRepository, _userRepository, _pluginFactory);
+			var mockWikiExporter = new Mock<WikiExporter>(_configuration, _pageService, _pageRepository, _userRepository, _pluginFactory);
 			mockWikiExporter.Setup(x => x.ExportAsXml()).Returns(new MemoryStream());
 			_toolsController._wikiExporter = mockWikiExporter.Object;
 

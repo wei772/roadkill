@@ -17,8 +17,9 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 	public class ControllerBaseTests
 	{
 		private MocksAndStubsContainer _container;
-
 		private IConfigurationStore _configurationStore;
+		private IConfiguration _configuration;
+
 		private IUserContext _context;
 		private UserServiceMock _userService;
 
@@ -32,8 +33,9 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void Setup()
 		{
 			_container = new MocksAndStubsContainer();
-
 			_configurationStore = _container.ConfigurationStoreMock;
+			_configuration = _container.Configuration;
+
 			_context = _container.UserContext;
 			_userService = _container.UserService;
 
@@ -50,7 +52,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void should_redirect_when_installed_is_false()
 		{
 			// Arrange
-			_configurationStore.Installed = false;
+			_configuration.Installed = false;
 			ActionExecutingContext filterContext = new ActionExecutingContext();
 			filterContext.Controller = _controller;
 
@@ -67,7 +69,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void should_not_redirect_when_installed_is_false_and_controller_is_installercontroller()
 		{
 			// Arrange
-			_configurationStore.Installed = false;
+			_configuration.Installed = false;
 			InstallControllerStub installController = new InstallControllerStub(_configurationStore, _configReaderWriter, _installationService, _databaseTester);
 			ActionExecutingContext filterContext = new ActionExecutingContext();
 			filterContext.Controller = installController;
@@ -83,7 +85,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void should_set_loggedin_user_and_viewbag_data()
 		{
 			// Arrange
-			_configurationStore.Installed = true;
+			_configuration.Installed = true;
 			_userService.LoggedInUserId = "mrblah";
 
 			ActionExecutingContext filterContext = new ActionExecutingContext();

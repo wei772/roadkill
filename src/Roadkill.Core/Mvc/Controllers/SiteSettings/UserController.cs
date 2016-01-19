@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Web.Mvc;
-using System.Web.Security;
 using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Localization;
-using Roadkill.Core.Configuration;
 using RoadkillUser = Roadkill.Core.Database.User;
-using Roadkill.Core.Services;
 using Roadkill.Core.Security;
 using Roadkill.Core.Mvc.ViewModels;
 using Roadkill.Core.Mvc.Attributes;
@@ -21,9 +18,9 @@ namespace Roadkill.Core.Mvc.Controllers
 		private readonly SignupEmail _signupEmail;
 		private readonly ResetPasswordEmail _resetPasswordEmail;
 		
-		public UserController(IConfigurationStore configurationStore, UserServiceBase userManager,
+		public UserController(IConfigurationStore configurationStore, UserServiceBase userService,
 			IUserContext context, SignupEmail signupEmail, ResetPasswordEmail resetPasswordEmail)
-			: base(configurationStore, userManager, context) 
+			: base(configurationStore, userService, context) 
 		{
 			_signupEmail = signupEmail;
 			_resetPasswordEmail = resetPasswordEmail;
@@ -328,7 +325,7 @@ namespace Roadkill.Core.Mvc.Controllers
 		{
 			IConfiguration config = ConfigurationStore.Load();
 
-			if (Context.IsLoggedIn || !config.AllowUserSignup || config.SecuritySettings.UseWindowsAuthentication)
+			if (Context.IsLoggedIn || !config.SecuritySettings.AllowUserSignup || config.SecuritySettings.UseWindowsAuthentication)
 			{
 				return RedirectToAction("Index","Home");
 			}
@@ -347,7 +344,7 @@ namespace Roadkill.Core.Mvc.Controllers
 		{
 			IConfiguration config = ConfigurationStore.Load();
 
-			if (Context.IsLoggedIn || !config.AllowUserSignup || config.SecuritySettings.UseWindowsAuthentication)
+			if (Context.IsLoggedIn || !config.SecuritySettings .AllowUserSignup || config.SecuritySettings.UseWindowsAuthentication)
 				return RedirectToAction("Index","Home");
 
 			if (ModelState.IsValid)

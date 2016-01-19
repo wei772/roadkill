@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
 using Roadkill.Core.Mvc.ViewModels;
@@ -15,8 +16,8 @@ namespace Roadkill.Tests.Unit.StubsAndMocks
 
 		}
 
-		public UserServiceStub(ApplicationSettings settings, IUserRepository repository)
-			: base(settings, repository)
+		public UserServiceStub(IConfigurationStore configurationStore, IUserRepository repository)
+			: base(configurationStore, repository)
 		{
 
 		}

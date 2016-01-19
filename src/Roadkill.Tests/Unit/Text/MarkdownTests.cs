@@ -1,5 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Configuration;
 using Roadkill.Core.Converters;
 using Roadkill.Core.Database;
@@ -11,11 +12,17 @@ namespace Roadkill.Tests.Unit.Text
 	[Category("Unit")]
 	public class MarkdownParserTests
 	{
+		private MocksAndStubsContainer _container;
+		private ConfigurationStoreMock _configurationStore;
+
 		private PluginFactoryMock _pluginFactory;
 
 		[SetUp]
 		public void Setup()
 		{
+			_container = new MocksAndStubsContainer();
+			_configurationStore = _container.ConfigurationStoreMock;
+
 			_pluginFactory = new PluginFactoryMock();
 		}
 
@@ -27,18 +34,12 @@ namespace Roadkill.Tests.Unit.Text
 			// Arrange
 			Page page = new Page() { Id = 1, Title = "My first page" };
 
-			var settingsRepository = new SettingsRepositoryMock();
-			settingsRepository.SiteSettings = new SiteSettings() { MarkupType = "Markdown" };
-
 			PageRepositoryMock pageRepositoryStub = new PageRepositoryMock();
 			pageRepositoryStub.AddNewPage(page, "My first page", "admin", DateTime.UtcNow);
 
-			ApplicationSettings settings = new ApplicationSettings();
-			settings.Installed = true;
-
 			UrlResolverMock resolver = new UrlResolverMock();
 			resolver.InternalUrl = "blah";
-			MarkupConverter converter = new MarkupConverter(settings, settingsRepository, pageRepositoryStub, _pluginFactory);
+			MarkupConverter converter = new MarkupConverter(_configurationStore, pageRepositoryStub, _pluginFactory);
 			converter.UrlResolver = resolver;
 
 			string markdownText = "[Link](My-first-page)";
@@ -66,13 +67,10 @@ namespace Roadkill.Tests.Unit.Text
 			PageRepositoryMock pageRepositoryStub = new PageRepositoryMock();
 			pageRepositoryStub.AddNewPage(page, "My first page", "admin", DateTime.UtcNow);
 
-			var settingsRepository = new SettingsRepositoryMock();
-			settingsRepository.SiteSettings = new SiteSettings() { MarkupType = "Markdown" };
-
 			ApplicationSettings settings = new ApplicationSettings();
 			settings.Installed = true;
 
-			MarkupConverter converter = new MarkupConverter(settings, settingsRepository, pageRepositoryStub, _pluginFactory);
+			MarkupConverter converter = new MarkupConverter(_configurationStore, pageRepositoryStub, _pluginFactory);
 
 			string markdownText = "Here is some `// code with a 'quote' in it and another \"quote\"`\n\n" +
 				"    var x = \"some tabbed code\";\n\n"; // 2 line breaks followed by 4 spaces (tab stop) at the start indicates a code block
@@ -97,14 +95,11 @@ namespace Roadkill.Tests.Unit.Text
 			PageRepositoryMock pageRepositoryStub = new PageRepositoryMock();
 			pageRepositoryStub.AddNewPage(page, "My first page", "admin", DateTime.UtcNow);
 
-			var settingsRepository = new SettingsRepositoryMock();
-			settingsRepository.SiteSettings = new SiteSettings() { MarkupType = "Markdown" };
-
 			ApplicationSettings settings = new ApplicationSettings();
 			settings.Installed = true;
 			settings.UseHtmlWhiteList = false;
 
-			MarkupConverter converter = new MarkupConverter(settings, settingsRepository, pageRepositoryStub, _pluginFactory);
+			MarkupConverter converter = new MarkupConverter(_configurationStore, pageRepositoryStub, _pluginFactory);
 
 			string markdownText = "Here is an image:![Image](/Image1.png) \n\n" +
 								  "And another with equal dimensions ![Square](/Image1.png =250x) \n\n" +
@@ -131,14 +126,11 @@ namespace Roadkill.Tests.Unit.Text
 			PageRepositoryMock pageRepositoryStub = new PageRepositoryMock();
 			pageRepositoryStub.AddNewPage(page, "My first page", "admin", DateTime.UtcNow);
 
-			var settingsRepository = new SettingsRepositoryMock();
-			settingsRepository.SiteSettings = new SiteSettings() { MarkupType = "Markdown" };
-
 			ApplicationSettings settings = new ApplicationSettings();
 			settings.Installed = true;
 			settings.UseHtmlWhiteList = false;
 
-			MarkupConverter converter = new MarkupConverter(settings, settingsRepository, pageRepositoryStub, _pluginFactory);
+			MarkupConverter converter = new MarkupConverter(_configurationStore, pageRepositoryStub, _pluginFactory);
 
 			string markdownText = "Here is an image with a title:![Image](/Image1.png \"Image\") \n\n" +
 								  "And another with equal dimensions ![Square](/Image1.png \"Square\" =250x) \n\n" +

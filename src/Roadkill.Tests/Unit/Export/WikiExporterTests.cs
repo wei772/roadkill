@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using NUnit.Framework;
-using Roadkill.Core.Configuration;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Database;
 using Roadkill.Core.Domain.Export;
 using Roadkill.Core.Services;
@@ -14,28 +14,29 @@ namespace Roadkill.Tests.Unit.Export
 	public class WikiExporterTests
 	{
 		private MocksAndStubsContainer _container;
-		private ApplicationSettings _applicationSettings;
+		private IConfigurationStore _configurationStore;
+		private IConfiguration _configuration;
+
 		private PageRepositoryMock _pageRepository;
 		private PageService _pageService;
 		private PluginFactoryMock _pluginFactory;
 		private WikiExporter _wikiExporter;
-		private SettingsRepositoryMock _settingsRepository;
 		private UserRepositoryMock _userRepository;
 
 		[SetUp]
 		public void Setup()
 		{
 			_container = new MocksAndStubsContainer();
-			_applicationSettings = _container.ApplicationSettings;
+			_configurationStore = _container.ConfigurationStoreMock;
+			_configuration = _container.Configuration;
 
-			_settingsRepository = _container.SettingsRepository;
 			_pageRepository = _container.PageRepository;
 			_userRepository = _container.UserRepository;
 
 			_pageService = _container.PageService;
 			_pluginFactory = _container.PluginFactory;
 
-			_wikiExporter = new WikiExporter(_applicationSettings, _pageService, _settingsRepository, _pageRepository, _userRepository, _pluginFactory);
+			_wikiExporter = new WikiExporter(_configurationStore, _pageService, _pageRepository, _userRepository, _pluginFactory);
 			_wikiExporter.ExportFolder = AppDomain.CurrentDomain.BaseDirectory;
 		}
 
@@ -93,10 +94,10 @@ namespace Roadkill.Tests.Unit.Export
 			// Arrange
 			string filename = string.Format("attachments-{0}.zip", DateTime.Now.Ticks);
 			string zipFullPath = Path.Combine(_wikiExporter.ExportFolder, filename);
-			_applicationSettings.AttachmentsFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Attachments");
+			_configuration.AttachmentSettings.AttachmentsFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Attachments");
 
-			string filename1 = Path.Combine(_applicationSettings.AttachmentsFolder, "somefile1.txt");
-			string filename2 = Path.Combine(_applicationSettings.AttachmentsFolder, "somefile2.txt");
+			string filename1 = Path.Combine(_configuration.AttachmentSettings.AttachmentsFolder, "somefile1.txt");
+			string filename2 = Path.Combine(_configuration.AttachmentSettings.AttachmentsFolder, "somefile2.txt");
 
 			File.WriteAllText(filename1, "sample content");
 			File.WriteAllText(filename2, "sample content");

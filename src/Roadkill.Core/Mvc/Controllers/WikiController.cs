@@ -19,8 +19,7 @@ namespace Roadkill.Core.Mvc.Controllers
 	{
 		public PageService PageService { get; private set; }
 
-		public WikiController(IConfigurationStore configurationStore, UserServiceBase userManager,
-			PageService pageService, IUserContext context)
+		public WikiController(IConfigurationStore configurationStore, UserServiceBase userManager, PageService pageService, IUserContext context)
 			: base(configurationStore, userManager, context) 
 		{
 			PageService = pageService;

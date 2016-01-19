@@ -7,7 +7,6 @@ using NUnit.Framework;
 using Roadkill.Core;
 using Roadkill.Core.Attachments;
 using Roadkill.Core.Configuration;
-using Roadkill.Core.Mvc;
 using Roadkill.Core.Mvc.Controllers;
 using Roadkill.Core.Mvc.Setup;
 using Roadkill.Tests.Unit.StubsAndMocks;
@@ -18,11 +17,17 @@ namespace Roadkill.Tests.Unit.Mvc.Setup
 	[Category("Unit")]
 	public class RoutingTests
 	{
+		private MocksAndStubsContainer _container;
+		private ConfigurationStoreMock _configurationStore;
+
 		[SetUp]
 		public void Setup()
 		{
+			_container = new MocksAndStubsContainer();
+			_configurationStore = _container.ConfigurationStoreMock;
+
 			RouteTable.Routes.Clear();
-			AttachmentRouteHandler.RegisterRoute(new ApplicationSettings(), RouteTable.Routes, new FileServiceMock());
+			AttachmentRouteHandler.RegisterRoute(_configurationStore, RouteTable.Routes, new FileServiceMock());
 			Routing.Register(RouteTable.Routes);
 		}
 
@@ -89,7 +94,7 @@ namespace Roadkill.Tests.Unit.Mvc.Setup
 
 			RouteTable.Routes.Clear();
 			RouteCollection routes = new RouteCollection();
-			AttachmentRouteHandler.RegisterRoute(settings, routes, new FileServiceMock()); // has to be registered first
+			AttachmentRouteHandler.RegisterRoute(_configurationStore, routes, new FileServiceMock()); // has to be registered first
 			Routing.Register(routes);
 
 			// Act
@@ -111,7 +116,7 @@ namespace Roadkill.Tests.Unit.Mvc.Setup
 
 			RouteTable.Routes.Clear();
 			RouteCollection routes = new RouteCollection();
-			AttachmentRouteHandler.RegisterRoute(settings, routes, new FileServiceMock());
+			AttachmentRouteHandler.RegisterRoute(_configurationStore, routes, new FileServiceMock());
 			Routing.Register(routes);
 
 			// Act
@@ -138,7 +143,7 @@ namespace Roadkill.Tests.Unit.Mvc.Setup
 
 			// Act
 			Routing.Register(RouteTable.Routes);
-			AttachmentRouteHandler.RegisterRoute(settings, routes, new FileServiceMock());
+			AttachmentRouteHandler.RegisterRoute(_configurationStore, routes, new FileServiceMock());
 
 			// Assert
 		}
@@ -156,7 +161,7 @@ namespace Roadkill.Tests.Unit.Mvc.Setup
 
 			RouteTable.Routes.Clear();
 			RouteCollection routes = new RouteCollection();
-			AttachmentRouteHandler.RegisterRoute(settings, routes, new FileServiceMock());
+			AttachmentRouteHandler.RegisterRoute(_configurationStore, routes, new FileServiceMock());
 
 			// Act
 			RouteData routeData = routes.GetRouteData(mockContext);

@@ -18,9 +18,7 @@ namespace Roadkill.Core.Mvc.Controllers
 		public HelpController(IConfigurationStore configurationStore, UserServiceBase userManager, IUserContext context, PageService pageService)
 			: base(configurationStore, userManager, context) 
 		{
-			IConfiguration config = ConfigurationStore.Load();
-
-			_customTokenParser = new CustomTokenParser(config.InternalSettings);
+			_customTokenParser = new CustomTokenParser(configurationStore);
 			_pageService = pageService;
 		}
 

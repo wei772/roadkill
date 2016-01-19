@@ -17,7 +17,6 @@ namespace Roadkill.Tests.Integration.Repository
 		protected abstract void CheckDatabaseProcessIsRunning();
 		protected abstract bool HasAdminUser();
 		protected abstract bool HasEmptyTables();
-		protected abstract SiteSettings GetSiteSettings();
 
 		[SetUp]
 		public void Setup()
@@ -64,41 +63,6 @@ namespace Roadkill.Tests.Integration.Repository
 			// Act Assert
 			Assert.Throws<DatabaseException>(() => repository.AddAdminUser("", "", ""));
 			Assert.Throws<DatabaseException>(() => repository.CreateSchema());
-		}
-
-		[Test]
-		public void savesitesettings_and_getsitesettings()
-		{
-			// Arrange 
-			var repository = GetRepository(ConnectionString);
-			SiteSettings expectedSettings = new SiteSettings()
-			{
-				AllowedFileTypes = "exe, virus, trojan",
-				AllowUserSignup = true,
-				IsRecaptchaEnabled = true,
-				MarkupType = "Test",
-				RecaptchaPrivateKey = "RecaptchaPrivateKey",
-				RecaptchaPublicKey = "RecaptchaPublicKey",
-				SiteName = "NewSiteName",
-				SiteUrl = "http://sitename",
-				Theme = "newtheme"
-			};
-
-			// Act
-			repository.SaveSettings(expectedSettings);
-
-			// Assert
-			SiteSettings actualSettings = GetSiteSettings();
-
-			Assert.That(actualSettings.AllowedFileTypes, Is.EqualTo(expectedSettings.AllowedFileTypes));
-			Assert.That(actualSettings.AllowUserSignup, Is.EqualTo(expectedSettings.AllowUserSignup));
-			Assert.That(actualSettings.IsRecaptchaEnabled, Is.EqualTo(expectedSettings.IsRecaptchaEnabled));
-			Assert.That(actualSettings.MarkupType, Is.EqualTo(expectedSettings.MarkupType));
-			Assert.That(actualSettings.RecaptchaPrivateKey, Is.EqualTo(expectedSettings.RecaptchaPrivateKey));
-			Assert.That(actualSettings.RecaptchaPublicKey, Is.EqualTo(expectedSettings.RecaptchaPublicKey));
-			Assert.That(actualSettings.SiteName, Is.EqualTo(expectedSettings.SiteName));
-			Assert.That(actualSettings.SiteUrl, Is.EqualTo(expectedSettings.SiteUrl));
-			Assert.That(actualSettings.Theme, Is.EqualTo(expectedSettings.Theme));
 		}
 	}
 }

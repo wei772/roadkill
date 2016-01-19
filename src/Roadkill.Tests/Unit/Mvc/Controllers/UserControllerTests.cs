@@ -27,7 +27,9 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 
 		private MocksAndStubsContainer _container;
 
+		private ConfigurationStoreMock _configurationStore;
 		private IConfiguration _configuration;
+
 		private UserServiceMock _userService;
 		private IUserContext _userContext;
 		private UserController _userController;
@@ -39,7 +41,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		{
 			_container = new MocksAndStubsContainer();
 
-			var configurationStore = _container.ConfigurationStoreMock;
+			_configurationStore = _container.ConfigurationStoreMock;
 			_configuration = _container.Configuration;
 			_configuration.AttachmentSettings.AttachmentsFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "attachments");
 
@@ -52,7 +54,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 			_userService.Users[0].Firstname = "Firstname";
 			_userService.Users[0].Lastname = "LastnameNotSurname";
 
-			_userController = new UserController(configurationStore, _userService, _userContext, null, null);
+			_userController = new UserController(_configurationStore, _userService, _userContext, null, null);
 			_mvcMockContainer = _userController.SetFakeControllerContext();
 		}
 
@@ -225,7 +227,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void login_post_with_wrong_email_and_password_should_have_model_error()
 		{
 			// Arrange
-			_configuration.UseWindowsAuthentication = false;
+			_configuration.SecuritySettings.UseWindowsAuthentication = false;
 
 			// Act	
 			ActionResult result = _userController.Login("wrongemail", "wrongpassword", "");
@@ -330,12 +332,10 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		{
 			// Arrange
 			_configuration.SecuritySettings.AllowUserSignup = false;
-			
-			Core.Configuration.SiteSettings siteSettings = _settingsService.GetSiteSettings();
-			siteSettings.AllowUserSignup = true;
+			_configuration.SecuritySettings.AllowUserSignup = true;
 
-			SignupEmailStub signupEmail = new SignupEmailStub(_configuration.NonConfigurableSettings, _settingsRepository, _emailClientMock);
-			UserController userController = new UserController(_configuration, _userService, _userContext, _settingsService, signupEmail, null);
+			SignupEmailStub signupEmail = new SignupEmailStub(_configurationStore, _emailClientMock);
+			UserController userController = new UserController(_configurationStore, _userService, _userContext, signupEmail, null);
 			userController.SetFakeControllerContext();
 
 			UserViewModel model = new UserViewModel();
@@ -357,13 +357,10 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void signup_post_should_not_send_email_with_invalid_modelstate()
 		{
 			// Arrange
-			_configuration.SecuritySettings.AllowUserSignup = false;
-			
-			Core.Configuration.SiteSettings siteSettings = _settingsService.GetSiteSettings();
-			siteSettings.AllowUserSignup = true;
+			_configuration.SecuritySettings.AllowUserSignup = true;
 
-			SignupEmailStub signupEmail = new SignupEmailStub(_configuration.NonConfigurableSettings, _settingsRepository, _emailClientMock);
-			UserController userController = new UserController(_configuration, _userService, _userContext, _settingsService, signupEmail, null);
+			SignupEmailStub signupEmail = new SignupEmailStub(_configurationStore, _emailClientMock);
+			UserController userController = new UserController(_configurationStore, _userService, _userContext, signupEmail, null);
 			userController.SetFakeControllerContext();
 			userController.ModelState.AddModelError("key", "this is used to force ModelState.IsValid to false");
 
@@ -383,11 +380,10 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void signup_post_should_set_modelstate_error_from_securityexception()
 		{
 			// Arrange
-			Core.Configuration.SiteSettings siteSettings = _settingsService.GetSiteSettings();
-			siteSettings.AllowUserSignup = true;
+			_configuration.SecuritySettings.AllowUserSignup = true;
 
-			SignupEmailStub signupEmail = new SignupEmailStub(_configuration.NonConfigurableSettings, _settingsRepository, _emailClientMock); // change the signup email
-			UserController userController = new UserController(_configuration, _userService, _userContext, _settingsService, signupEmail, null);
+			SignupEmailStub signupEmail = new SignupEmailStub(_configurationStore, _emailClientMock); // change the signup email
+			UserController userController = new UserController(_configurationStore, _userService, _userContext, signupEmail, null);
 			userController.SetFakeControllerContext();
 			
 			_userService.ThrowSecurityExceptionOnSignup = true;
@@ -408,8 +404,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void signup_post_should_set_modelstate_error_from_bad_recaptcha()
 		{
 			// Arrange
-			Core.Configuration.SiteSettings siteSettings = _settingsService.GetSiteSettings();
-			siteSettings.AllowUserSignup = true;
+			_configuration.SecuritySettings.AllowUserSignup = true;
 
 			UserViewModel model = new UserViewModel();
 			model.NewEmail = "blah@localhost";
@@ -430,7 +425,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void resetpassword_get_should_return_viewresult_and_viewname()
 		{
 			// Arrange
-			_configuration.UseWindowsAuthentication = false;
+			_configuration.SecuritySettings.AllowUserSignup = false;
 
 			// Act	
 			ActionResult result = _userController.ResetPassword();
@@ -444,7 +439,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void resetpassword_get_with_windows_auth_enabled_should_return_redirectresult()
 		{
 			// Arrange
-			_configuration.UseWindowsAuthentication = true;
+			_configuration.SecuritySettings.AllowUserSignup = true;
 
 			// Act	
 			ActionResult result = _userController.ResetPassword();
@@ -459,7 +454,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void resetpassword_post_with_windows_auth_enabled_should_return_redirectresult()
 		{
 			// Arrange
-			_configuration.UseWindowsAuthentication = true;
+			_configuration.SecuritySettings.AllowUserSignup = true;
 
 			// Act	
 			ActionResult result = _userController.ResetPassword("someemail");
@@ -474,11 +469,10 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void resetpassword_post_should_not_send_email_with_invalid_modelstate()
 		{
 			// Arrange
-			_configuration.UseWindowsAuthentication = false;
-			Core.Configuration.SiteSettings siteSettings = _settingsService.GetSiteSettings();
+			_configuration.SecuritySettings.AllowUserSignup = false;
 
-			ResetPasswordEmailStub resetEmail = new ResetPasswordEmailStub(_configuration.NonConfigurableSettings, _settingsRepository, _emailClientMock);
-			UserController userController = new UserController(_configuration, _userService, _userContext, _settingsService, null, resetEmail);
+			ResetPasswordEmailStub resetEmail = new ResetPasswordEmailStub(_configurationStore,  _emailClientMock);
+			UserController userController = new UserController(_configurationStore, _userService, _userContext, null, resetEmail);
 			userController.SetFakeControllerContext();
 
 			// Act	
@@ -495,15 +489,14 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void resetpassword_post_should_have_resetpasswordsent_view_and_should_send_resetpassword_email()
 		{
 			// Arrange
-			_configuration.UseWindowsAuthentication = false;
-			Core.Configuration.SiteSettings siteSettings = _settingsService.GetSiteSettings();
+			_configuration.SecuritySettings.AllowUserSignup = false;
 			
 			string email = "test@test.com";
 			_userService.AddUser(email, "test", "test", false, true);
 			_userService.Users.First(x => x.Email == email).IsActivated = true;
 
-			ResetPasswordEmailStub resetEmail = new ResetPasswordEmailStub(_configuration.NonConfigurableSettings, _settingsRepository, _emailClientMock);
-			UserController userController = new UserController(_configuration, _userService, _userContext, _settingsService, null, resetEmail);
+			ResetPasswordEmailStub resetEmail = new ResetPasswordEmailStub(_configurationStore, _emailClientMock);
+			UserController userController = new UserController(_configurationStore, _userService, _userContext, null, resetEmail);
 			userController.SetFakeControllerContext();
 
 			// Act	
@@ -536,7 +529,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void completeresetpassword_get_should_have_correct_model_and_actionresult()
 		{
 			// Arrange
-			UserController userController = new UserController(_configuration, _userService, _userContext, _settingsService, null, null);
+			UserController userController = new UserController(_configurationStore, _userService, _userContext, null, null);
 			userController.SetFakeControllerContext();
 			_userService.ResetPassword(AdminEmail);
 
@@ -560,7 +553,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void completeresetpassword_get_should_return_completeresetpasswordinvalid_view_when_user_is_null()
 		{
 			// Arrange
-			UserController userController = new UserController(_configuration, _userService, _userContext, _settingsService, null, null);
+			UserController userController = new UserController(_configurationStore, _userService, _userContext, null, null);
 			userController.SetFakeControllerContext();
 
 			// Act	
@@ -575,7 +568,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void completeresetpassword_get_with_windowsauth_enabled_should_redirect()
 		{
 			// Arrange
-			_configuration.UseWindowsAuthentication = true;
+			_configuration.SecuritySettings.UseWindowsAuthentication = true;
 
 			// Act	
 			ActionResult result = _userController.CompleteResetPassword("resetkey");
@@ -591,7 +584,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		{
 			// Arrange
 			UserViewModel model = new UserViewModel();
-			_configuration.UseWindowsAuthentication = true;
+			_configuration.SecuritySettings.UseWindowsAuthentication = true;
 
 			// Act	
 			ActionResult result = _userController.CompleteResetPassword("key", model);
@@ -662,11 +655,10 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void resendconfirmation_post_with_invalid_email_should_show_signup_view()
 		{
 			// Arrange
-			_configuration.UseWindowsAuthentication = false;
-			Core.Configuration.SiteSettings siteSettings = _settingsService.GetSiteSettings();
+			_configuration.SecuritySettings.UseWindowsAuthentication = false;
 
-			ResetPasswordEmailStub resetEmail = new ResetPasswordEmailStub(_configuration.NonConfigurableSettings, _settingsRepository, _emailClientMock);
-			UserController userController = new UserController(_configuration, _userService, _userContext, _settingsService, null, resetEmail);
+			ResetPasswordEmailStub resetEmail = new ResetPasswordEmailStub(_configurationStore, _emailClientMock);
+			UserController userController = new UserController(_configurationStore, _userService, _userContext, null, resetEmail);
 			userController.SetFakeControllerContext();
 
 			// Act	
@@ -681,15 +673,14 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void resendconfirmation_post_should_sendemail_and_show_signupcomplete_view_and_set_tempdata()
 		{
 			// Arrange
-			_configuration.UseWindowsAuthentication = false;
-			Core.Configuration.SiteSettings siteSettings = _settingsService.GetSiteSettings();
+			_configuration.SecuritySettings.UseWindowsAuthentication = false;
 
 			string email = "test@test.com";
 			_userService.AddUser(email, "test", "password", false, true);
 			UserViewModel model = new UserViewModel(_userService.GetUser("test@test.com", false));
 
-			SignupEmailStub signupEmail = new SignupEmailStub(_configuration.NonConfigurableSettings, _settingsRepository, _emailClientMock);
-			UserController userController = new UserController(_configuration, _userService, _userContext, _settingsService, signupEmail, null);
+			SignupEmailStub signupEmail = new SignupEmailStub(_configurationStore, _emailClientMock);
+			UserController userController = new UserController(_configurationStore, _userService, _userContext, signupEmail, null);
 			userController.SetFakeControllerContext();
 
 			// Act	
@@ -706,7 +697,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void profile_get_should_redirect_if_no_logged_in_user()
 		{
 			// Arrange
-			_configuration.UseWindowsAuthentication = false;
+			_configuration.SecuritySettings.UseWindowsAuthentication = false;
 
 			// Act
 			ActionResult result = _userController.Profile();
@@ -720,7 +711,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void profile_get_should_return_correct_actionresult_and_model()
 		{
 			// Arrange
-			_configuration.UseWindowsAuthentication = false;
+			_configuration.SecuritySettings.UseWindowsAuthentication = false;
 
 			// Act
 			_userController.Login(AdminEmail, AdminPassword, "");
@@ -772,7 +763,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 
 			_userContext.CurrentUser = firstUserId.ToString();
 
-			UserController userController = new UserController(_configuration, _userService, _userContext, _settingsService, null, null);
+			UserController userController = new UserController(_configurationStore, _userService, _userContext, null, null);
 			userController.SetFakeControllerContext();
 
 			UserViewModel model = new UserViewModel(); // try to change the other user's email
@@ -865,9 +856,9 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		{
 			// Arrange
 			UserViewModel model = new UserViewModel();
-			_settingsRepository.SiteSettings.AllowUserSignup = true;
+			_configuration.SecuritySettings.AllowUserSignup = true;
 			_userContext.CurrentUser = "";
-			_configuration.UseWindowsAuthentication = false;
+			_configuration.SecuritySettings.UseWindowsAuthentication = false;
 
 			// Act	
 			ActionResult result = _userController.Signup();
@@ -881,7 +872,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		{
 			// Arrange
 			UserViewModel model = new UserViewModel();
-			_settingsRepository.SiteSettings.AllowUserSignup = true;
+			_configuration.SecuritySettings.AllowUserSignup = true;
 			_userContext.CurrentUser = Guid.NewGuid().ToString();
 
 			// Act	
@@ -898,7 +889,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		{
 			// Arrange
 			UserViewModel model = new UserViewModel();
-			_settingsRepository.SiteSettings.AllowUserSignup = false;
+			_configuration.SecuritySettings.AllowUserSignup = false;
 
 			// Act	
 			ActionResult result = _userController.Signup();
@@ -914,7 +905,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		{
 			// Arrange
 			UserViewModel model = new UserViewModel();
-			_configuration.UseWindowsAuthentication = true;
+			_configuration.SecuritySettings.UseWindowsAuthentication = true;
 
 			// Act	
 			ActionResult result = _userController.Signup();

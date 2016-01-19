@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using NUnit.Framework;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
 using Roadkill.Core.Mvc.ViewModels;
 using Roadkill.Tests.Unit.StubsAndMocks;
@@ -15,7 +14,6 @@ namespace Roadkill.Tests.Unit.Mvc.ViewModels
 		private MocksAndStubsContainer _container;
 		private ConfigurationStoreMock _configurationStore;
 
-		private ApplicationSettings _applicationSettings;
 		private UserServiceMock _userService;
 
 		private UserViewModel _userViewModel;

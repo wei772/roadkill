@@ -361,6 +361,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AmazingConfig\AttachmentSettings.cs" />
+    <Compile Include="AmazingConfig\IWebConfigManager.cs" />
+    <Compile Include="AmazingConfig\WebConfigManager.cs" />
     <Compile Include="AmazingConfig\JSON\JsonPluginConfiguration.cs" />
     <Compile Include="AmazingConfig\Plugins\IPluginConfiguration.cs" />
     <Compile Include="AmazingConfig\JSON\JsonConfigurationStore.cs" />
@@ -370,11 +372,6 @@
     <Compile Include="AmazingConfig\InternalSettings.cs" />
     <Compile Include="AmazingConfig\Plugins\PluginSettings.cs" />
     <Compile Include="AmazingConfig\SecuritySettings.cs" />
-    <Compile Include="Configuration\IRoadkillConfiguration.cs" />
-    <Compile Include="Configuration\JsonConfigReaderWriter.cs" />
-    <Compile Include="Configuration\NonConfigurableSettings.cs" />
-    <Compile Include="Configuration\RoadkillConfiguration.cs" />
-    <Compile Include="Configuration\RoadkillConfigurationConverter.cs" />
     <Compile Include="Database\IRepositoryFactory.cs" />
     <Compile Include="Database\Repositories\IDatabaseTester.cs" />
     <Compile Include="Database\Repositories\IInstallerRepository.cs" />
@@ -401,8 +398,6 @@
     <Compile Include="Email\IEmailClient.cs" />
     <Compile Include="Exceptions\FileException.cs" />
     <Compile Include="Extensions\BootstrapHtmlExtensions.cs" />
-    <Compile Include="Configuration\IConfigReaderWriter.cs" />
-    <Compile Include="Configuration\FullTrustConfigReaderWriter.cs" />
     <Compile Include="Database\Export\SqlExportBuilder.cs" />
     <Compile Include="Database\Repositories\LightSpeed\DatabaseLogger.cs" />
     <Compile Include="Cache\CacheKeys.cs" />
@@ -438,7 +433,6 @@
     <Compile Include="Mvc\Attributes\CacheContentTypeAttribute.cs" />
     <Compile Include="Logging\Level.cs" />
     <Compile Include="Logging\Log.cs" />
-    <Compile Include="Configuration\ApplicationSettings.cs" />
     <Compile Include="Mvc\Attributes\BrowserCacheAttribute.cs" />
     <Compile Include="Mvc\Controllers\SiteSettings\CacheController.cs" />
     <Compile Include="Mvc\Controllers\SiteSettings\SiteSettingsAreaRegistration.cs" />
@@ -468,9 +462,7 @@
     <Compile Include="Database\Repositories\LightSpeed\Conversion\FromEntity.cs" />
     <Compile Include="Database\Repositories\LightSpeed\PageEntity.cs" />
     <Compile Include="Database\Repositories\LightSpeed\PageContentEntity.cs" />
-    <Compile Include="Database\Repositories\LightSpeed\SiteConfigurationEntity.cs" />
     <Compile Include="Database\Repositories\LightSpeed\UserEntity.cs" />
-    <Compile Include="Database\Entities\SiteConfigurationEntity.cs" />
     <Compile Include="Database\Schema\MySql\MySqlSchema.cs" />
     <Compile Include="Database\Schema\Postgres\PostgresSchema.cs" />
     <Compile Include="Database\Schema\SchemaBase.cs" />
@@ -505,7 +497,6 @@
     <Compile Include="Exceptions\DatabaseException.cs" />
     <Compile Include="Attachments\AttachmentRouteHandler.cs" />
     <Compile Include="Security\IUserContext.cs" />
-    <Compile Include="Configuration\RoadkillSection.cs" />
     <Compile Include="Mvc\Controllers\InstallController.cs" />
     <Compile Include="Mvc\Controllers\WikiController.cs" />
     <Compile Include="Mvc\Controllers\HelpController.cs" />
@@ -545,7 +536,6 @@
     <Compile Include="Exceptions\HistoryException.cs" />
     <Compile Include="Exceptions\ExceptionBase.cs" />
     <Compile Include="Exceptions\SecurityException.cs" />
-    <Compile Include="Configuration\SiteSettings.cs" />
     <Compile Include="Mvc\ViewModels\SearchResultViewModel.cs" />
     <Compile Include="Mvc\ViewModels\DirectoryViewModel.cs" />
     <Compile Include="Mvc\ViewModels\SettingsViewModel.cs" />

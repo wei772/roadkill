@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Data;
 using Mindscape.LightSpeed;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Database.LightSpeed;
-using Roadkill.Core.Database.MongoDB;
 using Roadkill.Core.Database.Schema;
 
 namespace Roadkill.Core.Database
@@ -64,27 +62,6 @@ namespace Roadkill.Core.Database
 			catch (Exception e)
 			{
 				throw new DatabaseException(e, "Install failed: unable to create the admin user using '{0}' - {1}", ConnectionString, e.Message);
-			}
-		}
-
-		public void SaveSettings(SiteSettings siteSettings)
-		{
-			try
-			{
-				using (IUnitOfWork unitOfWork = _context.CreateUnitOfWork())
-				{
-					var entity = new Roadkill.Core.Database.LightSpeed.SiteConfigurationEntity();
-					entity.Id = SiteSettings.SiteSettingsId;
-					entity.Version = NonConfigurableSettings.ProductVersion;
-					entity.Content = siteSettings.GetJson();
-
-					unitOfWork.Add(entity);
-					unitOfWork.SaveChanges();
-				}
-			}
-			catch (Exception e)
-			{
-				throw new DatabaseException(e, "Install failed: unable to connect to the database using '{0}' - {1}", ConnectionString, e.Message);
 			}
 		}
 

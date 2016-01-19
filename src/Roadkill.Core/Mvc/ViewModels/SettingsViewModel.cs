@@ -1,13 +1,12 @@
-﻿using Roadkill.Core.Configuration;
-using Roadkill.Core.Database;
+﻿using Roadkill.Core.Database;
 using Roadkill.Core.Localization;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
-using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Roadkill.Core.AmazingConfig;
 
 namespace Roadkill.Core.Mvc.ViewModels
 {
@@ -51,7 +50,7 @@ namespace Roadkill.Core.Mvc.ViewModels
 		public string AttachmentsDirectoryPath { get; set; }
 		public bool UseObjectCache { get; set; }
 		public bool UseBrowserCache { get; set; }
-		public string DatabaseName { get; set; }
+		public string DatabaseProvider { get; set; }
 		public string EditorRoleName { get; set; }
 		public bool IsRecaptchaEnabled { get; set; }
 		public string LdapConnectionString { get; set; }
@@ -92,7 +91,7 @@ namespace Roadkill.Core.Mvc.ViewModels
 		{
 			get
 			{
-				return new string[] { "Creole","Markdown","MediaWiki" };
+				return new string[] { "Markdown" };
 			}
 		}
 
@@ -118,7 +117,7 @@ namespace Roadkill.Core.Mvc.ViewModels
 		{
 			get
 			{
-				return NonConfigurableSettings.ProductVersion;
+				return InternalSettings.ProductVersion;
 			}
 		}
 
@@ -145,42 +144,44 @@ namespace Roadkill.Core.Mvc.ViewModels
 		/// Fills this instance of SettingsViewModel using the properties from the Settings 
 		/// and the SiteSettings.
 		/// </summary>
-		public SettingsViewModel(ApplicationSettings applicationSettings, SiteSettings siteSettings) : this()
+		public SettingsViewModel(IConfigurationStore configurationStore) : this()
 		{
+			IConfiguration configuration = configurationStore.Load();
+
 			// Settings
-			FillFromApplicationSettings(applicationSettings);
+			FillFromApplicationSettings(configuration);
 
 			// SiteSettings
-			AllowedFileTypes = string.Join(",", siteSettings.AllowedFileTypesList);
-			AllowUserSignup = siteSettings.AllowUserSignup;
-			IsRecaptchaEnabled = siteSettings.IsRecaptchaEnabled;
-			MarkupType = siteSettings.MarkupType;
-			RecaptchaPrivateKey = siteSettings.RecaptchaPrivateKey;
-			RecaptchaPublicKey = siteSettings.RecaptchaPublicKey;
-			SiteName = siteSettings.SiteName;
-			SiteUrl = siteSettings.SiteUrl;
-			Theme = siteSettings.Theme;
-			OverwriteExistingFiles = siteSettings.OverwriteExistingFiles;
-			HeadContent = siteSettings.HeadContent;
-			MenuMarkup = siteSettings.MenuMarkup;
+			AllowedFileTypes = string.Join(",", configuration.AttachmentSettings.AllowedFileTypesList);
+			AllowUserSignup = configuration.SecuritySettings.AllowUserSignup;
+			IsRecaptchaEnabled = configuration.SecuritySettings.IsRecaptchaEnabled;
+			MarkupType = configuration.MarkupType;
+			RecaptchaPrivateKey = configuration.SecuritySettings.RecaptchaPrivateKey;
+			RecaptchaPublicKey = configuration.SecuritySettings.RecaptchaPublicKey;
+			SiteName = configuration.SiteName;
+			SiteUrl = configuration.SiteUrl;
+			Theme = configuration.Theme;
+			OverwriteExistingFiles = configuration.AttachmentSettings.OverwriteExistingFiles;
+			HeadContent = configuration.HeadContent;
+			MenuMarkup = configuration.MenuMarkup;
 		}
 
-		public void FillFromApplicationSettings(ApplicationSettings applicationSettings)
+		public void FillFromApplicationSettings(IConfiguration configuration)
 		{
-			AdminRoleName = applicationSettings.AdminRoleName;
-			AttachmentsFolder = applicationSettings.AttachmentsFolder;
-			AttachmentsDirectoryPath = applicationSettings.AttachmentsDirectoryPath;
-			ConnectionString = applicationSettings.ConnectionString;
-			DatabaseName = applicationSettings.DatabaseName;
-			EditorRoleName = applicationSettings.EditorRoleName;
-			IsPublicSite = applicationSettings.IsPublicSite;
-			IgnoreSearchIndexErrors = applicationSettings.IgnoreSearchIndexErrors;
-			LdapConnectionString = applicationSettings.LdapConnectionString;
-			LdapUsername = applicationSettings.LdapUsername;
-			LdapPassword = applicationSettings.LdapPassword;
-			UseWindowsAuth = applicationSettings.UseWindowsAuthentication;
-			UseObjectCache = applicationSettings.UseObjectCache;
-			UseBrowserCache = applicationSettings.UseBrowserCache;
+			AdminRoleName = configuration.SecuritySettings.AdminRoleName;
+			AttachmentsFolder = configuration.AttachmentSettings.AttachmentsFolder;
+			AttachmentsDirectoryPath = configuration.AttachmentSettings.GetAttachmentsDirectoryPath();
+			ConnectionString = configuration.ConnectionString;
+			DatabaseProvider = configuration.DatabaseProvider;
+			EditorRoleName = configuration.SecuritySettings.EditorRoleName;
+			IsPublicSite = configuration.IsPublicSite.GetValueOrDefault();
+			IgnoreSearchIndexErrors = configuration.IgnoreSearchIndexErrors.GetValueOrDefault();
+			LdapConnectionString = configuration.SecuritySettings.LdapConnectionString;
+			LdapUsername = configuration.SecuritySettings.LdapUsername;
+			LdapPassword = configuration.SecuritySettings.LdapPassword;
+			UseWindowsAuth = configuration.SecuritySettings.UseWindowsAuthentication;
+			UseObjectCache = configuration.UseObjectCache.GetValueOrDefault();
+			UseBrowserCache = configuration.UseBrowserCache.GetValueOrDefault();
 		}
 
 		public void SetSupportedDatabases(IEnumerable<RepositoryInfo> repositoryInfos)
@@ -193,7 +194,7 @@ namespace Roadkill.Core.Mvc.ViewModels
 				item.Value = info.Id;
 				item.Text = info.Description;
 
-				if (item.Value == DatabaseName)
+				if (item.Value == DatabaseProvider)
 					item.Selected = true;
 
 				_supportedDatabasesSelectList.Add(item);

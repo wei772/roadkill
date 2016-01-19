@@ -4,7 +4,6 @@ using System.Web.Http;
 using System.Web.Mvc;
 using NUnit.Framework;
 using Roadkill.Core;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
 using Roadkill.Core.DependencyResolution;
 using Roadkill.Core.DependencyResolution.StructureMap;
@@ -18,9 +17,15 @@ namespace Roadkill.Tests.Unit.DependencyResolution
 	[Category("Unit")]
 	public class LocatorStartupTests
 	{
+		private MocksAndStubsContainer _container;
+		private ConfigurationStoreMock _configurationStore;
+
 		[SetUp]
-		public void SetUp()
+		public void Setup()
 		{
+			_container = new MocksAndStubsContainer();
+			_configurationStore = _container.ConfigurationStoreMock;
+
 			MockServiceLocator();
 		}
 
@@ -40,12 +45,7 @@ namespace Roadkill.Tests.Unit.DependencyResolution
 
 		private void MockServiceLocator()
 		{
-			var settings = new ApplicationSettings();
-
-			var configReader = new ConfigReaderWriterStub();
-			configReader.ApplicationSettings = settings;
-
-			var registry = new RoadkillRegistry(configReader);
+			var registry = new RoadkillRegistry(_configurationStore);
 			var container = new Container(registry);
 			container.Configure(x =>
 			{
@@ -68,8 +68,7 @@ namespace Roadkill.Tests.Unit.DependencyResolution
 		public void StartMVCInternal_should_create_service_locator_and_set_mvc_service_locator()
 		{
 			// Arrange
-			var settings = new ApplicationSettings();
-			var registry = new RoadkillRegistry(new ConfigReaderWriterStub() { ApplicationSettings = settings });
+			var registry = new RoadkillRegistry(_configurationStore);
 
 			// Act
 			LocatorStartup.StartMVCInternal(registry, false);
@@ -83,14 +82,13 @@ namespace Roadkill.Tests.Unit.DependencyResolution
 		public void AfterInitializationInternal_should_register_webapi_servicelocator_and_attributeprovider()
 		{
 			// Arrange
-			var settings = new ApplicationSettings();
-			var registry = new RoadkillRegistry(new ConfigReaderWriterStub() { ApplicationSettings = settings });
+			var registry = new RoadkillRegistry(_configurationStore);
 			var container = new Container(registry);
 
 			LocatorStartup.StartMVCInternal(registry, false); // needed to register LocatorStartup.Locator
 
 			// Act
-			LocatorStartup.AfterInitializationInternal(container, settings);
+			LocatorStartup.AfterInitializationInternal(container);
 
 			// Assert
 			Assert.That(GlobalConfiguration.Configuration.DependencyResolver, Is.EqualTo(LocatorStartup.Locator));
@@ -103,14 +101,13 @@ namespace Roadkill.Tests.Unit.DependencyResolution
 		public void AfterInitializationInternal_should_register_mvc_attributes_and_modelbinders()
 		{
 			// Arrange
-			var settings = new ApplicationSettings();
-			var registry = new RoadkillRegistry(new ConfigReaderWriterStub() { ApplicationSettings = settings });
+			var registry = new RoadkillRegistry(_configurationStore);
 			var container = new Container(registry);
 
 			LocatorStartup.StartMVCInternal(registry, false);
 
 			// Act
-			LocatorStartup.AfterInitializationInternal(container, settings);
+			LocatorStartup.AfterInitializationInternal(container);
 
 			// Assert
 			Assert.True(ModelBinders.Binders.ContainsKey(typeof(SettingsViewModel)));

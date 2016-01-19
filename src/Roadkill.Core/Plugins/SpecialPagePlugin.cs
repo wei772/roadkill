@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using Roadkill.Core.AmazingConfig;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.DependencyResolution;
-using Roadkill.Core.Mvc.Attributes;
 using Roadkill.Core.Mvc.Controllers;
 using Roadkill.Core.Security;
 using Roadkill.Core.Services;
@@ -21,7 +14,7 @@ namespace Roadkill.Core.Plugins
 	public abstract class SpecialPagePlugin : ISetterInjected
 	{
 		/// <summary>
-		/// Gets or sets the current Roadkill <see cref="Configuration"/>. This property is automatically filled by Roadkill when the plugin is loaded.
+		/// Gets the Roadkill <see cref="IConfigurationStore"/>. This property is automatically filled by Roadkill when the plugin is loaded.
 		/// </summary>
 		[SetterProperty]
 		public IConfigurationStore ConfigurationStore { get; set; }

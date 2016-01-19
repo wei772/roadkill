@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Web.Mvc;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
 using Roadkill.Core.Services;
 using Roadkill.Core.Security;
@@ -20,7 +19,7 @@ namespace Roadkill.Core.Mvc.Controllers
 	/// this controller redirect to the homepage</remarks>
 	public class InstallController : Controller, IRoadkillController
 	{
-		private readonly IConfigReaderWriter _configReaderWriter;
+		private readonly IWebConfigManager _webConfigManager;
 		private readonly IInstallationService _installationService;
 		private static string _uiLanguageCode = "en";
 
@@ -32,9 +31,9 @@ namespace Roadkill.Core.Mvc.Controllers
 		/// 
 		/// </summary>
 		/// <param name="applicationSettings">Use solely to detect whether Roadkill is already installed.</param>
-		public InstallController(IConfigurationStore configurationStore, IConfigReaderWriter configReaderWriter, IInstallationService installationService)
+		public InstallController(IConfigurationStore configurationStore, IWebConfigManager webConfigManager, IInstallationService installationService)
 		{
-			_configReaderWriter = configReaderWriter;
+			_webConfigManager = webConfigManager;
 			_installationService = installationService;
 
 			ConfigurationStore = configurationStore;
@@ -58,7 +57,7 @@ namespace Roadkill.Core.Mvc.Controllers
 		public ActionResult Unattended(string databaseName, string connectionString)
 		{
 			SettingsViewModel settingsModel = new SettingsViewModel();
-			settingsModel.DatabaseName = databaseName;
+			settingsModel.DatabaseProvider = databaseName;
 			settingsModel.ConnectionString = connectionString;
 			settingsModel.AllowedFileTypes = "jpg,png,gif,zip,xml,pdf";
 			settingsModel.AttachmentsFolder = "~/App_Data/Attachments";
@@ -116,7 +115,7 @@ namespace Roadkill.Core.Mvc.Controllers
 			if (!string.IsNullOrEmpty(language))
 			{
 				Thread.CurrentThread.CurrentUICulture = new CultureInfo(language);
-				_configReaderWriter.UpdateLanguage(language);
+				_webConfigManager.UpdateLanguage(language);
 			}
 
 			var settingsModel = new SettingsViewModel();
@@ -196,7 +195,9 @@ namespace Roadkill.Core.Mvc.Controllers
 			{
 				try
 				{
-					_configReaderWriter.ResetInstalledState();
+					// TODO
+					throw e;
+					//_webConfigManager.ResetInstalledState();
 				}
 				catch (Exception ex)
 				{
@@ -216,8 +217,9 @@ namespace Roadkill.Core.Mvc.Controllers
 			model.IgnoreSearchIndexErrors = true;
 			model.IsPublicSite = true;
 
+			// TODO:
 			// Update the web.config first, so all connections can be referenced.
-			_configReaderWriter.Save(model);
+			//_webConfigReaderWriter.Save(model);
 
 			// Install the database
 			_installationService.Install(model);

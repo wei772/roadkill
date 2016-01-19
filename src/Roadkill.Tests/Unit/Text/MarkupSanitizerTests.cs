@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
 using NUnit.Framework;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Text.Sanitizer;
 
 namespace Roadkill.Tests.Unit.Text
@@ -22,7 +21,7 @@ namespace Roadkill.Tests.Unit.Text
 	{
 		private MarkupSanitizer CreateMarkupSanitizer()
 		{
-			return new MarkupSanitizer(new NonConfigurableSettings().HtmlElementWhiteListPath);
+			return new MarkupSanitizer("");
 		}
 
 		[Test]

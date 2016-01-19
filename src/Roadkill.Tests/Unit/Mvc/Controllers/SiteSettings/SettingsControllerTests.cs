@@ -6,10 +6,8 @@ using NUnit.Framework;
 using Roadkill.Core;
 using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Cache;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Mvc.Controllers;
 using Roadkill.Core.Mvc.ViewModels;
-using Roadkill.Core.Services;
 using Roadkill.Tests.Unit.StubsAndMocks;
 
 namespace Roadkill.Tests.Unit.Mvc.Controllers.Admin
@@ -27,7 +25,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers.Admin
 		private UserServiceMock _userService;
 		private SiteCache _siteCache;
 		private MemoryCache _cache;
-		private ConfigReaderWriterStub _configReaderWriter;
+		private WebConfigManagerStub _webConfigManager;
 
 		private SettingsController _settingsController;
 
@@ -45,9 +43,9 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers.Admin
 			_userService = _container.UserService;
 			_siteCache = _container.SiteCache;
 			_cache = _container.MemoryCache;
-			_configReaderWriter = new ConfigReaderWriterStub();
+			_webConfigManager = new WebConfigManagerStub();
 
-			_settingsController = new SettingsController(_configurationStore, _userService, _context, _siteCache, _configReaderWriter);
+			_settingsController = new SettingsController(_configurationStore, _userService, _context, _siteCache);
 		}
 
 		[Test]

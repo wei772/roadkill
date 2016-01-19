@@ -2,8 +2,6 @@
 using System.IO;
 using System.Reflection;
 using NUnit.Framework;
-using Roadkill.Core.Cache;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
 using Roadkill.Core.Database.Export;
 using Roadkill.Tests.Unit.StubsAndMocks;

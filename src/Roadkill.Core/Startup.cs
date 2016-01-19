@@ -4,7 +4,6 @@ using System.Web.Routing;
 using Owin;
 using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Attachments;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.DependencyResolution;
 using Roadkill.Core.Logging;
 using Roadkill.Core.Mvc.Setup;

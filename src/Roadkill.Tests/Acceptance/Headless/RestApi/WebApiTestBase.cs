@@ -2,7 +2,6 @@
 using System.Configuration;
 using Mindscape.LightSpeed;
 using NUnit.Framework;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
 using Roadkill.Core.Database.LightSpeed;
 
@@ -39,11 +38,6 @@ namespace Roadkill.Tests.Acceptance.Headless.RestApi
 
 		protected IPageRepository GetRepository()
 		{
-			ApplicationSettings appSettings = new ApplicationSettings();
-			appSettings.DatabaseName = "SqlServer2008";
-			appSettings.ConnectionString = TestConstants.CONNECTION_STRING;
-			appSettings.UseBrowserCache = false;
-
 			var context = new LightSpeedContext();
 			context.ConnectionString = TestConstants.CONNECTION_STRING;
 			context.DataProvider = DataProvider.SqlServer2008;

@@ -1,6 +1,5 @@
 using System;
 using MongoDB.Driver;
-using Roadkill.Core.Configuration;
 
 namespace Roadkill.Core.Database.MongoDB
 {
@@ -44,7 +43,6 @@ namespace Roadkill.Core.Database.MongoDB
 				database.DropCollection(typeof(PageContent).Name);
 				database.DropCollection(typeof(Page).Name);
 				database.DropCollection(typeof(User).Name);
-				database.DropCollection(typeof(SiteConfigurationEntity).Name);
 			}
 			catch (Exception ex)
 			{
@@ -82,16 +80,6 @@ namespace Roadkill.Core.Database.MongoDB
 			{
 				throw new DatabaseException(e, "Install failed: unable to connect to the database using {0} - {1}", ConnectionString, e.Message);
 			}
-		}
-
-		public void SaveSettings(SiteSettings siteSettings)
-		{
-			var entity = new SiteConfigurationEntity();
-
-			entity.Id = SiteSettings.SiteSettingsId;
-			entity.Version = NonConfigurableSettings.ProductVersion.ToString();
-			entity.Content = siteSettings.GetJson();
-			SaveOrUpdate<SiteConfigurationEntity>(entity);
 		}
 
 		public void SaveOrUpdate<T>(T obj) where T : IDataStoreEntity

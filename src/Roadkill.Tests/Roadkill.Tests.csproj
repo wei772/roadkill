@@ -304,9 +304,6 @@
     <Compile Include="Acceptance\Headless\RestApi\SearchControllerTests.cs" />
     <Compile Include="Acceptance\Headless\RestApi\UserControllerTests.cs" />
     <Compile Include="Acceptance\Headless\RestApi\WebApiTestBase.cs" />
-    <Compile Include="Integration\Configuration\ApplicationSettingsTests.cs" />
-    <Compile Include="Unit\Configuration\RoadkillConfigurationConverterTests.cs" />
-    <Compile Include="Integration\Configuration\JsonConfigReaderWriterTests.cs" />
     <Compile Include="Integration\Repository\LightSpeed\LightSpeedPageRepositoryTests.cs" />
     <Compile Include="Integration\Repository\LightSpeed\LightSpeedInstallerRepositoryTests.cs" />
     <Compile Include="Integration\Repository\MongoDb\MongoDbInstallerRepositoryTests.cs" />
@@ -376,7 +373,6 @@
     <Compile Include="Unit\Mvc\ViewModels\FileViewModelTests.cs" />
     <Compile Include="Unit\Mvc\ViewModels\DirectoryViewModelTests.cs" />
     <Compile Include="Unit\Attachments\MimeMappingTests.cs" />
-    <Compile Include="Unit\Database\SiteSettingsTests.cs" />
     <Compile Include="Unit\DependencyResolution\RoadkillRegistryTests.cs" />
     <Compile Include="Unit\Database\LightSpeed\ToEntityTests.cs" />
     <Compile Include="Unit\Database\LightSpeed\FromEntityTests.cs" />
@@ -399,7 +395,7 @@
     <Compile Include="Unit\StubsAndMocks\ActiveDirectoryProviderMock.cs" />
     <Compile Include="Unit\StubsAndMocks\AuthorizationProviderMock.cs" />
     <Compile Include="Unit\StubsAndMocks\CacheMock.cs" />
-    <Compile Include="Unit\StubsAndMocks\ConfigReaderWriterStub.cs" />
+    <Compile Include="Unit\StubsAndMocks\WebConfigManagerStub.cs" />
     <Compile Include="Unit\StubsAndMocks\DatabaseTesterMock.cs" />
     <Compile Include="Unit\StubsAndMocks\DbCommandStub.cs" />
     <Compile Include="Unit\StubsAndMocks\EmailClientMock.cs" />

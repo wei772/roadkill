@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Security.Principal;
 using System.Web;
 using Roadkill.Core.AmazingConfig;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
 using Roadkill.Core.Mvc.ViewModels;
 

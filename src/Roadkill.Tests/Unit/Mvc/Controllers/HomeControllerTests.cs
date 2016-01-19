@@ -5,7 +5,6 @@ using System.Web.Mvc;
 using MvcContrib.TestHelper;
 using NUnit.Framework;
 using Roadkill.Core;
-using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Converters;
 using Roadkill.Core.Database;
 using Roadkill.Core.Localization;

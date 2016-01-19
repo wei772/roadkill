@@ -6,7 +6,6 @@ using Moq;
 using NUnit.Framework;
 using Roadkill.Core;
 using Roadkill.Core.AmazingConfig;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Exceptions;
 using Roadkill.Core.Mvc.ViewModels;
 using Roadkill.Core.Services;

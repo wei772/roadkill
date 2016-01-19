@@ -1,19 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Mvc;
-using Moq;
-using NUnit.Framework;
-using Roadkill.Core;
-using Roadkill.Core.Cache;
-using Roadkill.Core.Configuration;
-using Roadkill.Core.Database;
-using Roadkill.Core.Security;
-using Roadkill.Core.Services;
+﻿using NUnit.Framework;
 using Roadkill.Plugins.Text.BuiltIn;
-using Roadkill.Tests.Unit.StubsAndMocks;
 
 namespace Roadkill.Tests.Unit.Plugins
 {

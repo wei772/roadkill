@@ -2,7 +2,6 @@
 using NUnit.Framework;
 using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Cache;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Converters;
 using Roadkill.Core.Database;
 using Roadkill.Core.Text;
@@ -21,7 +20,6 @@ namespace Roadkill.Tests.Unit.Text
 		private PluginFactoryMock _pluginFactory;
 		private PageRepositoryMock _pageRepository;
 		private UserContextStub _userContext;
-		private ApplicationSettings _applicationSettings;
 		private CacheMock _cache;
 		private SiteCache _siteCache;
 		private MarkupConverter _converter;
@@ -38,9 +36,6 @@ namespace Roadkill.Tests.Unit.Text
 
 			_pageRepository = new PageRepositoryMock();
 			_userContext = new UserContextStub();
-
-			_applicationSettings = new ApplicationSettings();
-			_applicationSettings.Installed = true;
 
 			_cache = new CacheMock();
 			_siteCache = new SiteCache(_cache);

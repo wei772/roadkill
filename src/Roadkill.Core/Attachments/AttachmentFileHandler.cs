@@ -1,5 +1,4 @@
-﻿using Roadkill.Core.Configuration;
-using Roadkill.Core.Services;
+﻿using Roadkill.Core.Services;
 using System.IO;
 using System.Web;
 using Roadkill.Core.AmazingConfig;

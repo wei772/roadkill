@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
 using Roadkill.Core.Database;
 
@@ -37,20 +33,6 @@ namespace Roadkill.Tests.Unit.Database
 
 			// Assert
 			Assert.That(objectId, Is.EqualTo(page.Id));
-		}
-
-		[Test]
-		public void siteconfigurationentity_objectid_should_match_id()
-		{
-			// Arrange
-			SiteConfigurationEntity siteConfigEntity = new SiteConfigurationEntity();
-			siteConfigEntity.ObjectId = Guid.NewGuid();
-
-			// Act
-			Guid objectId = siteConfigEntity.ObjectId;
-
-			// Assert
-			Assert.That(objectId, Is.EqualTo(siteConfigEntity.Id));
 		}
 	}
 }

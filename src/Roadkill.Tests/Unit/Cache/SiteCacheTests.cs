@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Caching;
-using NUnit.Framework;
-using Roadkill.Core.Cache;
-using Roadkill.Tests.Unit.StubsAndMocks;
+﻿using NUnit.Framework;
 using PluginSettings = Roadkill.Core.Plugins.Settings;
 
 namespace Roadkill.Tests.Unit.Cache

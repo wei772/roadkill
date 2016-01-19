@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Caching;
-using System.Text;
 using Roadkill.Core.AmazingConfig;
-using Roadkill.Core.Configuration;
-using Roadkill.Core.Logging;
 using Roadkill.Core.Mvc.ViewModels;
 using RoadkillLog = Roadkill.Core.Logging.Log;
 

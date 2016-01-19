@@ -4,7 +4,6 @@ using System.Web;
 using System.Web.Mvc;
 using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Cache;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Converters;
 using Roadkill.Core.Logging;
 using StructureMap.Attributes;
@@ -54,13 +53,6 @@ namespace Roadkill.Core.Plugins
 		/// </summary>
 		public abstract string Version { get; }
 		
-		/// <summary>
-		/// Gets or sets the current Roadkill <see cref="ApplicationSettings"/>. This property is automatically filled by Roadkill 
-		/// when the plugin is loaded.
-		/// </summary>
-		[SetterProperty]
-		public ApplicationSettings ApplicationSettings { get; set; }
-
 		// These are setter injected at creation time by the DI manager
 		internal IPluginCache PluginCache { get; set; }
 

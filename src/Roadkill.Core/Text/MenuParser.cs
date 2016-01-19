@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Web;
+﻿using System.Web;
 using System.Web.Mvc;
 using HtmlAgilityPack;
 using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Cache;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Converters;
-using Roadkill.Core.Database;
 using Roadkill.Core.Localization;
 
 namespace Roadkill.Core.Text

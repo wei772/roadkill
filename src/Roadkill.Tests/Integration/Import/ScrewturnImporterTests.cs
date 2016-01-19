@@ -6,10 +6,12 @@ using System.IO;
 using System.Linq;
 using Mindscape.LightSpeed;
 using NUnit.Framework;
-using Roadkill.Core.Configuration;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Database;
 using Roadkill.Core.Database.LightSpeed;
 using Roadkill.Core.Import;
+using Roadkill.Tests.Unit;
+using Roadkill.Tests.Unit.StubsAndMocks;
 
 namespace Roadkill.Tests.Integration.Import
 {
@@ -17,11 +19,19 @@ namespace Roadkill.Tests.Integration.Import
 	[Category("Integration")]
 	public class ScrewturnImporterTests
 	{
+		private MocksAndStubsContainer _container;
+		private ConfigurationStoreMock _configurationStore;
+		private IConfiguration _configuration;
+
 		private string _connectionString = TestConstants.CONNECTION_STRING;
 
 		[SetUp]
 		public void Setup()
 		{
+			_container = new MocksAndStubsContainer();
+			_configurationStore = _container.ConfigurationStoreMock;
+			_configuration = _container.Configuration;
+
 			TestHelpers.SqlServerSetup.RecreateTables();
 
 			string sqlFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Integration", "Import", "screwturn3.sql");
@@ -42,16 +52,15 @@ namespace Roadkill.Tests.Integration.Import
 		public void should_import_all_pages_categories_and_usernames()
 		{
 			// Arrange
-			ApplicationSettings applicationSettings = new ApplicationSettings();
-			applicationSettings.AttachmentsFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ScrewturnImport");
+			_configuration.AttachmentSettings.AttachmentsFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ScrewturnImport");
 
-			if (Directory.Exists(applicationSettings.AttachmentsFolder))
-				Directory.Delete(applicationSettings.AttachmentsFolder, true);
+			if (Directory.Exists(_configuration.AttachmentSettings.AttachmentsFolder))
+				Directory.Delete(_configuration.AttachmentSettings.AttachmentsFolder, true);
 
-			Directory.CreateDirectory(applicationSettings.AttachmentsFolder);
+			Directory.CreateDirectory(_configuration.AttachmentSettings.AttachmentsFolder);
 
-			applicationSettings.ConnectionString = _connectionString;
-			applicationSettings.DatabaseName = "SqlServer2008";
+			_configuration.ConnectionString = _connectionString;
+			_configuration.DatabaseProvider = "SqlServer2008";
 
 			var context = new LightSpeedContext();
 			context.ConnectionString = _connectionString;
@@ -62,7 +71,7 @@ namespace Roadkill.Tests.Integration.Import
 
 			IPageRepository pageRepository = new LightSpeedPageRepository(unitOfWork);
 			IUserRepository userRepository = new LightSpeedUserRepository(unitOfWork);
-			ScrewTurnImporter importer = new ScrewTurnImporter(applicationSettings, pageRepository, userRepository);
+			ScrewTurnImporter importer = new ScrewTurnImporter(_configurationStore, pageRepository, userRepository);
 
 			// Act
 			importer.ImportFromSqlServer(TestConstants.CONNECTION_STRING);
@@ -118,16 +127,15 @@ namespace Roadkill.Tests.Integration.Import
 		public void should_import_files_in_attachments_folder()
 		{
 			// Arrange
-			ApplicationSettings applicationSettings = new ApplicationSettings();
-			applicationSettings.AttachmentsFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ScrewturnImport");
+			_configuration.AttachmentSettings.AttachmentsFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ScrewturnImport");
 
-			if (Directory.Exists(applicationSettings.AttachmentsFolder))
-				Directory.Delete(applicationSettings.AttachmentsFolder, true);
+			if (Directory.Exists(_configuration.AttachmentSettings.AttachmentsFolder))
+				Directory.Delete(_configuration.AttachmentSettings.AttachmentsFolder, true);
 
-			Directory.CreateDirectory(applicationSettings.AttachmentsFolder);
+			Directory.CreateDirectory(_configuration.AttachmentSettings.AttachmentsFolder);
 
-			applicationSettings.ConnectionString = _connectionString;
-			applicationSettings.DatabaseName = "SqlServer2008";
+			_configuration.ConnectionString = _connectionString;
+			_configuration.DatabaseProvider = "SqlServer2008";
 
 			var context = new LightSpeedContext();
 			context.ConnectionString = _connectionString;
@@ -138,14 +146,14 @@ namespace Roadkill.Tests.Integration.Import
 
 			IPageRepository pageRepository = new LightSpeedPageRepository(unitOfWork);
 			IUserRepository userRepository = new LightSpeedUserRepository(unitOfWork);
-			ScrewTurnImporter importer = new ScrewTurnImporter(applicationSettings, pageRepository, userRepository);
+			ScrewTurnImporter importer = new ScrewTurnImporter(_configurationStore, pageRepository, userRepository);
 
 			// Act
 			importer.ImportFromSqlServer(_connectionString);
 
 			// Assert
-			string file1 = Path.Combine(applicationSettings.AttachmentsFolder, "atextfile.txt");
-			string file2 = Path.Combine(applicationSettings.AttachmentsFolder, "screwdriver1.jpg");
+			string file1 = Path.Combine(_configuration.AttachmentSettings.AttachmentsFolder, "atextfile.txt");
+			string file2 = Path.Combine(_configuration.AttachmentSettings.AttachmentsFolder, "screwdriver1.jpg");
 			FileInfo fileInfo1 = new FileInfo(file1);
 			FileInfo fileInfo2 = new FileInfo(file2);
 

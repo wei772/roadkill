@@ -1,5 +1,4 @@
 ﻿using Roadkill.Core.Attachments;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Exceptions;
 using Roadkill.Core.Localization;
 using Roadkill.Core.Logging;

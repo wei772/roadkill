@@ -1,6 +1,4 @@
 ﻿using NUnit.Framework;
-using Roadkill.Core.Cache;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Mvc.ViewModels;
 using Roadkill.Tests.Unit.StubsAndMocks;
 

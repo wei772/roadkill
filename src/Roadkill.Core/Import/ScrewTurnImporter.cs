@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Text.RegularExpressions;
 using System.IO;
-using Mono.Security.X509;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Logging;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
 using Roadkill.Core.Services;
 
@@ -17,16 +15,15 @@ namespace Roadkill.Core.Import
 	public class ScrewTurnImporter : IWikiImporter
 	{
 		private string _connectionString;
-		private string _attachmentsFolder;
+		private readonly string _attachmentsFolder;
 
-		protected ApplicationSettings ApplicationSettings;
 		protected IPageRepository PageRepository;
 		protected IUserRepository UserRepository;
 
-		public ScrewTurnImporter(ApplicationSettings settings, IPageRepository pageRepository, IUserRepository userRepository)
+		public ScrewTurnImporter(IConfigurationStore configurationStore, IPageRepository pageRepository, IUserRepository userRepository)
 		{
-			if (settings == null)
-				throw new ArgumentNullException(nameof(settings));
+			if (configurationStore == null)
+				throw new ArgumentNullException(nameof(configurationStore));
 
 			if (pageRepository == null)
 				throw new ArgumentNullException(nameof(pageRepository));
@@ -36,9 +33,9 @@ namespace Roadkill.Core.Import
 
 			UserRepository = userRepository;
 			PageRepository = pageRepository;
-			ApplicationSettings = settings;
 
-			_attachmentsFolder = settings.AttachmentsDirectoryPath;
+			IConfiguration configuration = configurationStore.Load();
+			_attachmentsFolder = configuration.AttachmentSettings.GetAttachmentsDirectoryPath();
 		}
 
 		/// <summary>

@@ -5,8 +5,8 @@ using System.Web.Routing;
 using MvcContrib.TestHelper;
 using NUnit.Framework;
 using Roadkill.Core;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Attachments;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Mvc.Controllers;
 using Roadkill.Core.Mvc.Setup;
 using Roadkill.Tests.Unit.StubsAndMocks;
@@ -19,12 +19,14 @@ namespace Roadkill.Tests.Unit.Mvc.Setup
 	{
 		private MocksAndStubsContainer _container;
 		private ConfigurationStoreMock _configurationStore;
+		private IConfiguration _configuration;
 
 		[SetUp]
 		public void Setup()
 		{
 			_container = new MocksAndStubsContainer();
 			_configurationStore = _container.ConfigurationStoreMock;
+			_configuration = _container.Configuration;
 
 			RouteTable.Routes.Clear();
 			AttachmentRouteHandler.RegisterRoute(_configurationStore, RouteTable.Routes, new FileServiceMock());
@@ -87,9 +89,8 @@ namespace Roadkill.Tests.Unit.Mvc.Setup
 		public void attachments_should_have_correct_handler_and_contain_route_values()
 		{
 			// Arrange
-			ApplicationSettings settings = new ApplicationSettings();
 			string filename = "somefile.png";
-			string url = string.Format("~/{0}/{1}", settings.AttachmentsRoutePath, filename);
+			string url = string.Format("~/{0}/{1}", _configuration.AttachmentSettings.AttachmentsRoutePath, filename);
 			var mockContext = new StubHttpContextForRouting("", url);
 
 			RouteTable.Routes.Clear();
@@ -110,7 +111,6 @@ namespace Roadkill.Tests.Unit.Mvc.Setup
 		public void attachments_in_standard_controller_path_should_not_map_to_attachments_handler()
 		{
 			// Arrange
-			ApplicationSettings settings = new ApplicationSettings();
 			string url = "/pages/6/attachments-are-us";
 			var mockContext = new StubHttpContextForRouting("", url);
 
@@ -132,10 +132,9 @@ namespace Roadkill.Tests.Unit.Mvc.Setup
 		public void AttachmentsRoute_Using_Files_Route_Should_Throw_Exception()
 		{
 			// Arrange
-			ApplicationSettings settings = new ApplicationSettings();
-			settings.AttachmentsRoutePath = "Files";
+			_configuration.AttachmentSettings.AttachmentsRoutePath = "Files";
 			string filename = "somefile.png";
-			string url = string.Format("~/{0}/{1}", settings.AttachmentsRoutePath, filename);
+			string url = string.Format("~/{0}/{1}", _configuration.AttachmentSettings.AttachmentsRoutePath, filename);
 			var mockContext = new StubHttpContextForRouting("", url);
 
 			RouteTable.Routes.Clear();
@@ -153,10 +152,9 @@ namespace Roadkill.Tests.Unit.Mvc.Setup
 		public void Attachments_With_SubApplication_Should_Have_Correct_Handler_And_Contain_Route_Values()
 		{
 			// Arrange
-			ApplicationSettings settings = new ApplicationSettings();
-			settings.AttachmentsRoutePath = "Attachments";
+			_configuration.AttachmentSettings.AttachmentsRoutePath = "Attachments";
 			string filename = "somefile.png";
-			string url = string.Format("~/{0}/{1}", settings.AttachmentsRoutePath, filename); // doesn't work without the ~
+			string url = string.Format("~/{0}/{1}", _configuration.AttachmentSettings.AttachmentsRoutePath, filename); // doesn't work without the ~
 			var mockContext = new StubHttpContextForRouting("/mywiki/", url);
 
 			RouteTable.Routes.Clear();

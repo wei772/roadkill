@@ -6,7 +6,6 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
 using Roadkill.Core.AmazingConfig;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Mvc.Controllers;
 using Roadkill.Core.Services;
 using Roadkill.Core.Security;

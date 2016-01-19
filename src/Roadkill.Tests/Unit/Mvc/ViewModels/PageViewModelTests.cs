@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Roadkill.Core.Cache;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Converters;
 using Roadkill.Core.Database;
 using Roadkill.Core.Mvc.ViewModels;
@@ -17,7 +16,6 @@ namespace Roadkill.Tests.Unit.Mvc.ViewModels
 	{
 		private MocksAndStubsContainer _container;
 
-		private ApplicationSettings _appSettings;
 		private MarkupConverter _markupConverter;
 		private PluginFactoryMock _pluginFactory;
 
@@ -27,7 +25,6 @@ namespace Roadkill.Tests.Unit.Mvc.ViewModels
 			_container = new MocksAndStubsContainer();
 
 			_pluginFactory = _container.PluginFactory;
-			_appSettings.Installed = true;
 			_markupConverter = _container.MarkupConverter;
 			_markupConverter.UrlResolver = new UrlResolverMock();
 		}

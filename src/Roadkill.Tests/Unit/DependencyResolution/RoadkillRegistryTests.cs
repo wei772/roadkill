@@ -7,9 +7,9 @@ using System.Web.Http;
 using Mindscape.LightSpeed;
 using NUnit.Framework;
 using Roadkill.Core;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Attachments;
 using Roadkill.Core.Cache;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Converters;
 using Roadkill.Core.Database;
 using Roadkill.Core.Database.LightSpeed;
@@ -36,16 +36,28 @@ namespace Roadkill.Tests.Unit.DependencyResolution
 	[Category("Unit")]
 	public class RoadkillRegistryTests
 	{
+		private MocksAndStubsContainer _container;
+		private ConfigurationStoreMock _configurationStore;
+		private IConfiguration _configuration;
+
+		[SetUp]
+		public void Setup()
+		{
+			_container = new MocksAndStubsContainer();
+			_configurationStore = _container.ConfigurationStoreMock;
+			_configuration = _container.Configuration;
+			_configuration.ConnectionString = "not empty string so the IRepositoryFactory returns instances";
+		}
+
 		private IContainer CreateContainer()
 		{
-			var configReaderWriterStub = new ConfigReaderWriterStub();
-			configReaderWriterStub.ApplicationSettings.ConnectionString = "none empty connection string";
-
-			var roadkillRegistry = new RoadkillRegistry(configReaderWriterStub);
+			var roadkillRegistry = new RoadkillRegistry(_configurationStore);
 			var container = new Container(c =>
 			{
 				c.AddRegistry(roadkillRegistry);
 			});
+
+			// Lightspeed mocking
 			container.Inject(typeof(IUnitOfWork), new UnitOfWork());
 
 			// Some places that require bastard injection reference the LocatorStartup.Locator
@@ -67,20 +79,19 @@ namespace Roadkill.Tests.Unit.DependencyResolution
 			Assert.That(instance, Is.TypeOf<TConcrete>());
 		}
 
-		// Appsettings
+		// New config
 		[Test]
-		public void should_get_application_settings_from_config_reader_instance()
+		public void should_get_configurationstore()
 		{
 			// Arrange
 			IContainer container = CreateContainer();
 
 			// Act
-			IConfigReaderWriter configReader = container.GetInstance<IConfigReaderWriter>();
-			ApplicationSettings settings = container.GetInstance<ApplicationSettings>();
+			var configurationStore = container.GetInstance<IConfigurationStore>();
 
 			// Assert
-			Assert.That(settings, Is.Not.Null);
-			Assert.That(configReader, Is.TypeOf<ConfigReaderWriterStub>());
+			Assert.That(configurationStore, Is.Not.Null);
+			Assert.That(configurationStore, Is.TypeOf<ConfigurationStoreMock>());
 		}
 
 		// Plugins
@@ -111,11 +122,10 @@ namespace Roadkill.Tests.Unit.DependencyResolution
 		public void MongoDB_databaseType_should_load_repository()
 		{
 			// Arrange
-			var settings = new ApplicationSettings();
-			settings.DatabaseName = "MongoDB";
-			settings.ConnectionString = "none empty connection string";
+			_configuration.DatabaseProvider = "MongoDB";
+			_configuration.ConnectionString = "none empty connection string";
 
-			var registry = new RoadkillRegistry(new ConfigReaderWriterStub() { ApplicationSettings = settings });
+			var registry = new RoadkillRegistry(_configurationStore);
 			var container = new Container(registry);
 
 			// Act +  Assert
@@ -195,13 +205,12 @@ namespace Roadkill.Tests.Unit.DependencyResolution
 		public void should_register_services()
 		{
 			// Arrange
-			var settings = new ApplicationSettings();
-			settings.ConnectionString = "none empty connection string";
-			settings.LdapConnectionString = "LDAP://dc=roadkill.org"; // for ActiveDirectoryUserService
-			settings.AdminRoleName = "admins";
-			settings.EditorRoleName = "editors";
+			_configuration.ConnectionString = "none empty connection string";
+			_configuration.SecuritySettings.LdapConnectionString = "LDAP://dc=roadkill.org"; // for ActiveDirectoryUserService
+			_configuration.SecuritySettings.AdminRoleName = "admins";
+			_configuration.SecuritySettings.EditorRoleName = "editors";
 
-			var registry = new RoadkillRegistry(new ConfigReaderWriterStub() { ApplicationSettings = settings });
+			var registry = new RoadkillRegistry(_configurationStore);
 			var container = new Container(registry);
 
 			// Act +  Assert
@@ -345,7 +354,7 @@ namespace Roadkill.Tests.Unit.DependencyResolution
 			ApiKeyAuthorizeAttribute setterInjected = container.GetInstance<ApiKeyAuthorizeAttribute>();
 
 			// Assert
-			Assert.That(setterInjected.ApplicationSettings, Is.Not.Null);
+			Assert.That(setterInjected.ConfigurationStore, Is.Not.Null);
 		}
 
 		// Custom file service and azure
@@ -360,11 +369,10 @@ namespace Roadkill.Tests.Unit.DependencyResolution
 		public void should_use_azurefileservice_when_setting_has_azure_true()
 		{
 			// Arrange
-			ApplicationSettings settings = new ApplicationSettings();
-			settings.ConnectionString = "none empty connection string";
-			settings.UseAzureFileStorage = true;
+			_configuration.ConnectionString = "none empty connection string";
+			_configuration.AttachmentSettings.AzureConnectionString = "something";
 
-			var registry = new RoadkillRegistry(new ConfigReaderWriterStub() { ApplicationSettings = settings });
+			var registry = new RoadkillRegistry(_configurationStore);
 			var container = new Container(registry);
 
 			// Act
@@ -385,40 +393,36 @@ namespace Roadkill.Tests.Unit.DependencyResolution
 		public void should_load_custom_userservice_using_short_type_format()
 		{
 			// Arrange
-			ApplicationSettings settings = new ApplicationSettings();
-			settings.ConnectionString = "none empty connection string";
-			settings.UserServiceType = "Roadkill.Plugins.TestUserService, Roadkill.Plugins";
-			Console.WriteLine(settings.UserServiceType);
-			settings.NonConfigurableSettings.PluginsBinPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins");
+			_configuration.ConnectionString = "none empty connection string";
+			_configuration.SecuritySettings.UserServiceType = "Roadkill.Plugins.TestUserService, Roadkill.Plugins";
+			_configuration.InternalSettings.PluginsBinPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins");
 
 			// Act
-			var registry = new RoadkillRegistry(new ConfigReaderWriterStub() { ApplicationSettings = settings });
+			var registry = new RoadkillRegistry(_configurationStore);
 			var container = new Container(registry);
 
 			// Act
 			UserServiceBase userService = container.GetInstance<UserServiceBase>();
 			Assert.That(userService, Is.Not.Null);
-			Assert.That(userService.GetType().AssemblyQualifiedName, Is.StringContaining(settings.UserServiceType));
+			Assert.That(userService.GetType().AssemblyQualifiedName, Is.StringContaining(_configuration.SecuritySettings.UserServiceType));
 		}
 
 		[Test]
 		public void should_load_custom_userservice_using_assemblyqualifiedname()
 		{
 			// Arrange
-			ApplicationSettings settings = new ApplicationSettings();
-			settings.ConnectionString = "none empty connection string";
-			settings.UserServiceType = typeof(Roadkill.Plugins.TestUserService).AssemblyQualifiedName;
-			Console.WriteLine(settings.UserServiceType);
-			settings.NonConfigurableSettings.PluginsBinPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins");
+			_configuration.ConnectionString = "none empty connection string";
+			_configuration.SecuritySettings.UserServiceType = typeof(Roadkill.Plugins.TestUserService).AssemblyQualifiedName;
+			_configuration.InternalSettings.PluginsBinPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins");
 
 			// Act
-			var registry = new RoadkillRegistry(new ConfigReaderWriterStub() { ApplicationSettings = settings });
+			var registry = new RoadkillRegistry(_configurationStore);
 			var container = new Container(registry);
 
 			// Act
 			UserServiceBase userService = container.GetInstance<UserServiceBase>();
 			Assert.That(userService, Is.Not.Null);
-			Assert.That(userService.GetType().AssemblyQualifiedName, Is.EqualTo(settings.UserServiceType));
+			Assert.That(userService.GetType().AssemblyQualifiedName, Is.EqualTo(_configuration.SecuritySettings.UserServiceType));
 		}
 
 #if !MONO
@@ -426,14 +430,13 @@ namespace Roadkill.Tests.Unit.DependencyResolution
 		public void should_load_activedirectory_userservice_when_usewindowsauth_is_true()
 		{
 			// Arrange
-			ApplicationSettings settings = new ApplicationSettings();
-			settings.ConnectionString = "none empty connection string";
-			settings.UseWindowsAuthentication = true;
-			settings.LdapConnectionString = "LDAP://dc=roadkill.org";
-			settings.AdminRoleName = "admins";
-			settings.EditorRoleName = "editors";
+			_configuration.ConnectionString = "none empty connection string";
+			_configuration.SecuritySettings.UseWindowsAuthentication = true;
+			_configuration.SecuritySettings.LdapConnectionString = "LDAP://dc=roadkill.org";
+			_configuration.SecuritySettings.AdminRoleName = "admins";
+			_configuration.SecuritySettings.EditorRoleName = "editors";
 
-			var registry = new RoadkillRegistry(new ConfigReaderWriterStub() { ApplicationSettings = settings });
+			var registry = new RoadkillRegistry(_configurationStore);
 			var container = new Container(registry);
 
 			// Act

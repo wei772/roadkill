@@ -1,6 +1,5 @@
 ﻿using Roadkill.Core;
 using Roadkill.Core.Cache;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Converters;
 using Roadkill.Core.Security;
 using Roadkill.Core.Services;
@@ -21,7 +20,7 @@ namespace Roadkill.Tests.Unit
 		public IConfiguration Configuration { get; set; }
 		public ConfigurationStoreMock ConfigurationStoreMock { get; set; }
 
-		public ConfigReaderWriterStub ConfigReaderWriter { get; set; }
+		public WebConfigManagerStub WebConfigManager { get; set; }
 		public IUserContext UserContext { get; set; }
 
 		public MemoryCache MemoryCache { get; set; }

@@ -1,7 +1,6 @@
 ﻿using System.Security.Principal;
 using System.Web;
 using System.Web.Mvc;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Services;
 using Roadkill.Core.Security;
 using StructureMap.Attributes;

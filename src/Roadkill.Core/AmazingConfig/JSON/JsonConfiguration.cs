@@ -89,7 +89,7 @@ namespace Roadkill.Core.AmazingConfig
 			AllowUserSignup = false;
 			IsRecaptchaEnabled = false;
 			Theme = "Mediawiki";
-			MarkupType = "Creole";
+			MarkupType = "Markdown";
 			SiteName = "Your site";
 			SiteUrl = "";
 			RecaptchaPrivateKey = "";

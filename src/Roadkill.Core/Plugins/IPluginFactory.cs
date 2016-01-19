@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Roadkill.Core.Configuration;
+﻿using System.Collections.Generic;
 
 namespace Roadkill.Core.Plugins
 {

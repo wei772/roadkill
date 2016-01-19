@@ -9,28 +9,28 @@ using Roadkill.Core.Mvc.ViewModels;
 
 namespace Roadkill.Core.Configuration
 {
-	public class JsonConfigReaderWriter : IConfigReaderWriter
+	public class JsonWebConfigReaderWriter : IWebConfigReaderWriter
 	{
 		private readonly string _configFilePath;
 		private IRoadkillConfiguration _configuration;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="JsonConfigReaderWriter"/> class.
+		/// Initializes a new instance of the <see cref="JsonWebConfigReaderWriter"/> class.
 		/// The class will attempt to load roadkill.json file when the class 
-		/// is instantiated, and cache it for the lifetime of the <see cref="JsonConfigReaderWriter"/> instance,
+		/// is instantiated, and cache it for the lifetime of the <see cref="JsonWebConfigReaderWriter"/> instance,
 		/// using ~/App_Data/roadkill.json as the file path.
 		/// </summary>
-		public JsonConfigReaderWriter() : this("~/App_Data/roadkill.json")
+		public JsonWebConfigReaderWriter() : this("~/App_Data/roadkill.json")
 		{
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="JsonConfigReaderWriter"/> class.
+		/// Initializes a new instance of the <see cref="JsonWebConfigReaderWriter"/> class.
 		/// The class will attempt to load roadkill.json file when the class 
-		/// is instantiated, and cache it for the lifetime of the <see cref="JsonConfigReaderWriter"/> instance.
+		/// is instantiated, and cache it for the lifetime of the <see cref="JsonWebConfigReaderWriter"/> instance.
 		/// </summary>
 		/// <param name="configFilePath">The full path to the JSON configuration file.</param>
-		public JsonConfigReaderWriter(string configFilePath)
+		public JsonWebConfigReaderWriter(string configFilePath)
 		{
 			_configFilePath = configFilePath;
 
@@ -52,7 +52,7 @@ namespace Roadkill.Core.Configuration
 		public void UpdateLanguage(string uiLanguageCode)
 		{
 			// Use the old ASP.NET way for now, until ASP.NET 5 changes this.
-			var webconfigReader = new FullTrustConfigReaderWriter();
+			var webconfigReader = new FullTrustWebConfigReaderWriter();
 			webconfigReader.UpdateLanguage(uiLanguageCode);
 		}
 

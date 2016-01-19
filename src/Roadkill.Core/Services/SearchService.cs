@@ -14,7 +14,6 @@ using Directory = System.IO.Directory;
 using LuceneVersion = Lucene.Net.Util.Version;
 using Lucene.Net.Store;
 using Roadkill.Core.AmazingConfig;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
 using Roadkill.Core.Mvc.ViewModels;
 using Roadkill.Core.Plugins;
@@ -46,10 +45,10 @@ namespace Roadkill.Core.Services
 			if (pluginFactory == null)
 				throw new ArgumentNullException(nameof(pluginFactory));
 
-			Configuration = configurationStore.Load();
 			_markupConverter = new MarkupConverter(configurationStore, pageRepository, pluginFactory);
-			IndexPath = Configuration.InternalSettings.SearchIndexPath;
 
+			Configuration = configurationStore.Load();
+			IndexPath = Configuration.InternalSettings.SearchIndexPath;
 			PageRepository = pageRepository;
 		}
 

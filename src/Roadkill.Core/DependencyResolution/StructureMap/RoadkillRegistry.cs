@@ -5,7 +5,6 @@ using System.Web.Http;
 using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Attachments;
 using Roadkill.Core.Cache;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Converters;
 using Roadkill.Core.Database;
 using Roadkill.Core.Domain.Export;
@@ -34,17 +33,17 @@ namespace Roadkill.Core.DependencyResolution.StructureMap
 {
 	public class RoadkillRegistry : Registry
 	{
-		public ApplicationSettings ApplicationSettings { get; set; }
+		public IConfiguration Configuration { get; set; }
 
-		public RoadkillRegistry(IConfigReaderWriter configReader)
+		public RoadkillRegistry(IConfigurationStore configurationStore)
 		{
-			ApplicationSettings = configReader.GetApplicationSettings();
+			Configuration = configurationStore.Load();
 
 			Scan(ScanTypes);
-			ConfigureInstances(configReader);
+			ConfigureInstances(configurationStore);
 		}
 
-		private static void CopyPlugins(NonConfigurableSettings settings)
+		private static void CopyPlugins(InternalSettings settings)
 		{
 			string pluginsDestPath = settings.PluginsBinPath;
 			if (!Directory.Exists(pluginsDestPath))
@@ -61,8 +60,8 @@ namespace Roadkill.Core.DependencyResolution.StructureMap
 			scanner.WithDefaultConventions();
 
 			// Scan plugins: this includes everything e.g repositories, UserService, FileService TextPlugins
-			CopyPlugins(ApplicationSettings.NonConfigurableSettings);
-			foreach (string subDirectory in Directory.GetDirectories(ApplicationSettings.NonConfigurableSettings.PluginsBinPath))
+			CopyPlugins(Configuration.InternalSettings);
+			foreach (string subDirectory in Directory.GetDirectories(Configuration.InternalSettings.PluginsBinPath))
 			{
 				scanner.AssembliesFromPath(subDirectory);
 			}
@@ -75,11 +74,10 @@ namespace Roadkill.Core.DependencyResolution.StructureMap
 			// New config
 			scanner.AddAllTypesOf<IConfiguration>();
 			scanner.AddAllTypesOf<IConfigurationStore>();
+			scanner.AddAllTypesOf<IWebConfigManager>();
 
-			// Config, context
-			scanner.AddAllTypesOf<ApplicationSettings>();
+			// UserContext
 			scanner.AddAllTypesOf<IUserContext>();
-			scanner.AddAllTypesOf<NonConfigurableSettings>();
 
 			// Repositories
 			scanner.AddAllTypesOf<IUserRepository>();
@@ -125,21 +123,16 @@ namespace Roadkill.Core.DependencyResolution.StructureMap
 			scanner.AddAllTypesOf<ConfigurationTesterController>();
 		}
 
-		private void ConfigureInstances(IConfigReaderWriter configReader)
+		private void ConfigureInstances(IConfigurationStore configurationStore)
 		{
 			// New config
-			For<IConfigurationStore>().Use<JsonConfigurationStore>().Singleton();
-
-			// Appsettings and reader - these need to go first
-			For<IConfigReaderWriter>().HybridHttpOrThreadLocalScoped().Use(configReader);
-			For<ApplicationSettings>()
-				.HybridHttpOrThreadLocalScoped()
-				.Use(x => x.TryGetInstance<IConfigReaderWriter>().GetApplicationSettings());
+			For<IConfigurationStore>().Use(configurationStore).Singleton();
+			For<IWebConfigManager>().Use<WebConfigManager>().Singleton();
 
 			// Repositories
 			ConfigureRepositories();
 
-			// Work around for controllers that use RenderAction() needing to be unique
+			// AlwaysUnique: this is a work around for controllers that use RenderAction() needing to be unique
 			// See https://github.com/webadvanced/Structuremap.MVC5/issues/3
 			For<HomeController>().AlwaysUnique();
 			For<UserController>().AlwaysUnique();
@@ -190,26 +183,32 @@ namespace Roadkill.Core.DependencyResolution.StructureMap
 				.Singleton()
 				.Use<RepositoryFactory>("IRepositoryFactory", x =>
 				{
-					ApplicationSettings appSettings = x.GetInstance<ApplicationSettings>();
-					return new RepositoryFactory(appSettings.DatabaseName, appSettings.ConnectionString);
+					var configurationStore = x.GetInstance<IConfigurationStore>();
+					IConfiguration configuration = configurationStore.Load();
+
+					return new RepositoryFactory(configuration.DatabaseProvider, configuration.ConnectionString);
 				});
 
 			For<IUserRepository>()
 				.HybridHttpOrThreadLocalScoped()
 				.Use("IUserRepository", x =>
 				{
-					ApplicationSettings appSettings = x.GetInstance<ApplicationSettings>();
+					var configurationStore = x.GetInstance<IConfigurationStore>();
+					IConfiguration configuration = configurationStore.Load();
+
 					return x.TryGetInstance<IRepositoryFactory>()
-						.GetUserRepository(appSettings.DatabaseName, appSettings.ConnectionString);
+						.GetUserRepository(configuration.DatabaseProvider, configuration.ConnectionString);
 				});
 
 			For<IPageRepository>()
 				.HybridHttpOrThreadLocalScoped()
 				.Use("IPageRepository", x =>
 				{
-					ApplicationSettings appSettings = x.GetInstance<ApplicationSettings>();
+					var configurationStore = x.GetInstance<IConfigurationStore>();
+					IConfiguration configuration = configurationStore.Load();
+
 					return x.TryGetInstance<IRepositoryFactory>()
-						.GetPageRepository(appSettings.DatabaseName, appSettings.ConnectionString);
+						.GetPageRepository(configuration.DatabaseProvider, configuration.ConnectionString);
 				});
 		}
 
@@ -227,7 +226,7 @@ namespace Roadkill.Core.DependencyResolution.StructureMap
 
 		private void ConfigureFileService()
 		{
-			if (ApplicationSettings.UseAzureFileStorage)
+			if (Configuration.AttachmentSettings.UseAzureFileStorage)
 			{
 				For<IFileService>()
 					.HybridHttpOrThreadLocalScoped()
@@ -244,9 +243,9 @@ namespace Roadkill.Core.DependencyResolution.StructureMap
 		private void ConfigureUserService()
 		{
 			// Windows authentication, custom or the default FormsAuth
-			string userServiceTypeName = ApplicationSettings.UserServiceType;
+			string userServiceTypeName = Configuration.SecuritySettings.UserServiceType;
 
-			if (ApplicationSettings.UseWindowsAuthentication)
+			if (Configuration.SecuritySettings.UseWindowsAuthentication)
 			{
 #if !MONO
 				For<UserServiceBase>()

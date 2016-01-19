@@ -4,10 +4,6 @@ using System.Linq;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 using MongoDB.Driver.Linq;
-using Roadkill.Core.Configuration;
-using Roadkill.Core.Logging;
-using Roadkill.Core.Plugins;
-using PluginSettings = Roadkill.Core.Plugins.Settings;
 
 namespace Roadkill.Core.Database.MongoDB
 {
@@ -33,7 +29,6 @@ namespace Roadkill.Core.Database.MongoDB
 			database.DropCollection(typeof(PageContent).Name);
 			database.DropCollection(typeof(Page).Name);
 			database.DropCollection(typeof(User).Name);
-			database.DropCollection(typeof(SiteConfigurationEntity).Name);
 		}
 
 		private MongoCollection<T> GetCollection<T>()

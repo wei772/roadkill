@@ -2,7 +2,6 @@
 using System.Web.Mvc;
 using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Attachments;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
 using Roadkill.Core.Mvc.ViewModels;
 using Roadkill.Core.Security;
@@ -18,17 +17,15 @@ namespace Roadkill.Core.Mvc.Controllers
 	{
 		private readonly IConfiguration _configuration;
 		private readonly IUserContext _userContext;
-		private readonly IConfigReaderWriter _configReaderWriter;
 		private readonly IActiveDirectoryProvider _activeDirectoryProvider;
 		private readonly UserServiceBase _userService;
 		private readonly IDatabaseTester _databaseTester;
 
-		public ConfigurationTesterController(IConfigurationStore configurationStore, IUserContext userContext, IConfigReaderWriter configReaderWriter, 
+		public ConfigurationTesterController(IConfigurationStore configurationStore, IUserContext userContext, 
 			IActiveDirectoryProvider activeDirectoryProvider, UserServiceBase userService, IDatabaseTester databaseTester) 
 		{
 			_configuration = configurationStore.Load();
 			_userContext = userContext;
-			_configReaderWriter = configReaderWriter;
 			_activeDirectoryProvider = activeDirectoryProvider;
 			_userService = userService;
 			_databaseTester = databaseTester;
@@ -52,19 +49,6 @@ namespace Roadkill.Core.Mvc.Controllers
 				return Content("");
 
 			string errors = _activeDirectoryProvider.TestLdapConnection(connectionString, username, password, groupName);
-			return Json(new TestResult(errors), JsonRequestBehavior.AllowGet);
-		}
-
-		/// <summary>
-		/// This action is for JSON calls only. Attempts to write to the web.config file and save it.
-		/// </summary>
-		/// <returns>Returns a <see cref="TestResult"/> containing information about any errors.</returns>
-		public ActionResult TestWebConfig()
-		{
-			if (IsInstalledAndUserIsNotAdmin())
-				return Content("");
-
-			string errors = _configReaderWriter.TestSaveWebConfig();
 			return Json(new TestResult(errors), JsonRequestBehavior.AllowGet);
 		}
 

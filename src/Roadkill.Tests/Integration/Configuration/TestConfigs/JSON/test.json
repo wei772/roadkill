@@ -1,9 +1,13 @@
 {
 	"SecuritySettings": {
+		"AllowUserSignup": false,
 		"ApiKeys": null,
 		"ApiKeysList": [ ],
 		"AdminRoleName": null,
 		"EditorRoleName": null,
+		"IsRecaptchaEnabled": false,
+		"RecaptchaPrivateKey": "",
+		"RecaptchaPublicKey": "",
 		"UseWindowsAuthentication": false,
 		"Settings": { }
 	},
@@ -28,11 +32,7 @@
 	"IsPublicSite": true,
 	"UseHtmlWhiteList": true,
 	"UseBrowserCache": true,
-	"AllowUserSignup": false,
-	"IsRecaptchaEnabled": false,
 	"MarkupType": "Creole",
-	"RecaptchaPrivateKey": "",
-	"RecaptchaPublicKey": "",
 	"SiteUrl": "",
 	"SiteName": "Your site",
 	"Theme": "Mediawiki",

@@ -2,11 +2,9 @@
 using System.Web.Mvc;
 using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Cache;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Mvc.Attributes;
 using Roadkill.Core.Mvc.ViewModels;
 using Roadkill.Core.Security;
-using Roadkill.Core.Services;
 
 namespace Roadkill.Core.Mvc.Controllers
 {
@@ -18,14 +16,11 @@ namespace Roadkill.Core.Mvc.Controllers
 	public class SettingsController : ControllerBase
 	{
 		private readonly SiteCache _siteCache;
-		private readonly IConfigReaderWriter _configReaderWriter;
 
-		public SettingsController(IConfigurationStore configurationStore, UserServiceBase userManager, 
-			IUserContext context, SiteCache siteCache, IConfigReaderWriter configReaderWriter)
+		public SettingsController(IConfigurationStore configurationStore, UserServiceBase userManager, IUserContext context, SiteCache siteCache)
 			: base(configurationStore, userManager, context) 
 		{
 			_siteCache = siteCache;
-			_configReaderWriter = configReaderWriter;
 		}
 
 		/// <summary>
@@ -52,18 +47,19 @@ namespace Roadkill.Core.Mvc.Controllers
 		[ValidateInput(false)]
 		public ActionResult Index(SettingsViewModel model)
 		{
+			// TODO:
 			if (ModelState.IsValid)
 			{
-				_configReaderWriter.Save(model);
+				//_webConfigReaderWriter.Save(model);
 
 				throw new InvalidOperationException("TODO");
 				//_settingsService.SaveSiteSettings(model);
 				_siteCache.RemoveMenuCacheItems();
 
 				// Refresh the AttachmentsDirectoryPath using the absolute attachments path, as it's calculated in the constructor
-				ApplicationSettings appSettings = _configReaderWriter.GetApplicationSettings();
-				model.FillFromApplicationSettings(appSettings);
-				model.UpdateSuccessful = true;
+				//ApplicationSettings appSettings = _webConfigReaderWriter.GetApplicationSettings();
+				//model.FillFromApplicationSettings(appSettings);
+				//model.UpdateSuccessful = true;
 			}
 
 			return View(model);

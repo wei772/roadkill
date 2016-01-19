@@ -1,5 +1,5 @@
 using System.IO;
-using Roadkill.Core.Configuration;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Logging;
 
 namespace Roadkill.Core.Plugins
@@ -9,9 +9,9 @@ namespace Roadkill.Core.Plugins
 		/// <summary>
 		/// Copies the plugins from the /Plugins directory to the bin folder.
 		/// </summary>
-		public static void CopyPlugins(NonConfigurableSettings applicationSettings)
+		public static void CopyPlugins(InternalSettings settings)
 		{
-			CopyAssemblies(applicationSettings.PluginsPath, applicationSettings.PluginsBinPath);
+			CopyAssemblies(settings.PluginsPath, settings.PluginsBinPath);
 		}
 
 		/// <summary>

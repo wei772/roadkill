@@ -2,7 +2,6 @@
 using NUnit.Framework;
 using Roadkill.Core;
 using Roadkill.Core.AmazingConfig;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Extensions;
 using Roadkill.Core.Mvc.Controllers;
 using Roadkill.Core.Services;
@@ -62,7 +61,7 @@ namespace Roadkill.Tests.Unit.Extensions
 		{
 			// Arrange
 			string expectedHtml = @"<link href=""/Assets/CSS/roadkill.css?version={AppVersion}"" rel=""stylesheet"" type=""text/css"" />";
-			expectedHtml = expectedHtml.Replace("{AppVersion}", NonConfigurableSettings.ProductVersion);
+			expectedHtml = expectedHtml.Replace("{AppVersion}", InternalSettings.ProductVersion);
 
 			// Act
 			string actualHtml = _urlHelper.CssLink("roadkill.css").ToHtmlString();
@@ -76,7 +75,7 @@ namespace Roadkill.Tests.Unit.Extensions
 		{
 			// Arrange
 			string expectedHtml = @"<script type=""text/javascript"" language=""javascript"" src=""/Assets/Scripts/roadkill.js?version={AppVersion}""></script>";
-			expectedHtml = expectedHtml.Replace("{AppVersion}", NonConfigurableSettings.ProductVersion);
+			expectedHtml = expectedHtml.Replace("{AppVersion}", InternalSettings.ProductVersion);
 
 			// Act
 			string actualHtml = _urlHelper.ScriptLink("roadkill.js").ToHtmlString();
@@ -90,7 +89,7 @@ namespace Roadkill.Tests.Unit.Extensions
 		{
 			// Arrange
 			string expectedHtml = @"<script type=""text/javascript"" language=""javascript"" src=""/Assets/Scripts/roadkill/installer/step1.js?version={AppVersion}""></script>";
-			expectedHtml = expectedHtml.Replace("{AppVersion}", NonConfigurableSettings.ProductVersion);
+			expectedHtml = expectedHtml.Replace("{AppVersion}", InternalSettings.ProductVersion);
 
 			// Act
 			string actualHtml = _urlHelper.InstallerScriptLink("step1.js").ToHtmlString();
@@ -104,7 +103,7 @@ namespace Roadkill.Tests.Unit.Extensions
 		{
 			// Arrange
 			string expectedHtml = @"<link href=""/Assets/bootstrap/css/bootstrap.min.css?version={AppVersion}"" rel=""stylesheet"" type=""text/css"" />";
-			expectedHtml = expectedHtml.Replace("{AppVersion}", NonConfigurableSettings.ProductVersion);
+			expectedHtml = expectedHtml.Replace("{AppVersion}", InternalSettings.ProductVersion);
 
 			// Act
 			string actualHtml = _urlHelper.BootstrapCSS().ToHtmlString();
@@ -119,7 +118,7 @@ namespace Roadkill.Tests.Unit.Extensions
 			// Arrange
 			string expectedHtml = @"<script type=""text/javascript"" language=""javascript"" src=""/Assets/bootstrap/js/bootstrap.min.js?version={AppVersion}""></script>";
 			expectedHtml += "\n" +@"<script type=""text/javascript"" language=""javascript"" src=""/Assets/bootstrap/js/respond.min.js?version={AppVersion}""></script>";
-			expectedHtml = expectedHtml.Replace("{AppVersion}", NonConfigurableSettings.ProductVersion);
+			expectedHtml = expectedHtml.Replace("{AppVersion}", InternalSettings.ProductVersion);
 
 			// Act
 			string actualHtml = _urlHelper.BootstrapJS().ToHtmlString();

@@ -34,8 +34,8 @@ namespace Roadkill.Tests.Acceptance.Webdriver
 			Assert.False(Driver.IsCheckboxChecked("UseObjectCache"));
 			Assert.False(Driver.IsCheckboxChecked("UseBrowserCache"));
 
-			Assert.That(Driver.FindElements(By.CssSelector("#DatabaseName option")).Count, Is.EqualTo(4));
-			SelectElement element = new SelectElement(Driver.FindElement(By.CssSelector("#DatabaseName")));
+			Assert.That(Driver.FindElements(By.CssSelector("#DatabaseProvider option")).Count, Is.EqualTo(4));
+			SelectElement element = new SelectElement(Driver.FindElement(By.CssSelector("#DatabaseProvider")));
 			Assert.That(element.SelectedOption.GetAttribute("value"), Is.EqualTo("SqlServer2008"));
 			Assert.That(Driver.SelectedIndex("#MarkupType"), Is.EqualTo(0));
 			Assert.That(Driver.SelectedIndex("#Theme"), Is.EqualTo(3));

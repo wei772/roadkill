@@ -5,7 +5,6 @@ using Microsoft.Practices.ServiceLocation;
 using Mindscape.LightSpeed;
 using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Attachments;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
 using Roadkill.Core.Database.MongoDB;
 using Roadkill.Core.Database.Schema;
@@ -49,7 +48,7 @@ namespace Roadkill.Core.Services
 		{
 			try
 			{
-				IInstallerRepository installerRepository = _getRepositoryFunc(model.DatabaseName, model.ConnectionString);
+				IInstallerRepository installerRepository = _getRepositoryFunc(model.DatabaseProvider, model.ConnectionString);
 				installerRepository.CreateSchema();
 
 				if (model.UseWindowsAuth == false)
@@ -57,22 +56,25 @@ namespace Roadkill.Core.Services
 					installerRepository.AddAdminUser(model.AdminEmail, "admin", model.AdminPassword);
 				}
 
-				SiteSettings siteSettings = new SiteSettings();
-				siteSettings.AllowedFileTypes = model.AllowedFileTypes;
-				siteSettings.AllowUserSignup = model.AllowUserSignup;
-				siteSettings.IsRecaptchaEnabled = model.IsRecaptchaEnabled;
-				siteSettings.MarkupType = model.MarkupType;
-				siteSettings.RecaptchaPrivateKey = model.RecaptchaPrivateKey;
-				siteSettings.RecaptchaPublicKey = model.RecaptchaPublicKey;
-				siteSettings.SiteUrl = model.SiteUrl;
-				siteSettings.SiteName = model.SiteName;
-				siteSettings.Theme = model.Theme;
+				throw new NotImplementedException();
 
-				// v2.0
-				siteSettings.OverwriteExistingFiles = model.OverwriteExistingFiles;
-				siteSettings.HeadContent = model.HeadContent;
-				siteSettings.MenuMarkup = model.MenuMarkup;
-				installerRepository.SaveSettings(siteSettings);
+				// TODO
+				//SiteSettings siteSettings = new SiteSettings();
+				//siteSettings.AllowedFileTypes = model.AllowedFileTypes;
+				//siteSettings.AllowUserSignup = model.AllowUserSignup;
+				//siteSettings.IsRecaptchaEnabled = model.IsRecaptchaEnabled;
+				//siteSettings.MarkupType = model.MarkupType;
+				//siteSettings.RecaptchaPrivateKey = model.RecaptchaPrivateKey;
+				//siteSettings.RecaptchaPublicKey = model.RecaptchaPublicKey;
+				//siteSettings.SiteUrl = model.SiteUrl;
+				//siteSettings.SiteName = model.SiteName;
+				//siteSettings.Theme = model.Theme;
+
+				//// v2.0
+				//siteSettings.OverwriteExistingFiles = model.OverwriteExistingFiles;
+				//siteSettings.HeadContent = model.HeadContent;
+				//siteSettings.MenuMarkup = model.MenuMarkup;
+				//installerRepository.SaveSettings(siteSettings);
 
 				// Attachments handler needs re-registering
 				var configurationStore = Locator.GetInstance<IConfigurationStore>();

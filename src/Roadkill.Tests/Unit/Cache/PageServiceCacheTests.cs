@@ -2,17 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Caching;
-using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using Moq;
 using NUnit.Framework;
 using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Cache;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
 using Roadkill.Core.Services;
-using Roadkill.Core.Mvc.Attributes;
 using Roadkill.Core.Mvc.Controllers;
 using Roadkill.Core.Mvc.ViewModels;
 using Roadkill.Tests.Unit.StubsAndMocks;
@@ -27,6 +24,7 @@ namespace Roadkill.Tests.Unit.Cache
 		private MocksAndStubsContainer _container;
 		private ConfigurationStoreMock _configurationStore;
 		private IConfiguration _configuration;
+
 		private PluginFactoryMock _pluginFactory;
 
 		[SetUp]
@@ -440,7 +438,8 @@ namespace Roadkill.Tests.Unit.Cache
 				listObjectCache = CacheMock.RoadkillCache;
 
 			// Settings
-			ApplicationSettings appSettings = new ApplicationSettings() { Installed = true, UseObjectCache = true };
+			_configuration.Installed = true;
+			_configuration.UseObjectCache = true;
 			UserContextStub userContext = new UserContextStub() { IsLoggedIn = false };
 
 			// PageService

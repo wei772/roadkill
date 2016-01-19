@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Logging;
 
 namespace Roadkill.Core.Text.Sanitizer

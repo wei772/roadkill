@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Plugins;
 
 namespace Roadkill.Tests.Unit.StubsAndMocks
@@ -15,10 +14,6 @@ namespace Roadkill.Tests.Unit.StubsAndMocks
 		{
 			TextPlugins = new List<TextPlugin>();
 			SpecialPages = new List<SpecialPagePlugin>();
-		}
-
-		public void CopyPlugins(ApplicationSettings applicationSettings)
-		{
 		}
 
 		public IEnumerable<TextPlugin> GetTextPlugins()

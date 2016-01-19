@@ -3,7 +3,6 @@ using System.Web.Mvc;
 using NUnit.Framework;
 using Roadkill.Core;
 using Roadkill.Core.AmazingConfig;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Mvc.Controllers;
 using Roadkill.Core.Mvc.ViewModels;
 using Roadkill.Tests.Unit.StubsAndMocks;
@@ -20,7 +19,6 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 
 		private IUserContext _context;
 		private UserServiceMock _userService;
-		private ConfigReaderWriterStub _configReaderWriter;
 		private ActiveDirectoryProviderMock _activeDirectoryProviderMock;
 
 		private ConfigurationTesterController _configTesterController;
@@ -37,45 +35,11 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 
 			_context = _container.UserContext;
 			_userService = _container.UserService;
-			_configReaderWriter = new ConfigReaderWriterStub();
 			_activeDirectoryProviderMock = new ActiveDirectoryProviderMock();
 
 			_databaseTester = _container.DatabaseTester;
 
-			_configTesterController = new ConfigurationTesterController(_configurationStore, _context, _configReaderWriter, _activeDirectoryProviderMock, _userService, _databaseTester);
-		}
-
-		[Test]
-		public void testwebconfig_should_return_jsonresult_and_testresult_model_without_errors()
-		{
-			// Arrange
-			_configReaderWriter.TestWebConfigResult = "";
-
-			// Act
-			ActionResult result = _configTesterController.TestWebConfig();
-
-			// Assert
-			JsonResult jsonResult = result.AssertResultIs<JsonResult>();
-
-			TestResult testResult = jsonResult.Data as TestResult;
-			Assert.That(testResult, Is.Not.Null);
-			Assert.That(testResult.ErrorMessage, Is.EqualTo(""));
-			Assert.That(testResult.Success, Is.True);
-		}
-
-		[Test]
-		public void testwebconfig_should_return_empty_content_when_installed_is_true()
-		{
-			// Arrange
-			_configuration.Installed = true;
-
-			// Act
-			ActionResult result = _configTesterController.TestWebConfig();
-
-			// Assert
-			ContentResult contentResult = result.AssertResultIs<ContentResult>();
-			Assert.That(contentResult, Is.Not.Null);
-			Assert.That(contentResult.Content, Is.Empty);
+			_configTesterController = new ConfigurationTesterController(_configurationStore, _context, _activeDirectoryProviderMock, _userService, _databaseTester);
 		}
 
 		[Test]

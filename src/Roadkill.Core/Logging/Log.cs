@@ -9,7 +9,7 @@ using System.Text;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
-using Roadkill.Core.Configuration;
+using Roadkill.Core.AmazingConfig;
 
 namespace Roadkill.Core.Logging
 {
@@ -32,7 +32,7 @@ namespace Roadkill.Core.Logging
 		/// Configures the log files used, this should be called on application startup.
 		/// </summary>
 		/// <param name="settings">Used to get the path of the NLog.config file</param>
-		public static void ConfigureLogging(NonConfigurableSettings settings)
+		public static void ConfigureLogging(InternalSettings settings)
 		{
 			if (string.IsNullOrEmpty(settings.NLogConfigFilePath))
 				throw new ConfigurationException(null, "The NLog.config path is null/empty (Settings.NLogConfigFilePath).");

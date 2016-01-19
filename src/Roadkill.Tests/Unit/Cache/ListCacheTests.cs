@@ -4,7 +4,6 @@ using System.Runtime.Caching;
 using NUnit.Framework;
 using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Cache;
-using Roadkill.Core.Configuration;
 using Roadkill.Tests.Unit.StubsAndMocks;
 
 namespace Roadkill.Tests.Unit.Cache
@@ -46,7 +45,7 @@ namespace Roadkill.Tests.Unit.Cache
 		{
 			// Arrange
 			CacheMock cache = new CacheMock();
-			ApplicationSettings settings = new ApplicationSettings() { UseObjectCache = true };
+			_configuration.UseObjectCache = true;
 
 			List<string> tagCacheItems = new List<string>() { "1", "2" };
 			AddToCache(cache, "all.tags", tagCacheItems);
@@ -65,7 +64,7 @@ namespace Roadkill.Tests.Unit.Cache
 		{
 			// Arrange
 			CacheMock cache = new CacheMock();
-			ApplicationSettings settings = new ApplicationSettings() { UseObjectCache = true };
+			_configuration.UseObjectCache = true;
 
 			List<string> tagCacheItems1 = new List<string>() { "1", "2" };
 			List<string> tagCacheItems2 = new List<string>() { "a", "b" };
@@ -86,7 +85,7 @@ namespace Roadkill.Tests.Unit.Cache
 		{
 			// Arrange
 			CacheMock cache = new CacheMock();
-			ApplicationSettings settings = new ApplicationSettings() { UseObjectCache = true };
+			_configuration.UseObjectCache = true;
 
 			List<string> tagCacheItems = new List<string>() { "1", "2" };
 			AddToCache(cache, "all.tags", tagCacheItems);
@@ -106,7 +105,7 @@ namespace Roadkill.Tests.Unit.Cache
 		{
 			// Arrange
 			CacheMock cache = new CacheMock();
-			ApplicationSettings settings = new ApplicationSettings() { UseObjectCache = true };
+			_configuration.UseObjectCache = true;
 
 			List<string> tagCacheItems1 = new List<string>() { "1", "2" };
 			List<string> tagCacheItems2 = new List<string>() { "1", "2" };
@@ -127,7 +126,7 @@ namespace Roadkill.Tests.Unit.Cache
 		{
 			// Arrange
 			CacheMock cache = new CacheMock();
-			ApplicationSettings settings = new ApplicationSettings() { UseObjectCache = false };
+			_configuration.UseObjectCache = false;
 			
 			List<string> tagCacheItems = new List<string>() { "1", "2" };			
 			ListCache listCache = new ListCache(_configurationStore, cache);
@@ -148,7 +147,7 @@ namespace Roadkill.Tests.Unit.Cache
 		{
 			// Arrange
 			CacheMock cache = new CacheMock();
-			ApplicationSettings settings = new ApplicationSettings() { UseObjectCache = false };
+			_configuration.UseObjectCache = false;
 
 			List<string> tagCacheItems = new List<string>() { "1", "2" };
 			AddToCache(cache, "all.tags", tagCacheItems);
@@ -168,7 +167,7 @@ namespace Roadkill.Tests.Unit.Cache
 		{
 			// Arrange
 			CacheMock cache = new CacheMock();
-			ApplicationSettings settings = new ApplicationSettings() { UseObjectCache = false };
+			_configuration.UseObjectCache = false;
 
 			List<string> tagCacheItems1 = new List<string>() { "1", "2" };
 			List<string> tagCacheItems2 = new List<string>() { "1", "2" };
@@ -195,7 +194,7 @@ namespace Roadkill.Tests.Unit.Cache
 			CacheMock cache = new CacheMock();
 			cache.Add("site.blah", "xyz", new CacheItemPolicy());
 
-			ApplicationSettings settings = new ApplicationSettings() { UseObjectCache = true };
+			_configuration.UseObjectCache = true;
 
 			List<string> tagCacheItems1 = new List<string>() { "1", "2" };
 			List<string> tagCacheItems2 = new List<string>() { "1", "2" };

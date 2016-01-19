@@ -1,7 +1,6 @@
 ﻿using System.Text;
 using System.Web.Mvc;
 using Roadkill.Core.AmazingConfig;
-using Roadkill.Core.Configuration;
 
 namespace Roadkill.Core.Extensions
 {
@@ -33,7 +32,7 @@ namespace Roadkill.Core.Extensions
 				path = "~/Assets/CSS/" + relativePath;
 
 			path = helper.Content(path);
-			string html = $"<link href=\"{path}?version={NonConfigurableSettings.ProductVersion}\" rel=\"stylesheet\" type=\"text/css\" />";
+			string html = $"<link href=\"{path}?version={InternalSettings.ProductVersion}\" rel=\"stylesheet\" type=\"text/css\" />";
 
 			return MvcHtmlString.Create(html);
 		}
@@ -50,7 +49,7 @@ namespace Roadkill.Core.Extensions
 				path = "~/Assets/Scripts/" + relativePath;
 
 			path = helper.Content(path);
-			string html = $"<script type=\"text/javascript\" language=\"javascript\" src=\"{path}?version={NonConfigurableSettings.ProductVersion}\"></script>";
+			string html = $"<script type=\"text/javascript\" language=\"javascript\" src=\"{path}?version={InternalSettings.ProductVersion}\"></script>";
 
 			return MvcHtmlString.Create(html);
 		}

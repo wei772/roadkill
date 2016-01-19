@@ -81,7 +81,7 @@
 						</tr>
 						<tr>
 							<td>MongoDB</td>
-							<td class="example" data-dbtype="MongoDB">mongodb://username:password@mongohq.com:10057/MyDatabaseName</td>
+							<td class="example" data-dbtype="MongoDB">mongodb://username:password@mongohq.com:10057/MyDatabaseProvider</td>
 						</tr>
 					</tbody>
 				</table>
@@ -96,7 +96,7 @@
 			<!-- Database type -->
 			<div class="form-group">
 				<label>@SiteStrings.SiteSettings_Configuration_DatabaseType</label>
-				@Html.BootstrapDropDownListFor(s => s.DatabaseName, Model.DatabaseTypesAsSelectList, SiteStrings.SiteSettings_Configuration_DatabaseType)
+				@Html.BootstrapDropDownListFor(s => s.DatabaseProvider, Model.DatabaseTypesAsSelectList, SiteStrings.SiteSettings_Configuration_DatabaseType)
 			</div>
 
 			<!-- Test button -->

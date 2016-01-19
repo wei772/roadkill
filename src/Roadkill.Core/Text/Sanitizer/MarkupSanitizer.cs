@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Caching;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Web;
 using HtmlAgilityPack;
-using Roadkill.Core.Configuration;
 using HapHtmlAttribute = HtmlAgilityPack.HtmlAttribute;
 
 // Parts of this class are based on source (c) 2009 Codeplex Foundation 

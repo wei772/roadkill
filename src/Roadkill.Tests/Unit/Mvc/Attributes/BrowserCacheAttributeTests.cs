@@ -5,7 +5,6 @@ using Moq;
 using NUnit.Framework;
 using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Cache;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
 using Roadkill.Core.Services;
 using Roadkill.Core.Mvc.Attributes;
@@ -186,7 +185,8 @@ namespace Roadkill.Tests.Unit.Mvc.Attributes
 		private WikiController CreateWikiController(BrowserCacheAttribute attribute)
 		{
 			// Settings
-			ApplicationSettings appSettings = new ApplicationSettings() { Installed = true, UseBrowserCache = true };
+			_configuration.Installed = true;
+			_configuration.UseBrowserCache = true;
 			UserContextStub userContext = new UserContextStub() { IsLoggedIn = false };
 
 			// PageService

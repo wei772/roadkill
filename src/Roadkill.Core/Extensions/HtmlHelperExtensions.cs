@@ -10,7 +10,6 @@ using System.Text.RegularExpressions;
 using Recaptcha;
 using System.Web.UI;
 using System.IO;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Services;
 using StructureMap;
 using ControllerBase = Roadkill.Core.Mvc.Controllers.ControllerBase;

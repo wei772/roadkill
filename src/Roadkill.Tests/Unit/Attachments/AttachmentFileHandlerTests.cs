@@ -4,7 +4,6 @@ using System.Web;
 using NUnit.Framework;
 using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Attachments;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Services;
 using Roadkill.Tests.Unit.StubsAndMocks;
 

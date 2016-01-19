@@ -1,6 +1,4 @@
-﻿using Roadkill.Core.Configuration;
-using Roadkill.Core.Services;
-using StructureMap;
+﻿using Roadkill.Core.Services;
 using System.Web;
 using System.Web.Routing;
 using Roadkill.Core.AmazingConfig;

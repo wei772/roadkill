@@ -67,11 +67,13 @@ namespace Roadkill.Core.AmazingConfig
 		/// <summary>
 		/// The private key for the recaptcha service, if enabled. This is optained when you sign up for the free service at https://www.google.com/recaptcha/.
 		/// </summary>
+		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
 		public string RecaptchaPrivateKey { get; set; }
 
 		/// <summary>
 		/// The public key for the recaptcha service, if enabled. This is optained when you sign up for the free service at https://www.google.com/recaptcha/.
 		/// </summary>
+		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
 		public string RecaptchaPublicKey { get; set; }
 
 		/// <summary>
@@ -106,9 +108,12 @@ namespace Roadkill.Core.AmazingConfig
 
 		public SecuritySettings()
 		{
-			ApiKeysList = new List<string>();
+			AllowUserSignup = false;
 			AdminRoleName = "Admin";
+			ApiKeysList = new List<string>();
 			EditorRoleName = "Editor";
+			RecaptchaPrivateKey = "";
+			RecaptchaPublicKey = "";
 
 			Settings = new Dictionary<string, string>();
 		}

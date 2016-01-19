@@ -1,12 +1,7 @@
-using System;
-using System.IO;
 using System.Web.Http;
 using System.Web.Mvc;
-using System.Web.Routing;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
-using Roadkill.Core.Attachments;
-using Roadkill.Core.Configuration;
-using Roadkill.Core.Database;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.DependencyResolution;
 using Roadkill.Core.DependencyResolution.MVC;
 using Roadkill.Core.DependencyResolution.StructureMap;
@@ -33,7 +28,7 @@ namespace Roadkill.Core.DependencyResolution
 
 		public static void StartMVC()
 		{
-			StartMVCInternal(new RoadkillRegistry(new FullTrustConfigReaderWriter("")), true);
+			StartMVCInternal(new RoadkillRegistry(new JsonConfigurationStore()), true);
 		}
 
 		internal static void StartMVCInternal(RoadkillRegistry registry, bool isWeb)
@@ -55,13 +50,14 @@ namespace Roadkill.Core.DependencyResolution
 		public static void AfterInitialization()
 		{
 			// Setup the additional MVC DI stuff
-			var settings = Locator.GetInstance<ApplicationSettings>();
-			AfterInitializationInternal(Locator.Container, settings);
+			var configurationStore = Locator.GetInstance<IConfigurationStore>();
+			AfterInitializationInternal(Locator.Container);
 
-			Log.ConfigureLogging(settings.NonConfigurableSettings);
+			IConfiguration configuration = configurationStore.Load();
+			Log.ConfigureLogging(configuration.InternalSettings);
 		}
 
-		internal static void AfterInitializationInternal(IContainer container, ApplicationSettings appSettings)
+		internal static void AfterInitializationInternal(IContainer container)
 		{
 			// WebApi: service locator
 			GlobalConfiguration.Configuration.DependencyResolver = Locator;

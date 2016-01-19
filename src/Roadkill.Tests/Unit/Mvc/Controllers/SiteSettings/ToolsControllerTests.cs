@@ -9,7 +9,6 @@ using NUnit.Framework;
 using Roadkill.Core;
 using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Cache;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
 using Roadkill.Core.Domain.Export;
 using Roadkill.Core.Localization;

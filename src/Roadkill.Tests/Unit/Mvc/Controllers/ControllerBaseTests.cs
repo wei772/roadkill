@@ -2,7 +2,6 @@
 using NUnit.Framework;
 using Roadkill.Core;
 using Roadkill.Core.AmazingConfig;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Database;
 using Roadkill.Core.Mvc.Controllers;
 using Roadkill.Core.Security;
@@ -23,7 +22,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		private IUserContext _context;
 		private UserServiceMock _userService;
 
-		private ConfigReaderWriterStub _configReaderWriter;
+		private WebConfigManagerStub _webConfigManager;
 
 		private ControllerBaseStub _controller;
 		private DatabaseTesterMock _databaseTester;
@@ -43,7 +42,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 			_controller.SetFakeControllerContext("~/");
 
 			// InstallController
-			_configReaderWriter = new ConfigReaderWriterStub();
+			_webConfigManager = new WebConfigManagerStub();
 			_databaseTester = _container.DatabaseTester;
 			_installationService = _container.InstallationService;
 		}
@@ -70,7 +69,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		{
 			// Arrange
 			_configuration.Installed = false;
-			InstallControllerStub installController = new InstallControllerStub(_configurationStore, _configReaderWriter, _installationService, _databaseTester);
+			InstallControllerStub installController = new InstallControllerStub(_configurationStore, _webConfigManager, _installationService, _databaseTester);
 			ActionExecutingContext filterContext = new ActionExecutingContext();
 			filterContext.Controller = installController;
 
@@ -121,8 +120,8 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 
 	internal class InstallControllerStub : InstallController
 	{
-		public InstallControllerStub(IConfigurationStore configurationStore, IConfigReaderWriter configReaderWriter, IInstallationService installationService, IDatabaseTester databaseTester)
-			: base(configurationStore, configReaderWriter, installationService)
+		public InstallControllerStub(IConfigurationStore configurationStore, IWebConfigManager webConfigManager, IInstallationService installationService, IDatabaseTester databaseTester)
+			: base(configurationStore, webConfigManager, installationService)
 		{
 
 		}

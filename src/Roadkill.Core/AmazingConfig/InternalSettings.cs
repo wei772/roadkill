@@ -2,7 +2,6 @@
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
-using Roadkill.Core.Configuration;
 
 namespace Roadkill.Core.AmazingConfig
 {

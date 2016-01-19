@@ -2,7 +2,6 @@
 using System.ComponentModel.DataAnnotations;
 using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Localization;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Security;
 using Roadkill.Core.Database;
 

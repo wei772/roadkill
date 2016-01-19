@@ -4,7 +4,7 @@ using NLog.Config;
 using NLog.Targets;
 using NUnit.Framework;
 using Roadkill.Core;
-using Roadkill.Core.Configuration;
+using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Logging;
 
 namespace Roadkill.Tests.Unit.Logging
@@ -76,7 +76,7 @@ namespace Roadkill.Tests.Unit.Logging
 		{
 			// Arrange
 			string expectedPath = $"{AppDomain.CurrentDomain.BaseDirectory}\\Roadkill.Tests.dll.config";
-			var settings = new NonConfigurableSettings()
+			var settings = new InternalSettings()
 			{
 				NLogConfigFilePath = @"~\Roadkill.Tests.dll.config"
 			};
@@ -94,7 +94,7 @@ namespace Roadkill.Tests.Unit.Logging
 		public void ConfigureLogging_should_throw_exception_when_nlog_path_is_empty()
 		{
 			// Arrange
-			var settings = new NonConfigurableSettings()
+			var settings = new InternalSettings()
 			{
 				NLogConfigFilePath = ""
 			};
@@ -107,7 +107,7 @@ namespace Roadkill.Tests.Unit.Logging
 		public void ConfigureLogging_should_throw_exception_when_nlog_path_does_not_exist()
 		{
 			// Arrange
-			var settings = new NonConfigurableSettings()
+			var settings = new InternalSettings()
 			{
 				NLogConfigFilePath = "~/Bob/Loblaw/Config.config"
 			};

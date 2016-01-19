@@ -1,5 +1,4 @@
 ﻿using System;
-using Roadkill.Core.Configuration;
 
 namespace Roadkill.Core.Database
 {
@@ -7,6 +6,5 @@ namespace Roadkill.Core.Database
 	{
 		void AddAdminUser(string email, string username, string password);
 		void CreateSchema();
-		void SaveSettings(SiteSettings siteSettings);
 	}
 }

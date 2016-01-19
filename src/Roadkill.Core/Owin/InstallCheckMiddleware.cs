@@ -1,23 +1,22 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.Owin;
-using Roadkill.Core.Configuration;
+using Roadkill.Core.AmazingConfig;
 
 namespace Roadkill.Core.Owin
 {
 	public class InstallCheckMiddleware : OwinMiddleware
 	{
-		private readonly ApplicationSettings _appSettings;
+		private readonly IConfiguration _configuration;
 
-		public InstallCheckMiddleware(OwinMiddleware next, ApplicationSettings appSettings) : base(next)
+		public InstallCheckMiddleware(OwinMiddleware next, IConfiguration configuration) : base(next)
 		{
-			_appSettings = appSettings;
+			_configuration = configuration;
 		}
 
 		public override async Task Invoke(IOwinContext context)
 		{
-			var appSettings = _appSettings;
-			if (appSettings.Installed == false && IsOnInstallPage(context) == false && IsHtmlRequest(context))
+			if (_configuration.Installed == false && IsOnInstallPage(context) == false && IsHtmlRequest(context))
 			{
 				context.Response.Redirect("/Install/");
 			}

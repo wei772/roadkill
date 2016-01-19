@@ -8,8 +8,6 @@ using System.Threading;
 using NUnit.Framework;
 using Roadkill.Core;
 using Roadkill.Core.AmazingConfig;
-using Roadkill.Core.Configuration;
-using Roadkill.Core.Database;
 using Roadkill.Core.Email;
 using Roadkill.Core.Mvc.ViewModels;
 using Roadkill.Tests.Unit.StubsAndMocks;

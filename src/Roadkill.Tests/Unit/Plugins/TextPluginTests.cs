@@ -1,12 +1,4 @@
-﻿using System;
-using System.Linq;
-using Moq;
-using NUnit.Framework;
-using Roadkill.Core;
-using Roadkill.Core.Cache;
-using Roadkill.Core.Plugins;
-using Roadkill.Tests.Unit.StubsAndMocks;
-using PluginSettings = Roadkill.Core.Plugins.Settings;
+﻿using PluginSettings = Roadkill.Core.Plugins.Settings;
 
 namespace Roadkill.Tests.Unit.Plugins
 {

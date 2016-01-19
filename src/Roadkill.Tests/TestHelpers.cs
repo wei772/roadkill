@@ -4,17 +4,9 @@ using System.Data.SqlClient;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Web.Mvc;
 using IisConfiguration;
 using IisConfiguration.Logging;
 using Microsoft.Web.Administration;
-using Roadkill.Core;
-using Roadkill.Core.Configuration;
-using Roadkill.Core.Database;
-using Roadkill.Core.DependencyResolution;
-using Roadkill.Core.DependencyResolution.StructureMap;
-using Roadkill.Tests.Unit.StubsAndMocks;
-using StructureMap;
 using Configuration = System.Configuration.Configuration;
 
 namespace Roadkill.Tests
@@ -54,23 +46,26 @@ namespace Roadkill.Tests
 
 		public static void SetRoadkillConfigToUnInstalled()
 		{
-			string sitePath = TestConstants.WEB_PATH;
-			string webConfigPath = Path.Combine(sitePath, "web.config");
-			string roadkillConfigPath = Path.Combine(sitePath, "roadkill.config");
+			// TODO:
+			throw new NotImplementedException();
 
-			// Remove the readonly flag from one of the installer tests (this could be fired in any order)
-			File.SetAttributes(webConfigPath, FileAttributes.Normal);
-			File.SetAttributes(roadkillConfigPath, FileAttributes.Normal);
+			//string sitePath = TestConstants.WEB_PATH;
+			//string webConfigPath = Path.Combine(sitePath, "web.config");
+			//string roadkillConfigPath = Path.Combine(sitePath, "roadkill.config");
 
-			// Switch installed=false in the web.config (roadkill.config)
-			ExeConfigurationFileMap fileMap = new ExeConfigurationFileMap();
-			fileMap.ExeConfigFilename = webConfigPath;
-			Configuration config = ConfigurationManager.OpenMappedExeConfiguration(fileMap, ConfigurationUserLevel.None);
-			RoadkillSection section = config.GetSection("roadkill") as RoadkillSection;
+			//// Remove the readonly flag from one of the installer tests (this could be fired in any order)
+			//File.SetAttributes(webConfigPath, FileAttributes.Normal);
+			//File.SetAttributes(roadkillConfigPath, FileAttributes.Normal);
 
-			section.Installed = false;
-			config.ConnectionStrings.ConnectionStrings["Roadkill"].ConnectionString = "";
-			config.Save(ConfigurationSaveMode.Minimal);
+			//// Switch installed=false in the web.config (roadkill.config)
+			//ExeConfigurationFileMap fileMap = new ExeConfigurationFileMap();
+			//fileMap.ExeConfigFilename = webConfigPath;
+			//Configuration config = ConfigurationManager.OpenMappedExeConfiguration(fileMap, ConfigurationUserLevel.None);
+			//RoadkillSection section = config.GetSection("roadkill") as RoadkillSection;
+
+			//section.Installed = false;
+			//config.ConnectionStrings.ConnectionStrings["Roadkill"].ConnectionString = "";
+			//config.Save(ConfigurationSaveMode.Minimal);
 		}
 
 		public static void DeleteAttachmentsFolder()

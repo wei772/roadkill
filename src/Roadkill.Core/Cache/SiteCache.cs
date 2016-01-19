@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Caching;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Plugins;
 using PluginSettings = Roadkill.Core.Plugins.Settings;
 

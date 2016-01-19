@@ -14,7 +14,7 @@ namespace Roadkill.Core.Configuration
 	/// <summary>
 	/// Defines a class responsible for reading and writing application settings/configuration.
 	/// </summary>
-	public interface IConfigReaderWriter
+	public interface IWebConfigReaderWriter
 	{
 		/// <summary>
 		/// Updates the current UI language in the globalization section and saves the configuration file.

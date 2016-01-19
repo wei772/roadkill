@@ -1,7 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
 using Roadkill.Core.AmazingConfig;
-using Roadkill.Core.Configuration;
 using Roadkill.Core.Converters;
 using Roadkill.Core.Database;
 using Roadkill.Tests.Unit.StubsAndMocks;
@@ -14,6 +13,7 @@ namespace Roadkill.Tests.Unit.Text
 	{
 		private MocksAndStubsContainer _container;
 		private ConfigurationStoreMock _configurationStore;
+		private IConfiguration _configuration;
 
 		private PluginFactoryMock _pluginFactory;
 
@@ -22,6 +22,7 @@ namespace Roadkill.Tests.Unit.Text
 		{
 			_container = new MocksAndStubsContainer();
 			_configurationStore = _container.ConfigurationStoreMock;
+			_configuration = _container.Configuration;
 
 			_pluginFactory = new PluginFactoryMock();
 		}
@@ -67,8 +68,7 @@ namespace Roadkill.Tests.Unit.Text
 			PageRepositoryMock pageRepositoryStub = new PageRepositoryMock();
 			pageRepositoryStub.AddNewPage(page, "My first page", "admin", DateTime.UtcNow);
 
-			ApplicationSettings settings = new ApplicationSettings();
-			settings.Installed = true;
+			_configuration.Installed = true;
 
 			MarkupConverter converter = new MarkupConverter(_configurationStore, pageRepositoryStub, _pluginFactory);
 
@@ -95,9 +95,8 @@ namespace Roadkill.Tests.Unit.Text
 			PageRepositoryMock pageRepositoryStub = new PageRepositoryMock();
 			pageRepositoryStub.AddNewPage(page, "My first page", "admin", DateTime.UtcNow);
 
-			ApplicationSettings settings = new ApplicationSettings();
-			settings.Installed = true;
-			settings.UseHtmlWhiteList = false;
+			_configuration.Installed = true;
+			_configuration.UseHtmlWhiteList = false;
 
 			MarkupConverter converter = new MarkupConverter(_configurationStore, pageRepositoryStub, _pluginFactory);
 
@@ -126,9 +125,8 @@ namespace Roadkill.Tests.Unit.Text
 			PageRepositoryMock pageRepositoryStub = new PageRepositoryMock();
 			pageRepositoryStub.AddNewPage(page, "My first page", "admin", DateTime.UtcNow);
 
-			ApplicationSettings settings = new ApplicationSettings();
-			settings.Installed = true;
-			settings.UseHtmlWhiteList = false;
+			_configuration.Installed = true;
+			_configuration.UseHtmlWhiteList = false;
 
 			MarkupConverter converter = new MarkupConverter(_configurationStore, pageRepositoryStub, _pluginFactory);
 

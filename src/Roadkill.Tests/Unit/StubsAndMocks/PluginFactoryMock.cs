@@ -7,11 +7,13 @@ namespace Roadkill.Tests.Unit.StubsAndMocks
 {
 	public class PluginFactoryMock : IPluginFactory
 	{
+		public List<TextPlugin> EnabledTextPlugins { get; set; }
 		public List<TextPlugin> TextPlugins { get; set; }
 		public List<SpecialPagePlugin> SpecialPages { get; set; }
 
 		public PluginFactoryMock()
 		{
+			EnabledTextPlugins = new List<TextPlugin>();
 			TextPlugins = new List<TextPlugin>();
 			SpecialPages = new List<SpecialPagePlugin>();
 		}
@@ -23,13 +25,13 @@ namespace Roadkill.Tests.Unit.StubsAndMocks
 
 		public IEnumerable<TextPlugin> GetEnabledTextPlugins()
 		{
-			throw new NotImplementedException();
-			//return TextPlugins.Where(x => x.Settings.IsEnabled);
+			return EnabledTextPlugins;
 		}
 
 		public void RegisterTextPlugin(TextPlugin plugin)
 		{
 			TextPlugins.Add(plugin);
+			EnabledTextPlugins.Add(plugin);
 		}
 
 		public TextPlugin GetTextPlugin(string id)

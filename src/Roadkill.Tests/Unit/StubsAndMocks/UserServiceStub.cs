@@ -10,7 +10,7 @@ namespace Roadkill.Tests.Unit.StubsAndMocks
 	public class UserServiceStub : UserServiceBase
 	{
 		public UserServiceStub()
-			: base(null, null)
+			: base(new ConfigurationStoreMock(), null)
 		{
 
 		}

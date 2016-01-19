@@ -96,7 +96,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 			// Assert
 			Assert.That(_context.CurrentUsername, Is.EqualTo("mrblah"));
 			Assert.That(_controller.ViewBag.Context, Is.EqualTo(_context));
-			Assert.That(_controller.ViewBag.Config, Is.EqualTo(_configurationStore));
+			Assert.That(_controller.ViewBag.Config, Is.EqualTo(_configuration));
 		}
 	}
 

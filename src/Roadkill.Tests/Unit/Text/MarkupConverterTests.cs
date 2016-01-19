@@ -438,36 +438,11 @@ namespace Roadkill.Tests.Unit.Text
 		}
 
 		[Test]
-		public void warningbox_token_with_nowiki_adds_pre_and_renders_token_html()
-		{
-			// Arrange..make sure expectedHtml uses \n and not \r\n
-			string expectedHtml = @"<p><div class=""alert alert-warning"">ENTER YOUR CONTENT HERE 
-<pre>here is my C#code
-</pre>
-</p>
-<p></div><br style=""clear:both""/>
-</p>";
-
-			expectedHtml = expectedHtml.Replace("\r\n", "\n"); // fix line ending issues
-
-			// Act
-			string actualHtml = _markupConverter.ToHtml(@"@@warningbox:ENTER YOUR CONTENT HERE 
-{{{
-here is my C#code
-}}} 
-
-@@");
-
-			// Assert
-			Assert.That(actualHtml, Is.EqualTo(expectedHtml), actualHtml);
-		}
-
-		[Test]
 		public void should_ignore_textplugins_beforeparse_when_isenabled_is_false()
 		{
 			// Arrange
 			string markupFragment = "This is my ~~~usertoken~~~";
-			string expectedHtml = "<p>This is my <span>usertoken</span>\n</p>";
+			string expectedHtml = "<p>This is my <span>usertoken</span></p>\n";
 
 			TextPluginStub plugin = new TextPluginStub();
 			_pluginFactory.RegisterTextPlugin(plugin);
@@ -484,7 +459,7 @@ here is my C#code
 		{
 			// Arrange
 			string markupFragment = "Here is some markup **some bold**";
-			string expectedHtml = "<p>Here is some markup <strong style='color:green'><iframe src='javascript:alert(test)'>some bold</strong>\n</p>";
+			string expectedHtml = "<p>Here is some markup <strong style='color:green'><iframe src='javascript:alert(test)'>some bold</strong></p>\n";
 
 			TextPluginStub plugin = new TextPluginStub();
 			_pluginFactory.RegisterTextPlugin(plugin);
@@ -501,7 +476,7 @@ here is my C#code
 		{
 			// Arrange
 			string markupFragment = "This is my ~~~usertoken~~~";
-			string expectedHtml = "<p>This is my <span>usertoken</span>\n</p>";
+			string expectedHtml = "<p>This is my <span>usertoken</span></p>\n";
 
 			TextPluginStub plugin = new TextPluginStub();
 			_pluginFactory.RegisterTextPlugin(plugin);
@@ -518,7 +493,7 @@ here is my C#code
 		{
 			// Arrange
 			string markupFragment = "Here is some markup **some bold**";
-			string expectedHtml = "<p>Here is some markup <strong style='color:green'><iframe src='javascript:alert(test)'>some bold</strong>\n</p>";
+			string expectedHtml = "<p>Here is some markup <strong style='color:green'><iframe src='javascript:alert(test)'>some bold</strong></p>\n";
 
 			TextPluginStub plugin = new TextPluginStub();
 			_pluginFactory.RegisterTextPlugin(plugin);

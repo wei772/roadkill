@@ -16,6 +16,7 @@ namespace Roadkill.Tests.Unit.Owin
 		{
 			_container = new MocksAndStubsContainer();
 			_configuration = _container.Configuration;
+			_configuration.Installed = false;
 		}
 
 		[Test]

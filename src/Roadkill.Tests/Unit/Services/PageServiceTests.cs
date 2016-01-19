@@ -392,7 +392,7 @@ namespace Roadkill.Tests.Unit.Services
 						<span class=""icon-bar""></span>
 					</button>
 				</div><div id=""left-menu-toggle"" class=""collapse navbar-collapse"">
-<ul class =""nav navbar-nav""><li> <a href=""/"">Main Page</a></li><li> <a href=""/pages/alltags"">Categories</a></li><li> <a href=""/pages/allpages"">All pages</a></li><li> <a href=""/pages/new"">New page</a></li><li> <a href=""/filemanager"">Manage files</a></li><li> <a href=""/settings"">Site settings</a></li></ul>
+<ul class =""nav navbar-nav""><li><a href=""/"">Main Page</a></li><li><a href=""/pages/alltags"">Categories</a></li><li><a href=""/pages/allpages"">All pages</a></li><li><a href=""/pages/new"">New page</a></li><li><a href=""/filemanager"">Manage files</a></li><li><a href=""/settings"">Site settings</a></li></ul>
 </div>
 </nav>";
 
@@ -408,7 +408,7 @@ namespace Roadkill.Tests.Unit.Services
 		{
 			// Arrange
 			string expectedHtml = @"<div id=""leftmenu"">
-<ul><li> <a href=""/"">Main Page</a></li><li> <a href=""/pages/alltags"">Categories</a></li><li> <a href=""/pages/allpages"">All pages</a></li><li> <a href=""/pages/new"">New page</a></li><li> <a href=""/filemanager"">Manage files</a></li><li> <a href=""/settings"">Site settings</a></li></ul>
+<ul><li><a href=""/"">Main Page</a></li><li><a href=""/pages/alltags"">Categories</a></li><li><a href=""/pages/allpages"">All pages</a></li><li><a href=""/pages/new"">New page</a></li><li><a href=""/filemanager"">Manage files</a></li><li><a href=""/settings"">Site settings</a></li></ul>
 </div>";
 
 			// Act
@@ -422,15 +422,15 @@ namespace Roadkill.Tests.Unit.Services
 		public void updatelinkstopage_should_replace_link_title_in_markup_and_save_to_repository()
 		{
 			// Arrange
-			_pageRepository.AddNewPage(new Page() { Id = 1, Title = "Homepage" }, "This is a link to [[Page AbOuT horses|Horses]]", "editor", DateTime.UtcNow);
-			_pageRepository.AddNewPage(new Page() { Id = 2, Title = "Page about horses" }, "This is a link to [[Homepage|Back home]]", "editor", DateTime.UtcNow);
+			_pageRepository.AddNewPage(new Page() { Id = 1, Title = "Homepage" }, "This is a link to [Horses](Page-AbOuT-horses)", "editor", DateTime.UtcNow);
+			_pageRepository.AddNewPage(new Page() { Id = 2, Title = "Page about horses" }, "This is a link to [Back-home](Homepage)", "editor", DateTime.UtcNow);
 
 			// Act
 			_pageService.UpdateLinksToPage("Page about horses", "Page about donkeys");
 
 			// Assert
 			PageContent page1 = _pageService.GetCurrentContent(1);
-			Assert.That(page1.Text, Is.EqualTo("This is a link to [[Page about donkeys|Horses]]"), page1.Text);
+			Assert.That(page1.Text, Is.EqualTo("This is a link to [Horses](Page-about-donkeys)"), page1.Text);
 		}
 
 		[Test]

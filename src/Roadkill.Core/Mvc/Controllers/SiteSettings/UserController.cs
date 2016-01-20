@@ -31,7 +31,7 @@ namespace Roadkill.Core.Mvc.Controllers
 			IConfiguration config = ConfigurationStore.Load();
 
 			if (config.SecuritySettings.UseWindowsAuthentication)
-				filterContext.Result = new RedirectResult(this.Url.Action("Index", "Home"));
+				filterContext.Result = new RedirectResult(Url.Action("Index", "Home"));
 		}
 
 		/// <summary>

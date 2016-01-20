@@ -2,9 +2,6 @@
 using NUnit.Framework;
 using Roadkill.Core;
 using Roadkill.Core.AmazingConfig;
-using Roadkill.Core.Database;
-using Roadkill.Core.Mvc.Controllers;
-using Roadkill.Core.Security;
 using Roadkill.Core.Services;
 using Roadkill.Tests.Unit.StubsAndMocks;
 using Roadkill.Tests.Unit.StubsAndMocks.Mvc;
@@ -24,7 +21,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 
 		private WebConfigManagerStub _webConfigManager;
 
-		private ControllerBaseStub _controller;
+		private ControllerBaseInvoker _controller;
 		private DatabaseTesterMock _databaseTester;
 		private InstallationService _installationService;
 
@@ -38,7 +35,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 			_context = _container.UserContext;
 			_userService = _container.UserService;
 
-			_controller = new ControllerBaseStub(_configurationStore, _userService, _context);
+			_controller = new ControllerBaseInvoker(_configurationStore, _userService, _context);
 			_controller.SetFakeControllerContext("~/");
 
 			// InstallController
@@ -69,7 +66,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		{
 			// Arrange
 			_configuration.Installed = false;
-			InstallControllerStub installController = new InstallControllerStub(_configurationStore, _webConfigManager, _installationService, _databaseTester);
+			InstallControllerInvoker installController = new InstallControllerInvoker(_configurationStore, _webConfigManager, _installationService, _databaseTester);
 			ActionExecutingContext filterContext = new ActionExecutingContext();
 			filterContext.Controller = installController;
 
@@ -97,38 +94,6 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 			Assert.That(_context.CurrentUsername, Is.EqualTo("mrblah"));
 			Assert.That(_controller.ViewBag.Context, Is.EqualTo(_context));
 			Assert.That(_controller.ViewBag.Config, Is.EqualTo(_configuration));
-		}
-	}
-
-
-	//
-	// These stubs let the tests call OnActionExecuting (without resorting to a tangle of Moq setups)
-	//
-
-	public class ControllerBaseStub : Roadkill.Core.Mvc.Controllers.ControllerBase
-	{
-		public ControllerBaseStub(IConfigurationStore configurationStore, UserServiceBase userService, IUserContext context) : base(configurationStore, userService, context)
-		{
-
-		}
-
-		public void CallOnActionExecuting(ActionExecutingContext filterContext)
-		{
-			base.OnActionExecuting(filterContext);
-		}
-	}
-
-	internal class InstallControllerStub : InstallController
-	{
-		public InstallControllerStub(IConfigurationStore configurationStore, IWebConfigManager webConfigManager, IInstallationService installationService, IDatabaseTester databaseTester)
-			: base(configurationStore, webConfigManager, installationService)
-		{
-
-		}
-
-		public void CallOnActionExecuting(ActionExecutingContext filterContext)
-		{
-			base.OnActionExecuting(filterContext);
 		}
 	}
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Caching;
 using System.Web.Http;
 using Mindscape.LightSpeed;
+using MvcContrib.TestHelper.Ui;
 using NUnit.Framework;
 using Roadkill.Core;
 using Roadkill.Core.AmazingConfig;
@@ -56,6 +57,9 @@ namespace Roadkill.Tests.Unit.DependencyResolution
 			{
 				c.AddRegistry(roadkillRegistry);
 			});
+
+			// Change the config manager to use the app.config
+			container.Configure(x => x.For<IWebConfigManager>().Use(new WebConfigManager("Roadkill.Tests.dll.config")));
 
 			// Lightspeed mocking
 			container.Inject(typeof(IUnitOfWork), new UnitOfWork());
@@ -247,7 +251,8 @@ namespace Roadkill.Tests.Unit.DependencyResolution
 			IEnumerable<IRoadkillController> controllers = container.GetAllInstances<IRoadkillController>();
 
 			// Assert
-			Assert.That(controllers.Count(), Is.EqualTo(15));
+			controllers = controllers.Where(x => x.GetType().Name.Contains("Invoker") == false);// remove the unit test controllers.
+			Assert.That(controllers.Count(), Is.EqualTo(14));
 		}
 
 		[Test]

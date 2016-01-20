@@ -82,6 +82,7 @@ namespace Roadkill.Core.AmazingConfig
 			// Optional
 			IgnoreSearchIndexErrors = true;
 			IsPublicSite = true;
+			UseObjectCache = true;
 			UseBrowserCache = true;
 			UseHtmlWhiteList = true;
 

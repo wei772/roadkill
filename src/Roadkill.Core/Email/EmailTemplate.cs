@@ -48,9 +48,6 @@ namespace Roadkill.Core.Email
 			if (configurationStore == null)
 				throw new ArgumentNullException(nameof(configurationStore));
 
-			if (emailClient == null)
-				throw new ArgumentNullException(nameof(emailClient));
-
 			Configuration = configurationStore.Load();
 
 			EmailClient = emailClient;

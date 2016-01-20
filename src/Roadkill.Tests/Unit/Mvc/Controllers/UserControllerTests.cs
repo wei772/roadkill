@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.Mvc;
 using MvcContrib.TestHelper;
 using NUnit.Framework;
+using Rhino.Mocks;
 using Roadkill.Core;
 using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Database;
@@ -30,7 +31,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 
 		private UserServiceMock _userService;
 		private IUserContext _userContext;
-		private UserController _userController;
+		private UserControllerInvoker _userController;
 		private MvcMockContainer _mvcMockContainer;
 		private EmailClientMock _emailClientMock;
 
@@ -52,23 +53,24 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 			_userService.Users[0].Firstname = "Firstname";
 			_userService.Users[0].Lastname = "LastnameNotSurname";
 
-			_userController = new UserController(_configurationStore, _userService, _userContext, null, null);
+			_userController = new UserControllerInvoker(_configurationStore, _userService, _userContext, null, null);
 			_mvcMockContainer = _userController.SetFakeControllerContext();
 		}
 
 		[Test]
-		public void activate_should_redirect_when_windows_authentication_is_enabled()
+		public void should_redirect_when_windows_authentication_is_enabled()
 		{
 			// Arrange
 			_configuration.SecuritySettings.UseWindowsAuthentication = true;
+			ActionExecutingContext filterContext = new ActionExecutingContext();
 
-			// Act	
-			ActionResult result = _userController.Activate(UserServiceMock.ACTIVATIONKEY);
+			// Act
+			_userController.CallOnActionExecuting(filterContext);
 
 			// Assert
-			RedirectToRouteResult redirectResult = result.AssertResultIs<RedirectToRouteResult>();
-			redirectResult.AssertActionRouteIs("Index");
-			redirectResult.AssertControllerRouteIs("Home");
+			RedirectResult redirectResult = filterContext.Result.AssertResultIs<RedirectResult>();
+			Assert.That(redirectResult.Url, Is.EqualTo("/"));
+			Assert.That(redirectResult.Permanent, Is.False);
 		}
 
 		[Test]
@@ -164,40 +166,9 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		}
 
 		[Test]
-		public void login_get_should_redirect_when_windows_authentication_is_enabled()
-		{
-			// Arrange
-			_configuration.SecuritySettings.UseWindowsAuthentication = true;
-
-			// Act	
-			ActionResult result = _userController.Login();
-
-			// Assert
-			RedirectToRouteResult redirectResult = result.AssertResultIs<RedirectToRouteResult>();
-			redirectResult.AssertActionRouteIs("Index");
-			redirectResult.AssertControllerRouteIs("Home");
-		}
-
-		[Test]
-		public void login_post_should_redirect_when_windows_authentication_is_enabled()
-		{
-			// Arrange
-			_configuration.SecuritySettings.UseWindowsAuthentication = true;
-
-			// Act	
-			ActionResult result = _userController.Login(AdminEmail, AdminPassword, "");
-
-			// Assert
-			RedirectToRouteResult redirectResult = result.AssertResultIs<RedirectToRouteResult>();
-			redirectResult.AssertActionRouteIs("Index");
-			redirectResult.AssertControllerRouteIs("Home");
-		}
-
-		[Test]
 		public void login_post_should_redirect_when_authentication_is_successful()
 		{
 			// Arrange
-			_configuration.SecuritySettings.UseWindowsAuthentication = false;
 
 			// Act	
 			ActionResult result = _userController.Login(AdminEmail, AdminPassword, "");
@@ -213,7 +184,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 			// Arrange
 			_configuration.SecuritySettings.UseWindowsAuthentication = false;
 
-			// Act	
+			// Act
 			ActionResult result = _userController.Login(AdminEmail, AdminPassword, "http://www.google.com");
 
 			// Assert
@@ -434,36 +405,6 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		}
 
 		[Test]
-		public void resetpassword_get_with_windows_auth_enabled_should_return_redirectresult()
-		{
-			// Arrange
-			_configuration.SecuritySettings.AllowUserSignup = true;
-
-			// Act	
-			ActionResult result = _userController.ResetPassword();
-
-			// Assert
-			RedirectToRouteResult redirectResult = result.AssertResultIs<RedirectToRouteResult>();
-			redirectResult.AssertActionRouteIs("Index");
-			redirectResult.AssertControllerRouteIs("Home");
-		}
-
-		[Test]
-		public void resetpassword_post_with_windows_auth_enabled_should_return_redirectresult()
-		{
-			// Arrange
-			_configuration.SecuritySettings.AllowUserSignup = true;
-
-			// Act	
-			ActionResult result = _userController.ResetPassword("someemail");
-
-			// Assert
-			RedirectToRouteResult redirectResult = result.AssertResultIs<RedirectToRouteResult>();
-			redirectResult.AssertActionRouteIs("Index");
-			redirectResult.AssertControllerRouteIs("Home");
-		}
-
-		[Test]
 		public void resetpassword_post_should_not_send_email_with_invalid_modelstate()
 		{
 			// Arrange
@@ -560,37 +501,6 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 			// Assert
 			ViewResult viewResult = result.AssertResultIs<ViewResult>();
 			Assert.That(viewResult.ViewName, Is.EqualTo("CompleteResetPasswordInvalid"));
-		}
-
-		[Test]
-		public void completeresetpassword_get_with_windowsauth_enabled_should_redirect()
-		{
-			// Arrange
-			_configuration.SecuritySettings.UseWindowsAuthentication = true;
-
-			// Act	
-			ActionResult result = _userController.CompleteResetPassword("resetkey");
-
-			// Assert
-			RedirectToRouteResult redirectResult = result.AssertResultIs<RedirectToRouteResult>();
-			redirectResult.AssertActionRouteIs("Index");
-			redirectResult.AssertControllerRouteIs("Home");
-		}
-
-		[Test]
-		public void completeresetpassword_post_with_windows_auth_enabled_should_return_redirectresult()
-		{
-			// Arrange
-			UserViewModel model = new UserViewModel();
-			_configuration.SecuritySettings.UseWindowsAuthentication = true;
-
-			// Act	
-			ActionResult result = _userController.CompleteResetPassword("key", model);
-
-			// Assert
-			RedirectToRouteResult redirectResult = result.AssertResultIs<RedirectToRouteResult>();
-			redirectResult.AssertActionRouteIs("Index");
-			redirectResult.AssertControllerRouteIs("Home");
 		}
 
 		[Test]
@@ -888,22 +798,6 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 			// Arrange
 			UserViewModel model = new UserViewModel();
 			_configuration.SecuritySettings.AllowUserSignup = false;
-
-			// Act	
-			ActionResult result = _userController.Signup();
-
-			// Assert
-			RedirectToRouteResult redirectResult = result.AssertResultIs<RedirectToRouteResult>();
-			redirectResult.AssertActionRouteIs("Index");
-			redirectResult.AssertControllerRouteIs("Home");
-		}
-
-		[Test]
-		public void signup_get_should_redirect_when_windows_auth_is_enabled()
-		{
-			// Arrange
-			UserViewModel model = new UserViewModel();
-			_configuration.SecuritySettings.UseWindowsAuthentication = true;
 
 			// Act	
 			ActionResult result = _userController.Signup();

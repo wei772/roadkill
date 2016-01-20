@@ -241,10 +241,10 @@ namespace Roadkill.Tests.Unit.Email
 			_configuration.SiteUrl = "http://www.roadkillwiki.iz.da.biz";
 
 			// Act
-			string text = emailTemplate.ReplaceTokens(userModel, "not used");
+			string text = emailTemplate.ReplaceTokens(userModel, "{SITENAME} {SITEURL}");
 
 			// Assert
-			Assert.That(text, Is.EqualTo(""));
+			Assert.That(text, Is.EqualTo("MySite http://www.roadkillwiki.iz.da.biz"));
 		}
 
 		[Test]

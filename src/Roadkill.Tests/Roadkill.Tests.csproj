@@ -304,6 +304,7 @@
     <Compile Include="Acceptance\Headless\RestApi\SearchControllerTests.cs" />
     <Compile Include="Acceptance\Headless\RestApi\UserControllerTests.cs" />
     <Compile Include="Acceptance\Headless\RestApi\WebApiTestBase.cs" />
+    <Compile Include="Integration\Configuration\JsonConfigurationTests.cs" />
     <Compile Include="Integration\Repository\LightSpeed\LightSpeedPageRepositoryTests.cs" />
     <Compile Include="Integration\Repository\LightSpeed\LightSpeedInstallerRepositoryTests.cs" />
     <Compile Include="Integration\Repository\MongoDb\MongoDbInstallerRepositoryTests.cs" />
@@ -342,6 +343,9 @@
     <Compile Include="Unit\Mvc\Attributes\EditorRequiredAttributeTests.cs" />
     <Compile Include="Unit\Mvc\Attributes\AdminRequiredAttributeTests.cs" />
     <Compile Include="Unit\Mvc\Controllers\ConfigurationTesterControllerTests.cs" />
+    <Compile Include="Unit\Mvc\Controllers\ActionExecuting\ControllerBaseInvoker.cs" />
+    <Compile Include="Unit\Mvc\Controllers\ActionExecuting\InstallControllerInvoker.cs" />
+    <Compile Include="Unit\Mvc\Controllers\ActionExecuting\UserControllerInvoker.cs" />
     <Compile Include="Unit\Mvc\ViewModels\TestResultTests.cs" />
     <Compile Include="Unit\Mvc\WebApi\SearchControllerTests.cs" />
     <Compile Include="Unit\Mvc\WebApi\PageControllerTests.cs" />

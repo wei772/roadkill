@@ -26,7 +26,6 @@ using StructureMap.Graph.Scanning;
 using StructureMap.Pipeline;
 using StructureMap.TypeRules;
 using StructureMap.Web;
-using WebGrease.Css.Extensions;
 using UserController = Roadkill.Core.Mvc.Controllers.UserController;
 
 namespace Roadkill.Core.DependencyResolution.StructureMap
@@ -281,13 +280,13 @@ namespace Roadkill.Core.DependencyResolution.StructureMap
 		{
 			public void ScanTypes(TypeSet types, Registry registry)
 			{
-				types.FindTypes(TypeClassification.Concretes | TypeClassification.Closed).ForEach(type =>
+				foreach (Type type in types.FindTypes(TypeClassification.Concretes | TypeClassification.Closed))
 				{
 					if (type.CanBeCastTo<T>())
 					{
 						registry.For(typeof(T)).LifecycleIs(new UniquePerRequestLifecycle()).Add(type);
 					}
-				});
+				}
 			}
 		}
 	}

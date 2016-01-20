@@ -14,7 +14,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using Roadkill.Core.AmazingConfig;
-using WebGrease.Css.Extensions;
 
 namespace Roadkill.Core.Services
 {
@@ -60,7 +59,11 @@ namespace Roadkill.Core.Services
 
 				if (files.Count == 0 && directories.Count == 0)
 				{
-					azureDirectory.ListBlobs().OfType<CloudBlockBlob>().ForEach(b => b.Delete());
+					IEnumerable<CloudBlockBlob> blobs = azureDirectory.ListBlobs().OfType<CloudBlockBlob>();
+					foreach (CloudBlockBlob cloudBlockBlob in blobs)
+					{
+						cloudBlockBlob.Delete();
+					}
 				}
 				else
 				{

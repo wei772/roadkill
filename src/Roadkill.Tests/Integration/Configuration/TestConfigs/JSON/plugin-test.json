@@ -1,7 +1,22 @@
 {
-	"Id": "MyPlugin",
-	"IsEnabled" :  true,
-	"Settings": {
-		"Hello": "World"
-	}
+	"TextPluginSettings": [
+		{
+			"Id": "MyPlugin1",
+			"TypeName": "Roadkill.Plugins.Text.MyPlugin1, Roadkill.Plugins",
+			"IsEnabled": true,
+			"Settings": [
+				{
+					"Name": "Hello",
+					"Value": "World",
+					"FormType": "Password"
+				}
+			]
+		},
+		{
+			"Id": "MyPlugin2",
+			"TypeName": "Roadkill.Plugins.Text.MyPlugin2, Roadkill.Plugins",
+			"IsEnabled": false,
+			"Settings": [ ]
+		}
+	]
 }

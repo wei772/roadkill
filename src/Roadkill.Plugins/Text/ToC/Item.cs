@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Roadkill.Plugins.Text.BuiltIn.ToC
+namespace Roadkill.Plugins.Text.ToC
 {
 	/// <summary>
 	/// Represents a H tags and its child headers.

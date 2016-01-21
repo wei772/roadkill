@@ -2,7 +2,7 @@
 using System.Web;
 using Roadkill.Core.Plugins;
 
-namespace Roadkill.Plugins.Text.BuiltIn
+namespace Roadkill.Plugins.Text
 {
 	public class SyntaxHighlighter : TextPlugin
 	{

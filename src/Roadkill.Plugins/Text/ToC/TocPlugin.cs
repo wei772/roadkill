@@ -1,6 +1,6 @@
 ﻿using Roadkill.Core.Plugins;
 
-namespace Roadkill.Plugins.Text.BuiltIn.ToC
+namespace Roadkill.Plugins.Text.ToC
 {
 	public class TocPlugin : TextPlugin
 	{

@@ -367,6 +367,12 @@
     <Content Include="Assets\CSS\_jquery.fileupload.scss" />
     <Content Include="Assets\CSS\_tagmanager.scss" />
     <Content Include="Assets\CSS\_toastr.scss" />
+    <Content Include="App_Data\test.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="App_Data\plugins.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Assets\Scripts\roadkill\typescript-ref\constants.ts" />
     <None Include="Assets\Scripts\roadkill\typescript-ref\references.ts" />
     <Content Include="Assets\Scripts\shared\head.js" />
@@ -505,11 +511,7 @@
     </Content>
     <Content Include="Plugins\Toc\toc.js" />
     <Content Include="Plugins\Toc\toc.css" />
-    <Content Include="Roadkill.config">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="Assets\web.config" />
-    <Content Include="connectionStrings.config" />
     <Content Include="App_Data\NLog.config" />
     <Content Include="package.json" />
     <None Include="packages.config" />

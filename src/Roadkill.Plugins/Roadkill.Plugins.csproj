@@ -81,17 +81,17 @@
     <Compile Include="TestUserService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpecialPages\BuiltIn\RandomPage.cs" />
-    <Compile Include="Text\BuiltIn\ClickableImages.cs" />
-    <Compile Include="Text\BuiltIn\ExternalLinksInNewWindow.cs" />
-    <Compile Include="Text\BuiltIn\Jumbotron.cs" />
-    <Compile Include="Text\BuiltIn\MathJax.cs" />
-    <Compile Include="Text\BuiltIn\ResizeImages.cs" />
-    <Compile Include="Text\BuiltIn\SyntaxHighlighter.cs" />
-    <Compile Include="Text\BuiltIn\ToC\Item.cs" />
-    <Compile Include="Text\BuiltIn\ToC\StringTemplate.cs" />
-    <Compile Include="Text\BuiltIn\ToC\TocParser.cs" />
-    <Compile Include="Text\BuiltIn\ToC\TocPlugin.cs" />
-    <Compile Include="Text\BuiltIn\ToC\Tree.cs" />
+    <Compile Include="Text\ClickableImages.cs" />
+    <Compile Include="Text\ExternalLinksInNewWindow.cs" />
+    <Compile Include="Text\Jumbotron.cs" />
+    <Compile Include="Text\MathJax.cs" />
+    <Compile Include="Text\ResizeImages.cs" />
+    <Compile Include="Text\SyntaxHighlighter.cs" />
+    <Compile Include="Text\ToC\Item.cs" />
+    <Compile Include="Text\ToC\StringTemplate.cs" />
+    <Compile Include="Text\ToC\TocParser.cs" />
+    <Compile Include="Text\ToC\TocPlugin.cs" />
+    <Compile Include="Text\ToC\Tree.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Roadkill.Core\Roadkill.Core.csproj">

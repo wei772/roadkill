@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 using HtmlAgilityPack;
 
-namespace Roadkill.Plugins.Text.BuiltIn.ToC
+namespace Roadkill.Plugins.Text.ToC
 {
 	/// <summary>
 	/// Parses a HTML document for Hx (e.g. H1,H2) elements and produces a table of contents.

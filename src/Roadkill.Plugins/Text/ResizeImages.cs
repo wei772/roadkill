@@ -1,6 +1,6 @@
 ﻿using Roadkill.Core.Plugins;
 
-namespace Roadkill.Plugins.Text.BuiltIn
+namespace Roadkill.Plugins.Text
 {
 	/// <summary>
 	/// Sets images (via CSS) so they are no bigger than the page.

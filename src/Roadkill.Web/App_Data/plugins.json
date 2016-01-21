@@ -1,0 +1,16 @@
+{
+  "TextPluginSettings": [
+	{
+		"Id": "ExternalLinksInNewWindow",
+		"TypeName": "Roadkill.Plugins.Text.ExternalLinksInNewWindow, Roadkill.Plugins",
+		"IsEnabled": true,
+		"Settings": [ ]
+	},
+	{
+		"Id": "Toc",
+		"TypeName": "Roadkill.Plugins.Text.ExternalLinksInNewWindow, Roadkill.Plugins",
+		"IsEnabled": true,
+		"Settings": [ ]
+	}
+  ]
+}

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Roadkill.Plugins.Text.BuiltIn.ToC
+namespace Roadkill.Plugins.Text.ToC
 {
 	public class StringTemplate
 	{

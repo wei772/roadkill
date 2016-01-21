@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using Roadkill.Plugins.Text.BuiltIn.ToC;
+using Roadkill.Plugins.Text.ToC;
 
 namespace Roadkill.Tests.Unit.Plugins
 {

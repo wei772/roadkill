@@ -2,7 +2,7 @@
 using Roadkill.Core.Converters;
 using Roadkill.Core.Plugins;
 
-namespace Roadkill.Plugins.Text.BuiltIn
+namespace Roadkill.Plugins.Text
 {
 	public class Jumbotron : TextPlugin
 	{

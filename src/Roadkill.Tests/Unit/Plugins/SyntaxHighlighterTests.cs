@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using Roadkill.Plugins.Text.BuiltIn;
+using Roadkill.Plugins.Text;
 
 namespace Roadkill.Tests.Unit.Plugins
 {

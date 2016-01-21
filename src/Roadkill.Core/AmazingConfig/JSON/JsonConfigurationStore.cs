@@ -72,7 +72,7 @@ namespace Roadkill.Core.AmazingConfig
 
 		public void Save(IConfiguration configuration)
 		{
-			string json = JsonConvert.SerializeObject(configuration);
+			string json = JsonConvert.SerializeObject(configuration, Formatting.Indented);
 			File.WriteAllText(_configPath, json);
 
 			_cachedConfiguration = null;
@@ -80,7 +80,7 @@ namespace Roadkill.Core.AmazingConfig
 
 		public void SavePluginConfiguration(IPluginConfiguration configuration)
 		{
-			string json = JsonConvert.SerializeObject(configuration);
+			string json = JsonConvert.SerializeObject(configuration, Formatting.Indented);
 			File.WriteAllText(_pluginConfigPath, json);
 
 			_cachedPluginConfiguration = null;

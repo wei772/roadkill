@@ -102,6 +102,32 @@ namespace Roadkill.Tests.Integration.Configuration
 		}
 
 		[Test]
+		public void LoadPluginConfiguration_should_return_expected_values_from_file()
+		{
+			// Arrange
+			JsonConfigurationStore store = GetConfigurationStore("", "plugin-test.json");
+
+			// Act
+			IPluginConfiguration configuration = store.LoadPluginConfiguration();
+
+			// Assert
+			Assert.That(configuration.TextPluginSettings.Count, Is.EqualTo(2));
+
+			var item1 = configuration.TextPluginSettings.FirstOrDefault(x => x.Id == "MyPlugin1");
+			Assert.That(item1, Is.Not.Null);
+			Assert.That(item1.IsEnabled, Is.True);
+			Assert.That(item1.Settings.Count, Is.EqualTo(1));
+			Assert.That(item1.Settings[0].Name, Is.EqualTo("Hello"));
+			Assert.That(item1.Settings[0].Value, Is.EqualTo("World"));
+			Assert.That(item1.Settings[0].FormType, Is.EqualTo(SettingFormType.Password));
+
+			var item2 = configuration.TextPluginSettings.FirstOrDefault(x => x.Id == "MyPlugin2");
+			Assert.That(item2, Is.Not.Null);
+			Assert.That(item2.IsEnabled, Is.False);
+			Assert.That(item2.Settings.Count, Is.EqualTo(0));
+		}
+
+		[Test]
 		public void LoadPluginConfiguration_should_return_cached_version()
 		{
 			// Arrange
@@ -175,8 +201,8 @@ namespace Roadkill.Tests.Integration.Configuration
 			var actualPluginSettings2 = actualConfiguration.TextPluginSettings.FirstOrDefault(x => x.Id == "plugin2");
 			Assert.That(actualPluginSettings2, Is.Not.Null);
 			Assert.That(actualPluginSettings2.IsEnabled, Is.False);
-			Assert.That(actualPluginSettings2.Settings[0].Name, Is.EqualTo("World"));
-			Assert.That(actualPluginSettings2.Settings[0].Value, Is.EqualTo("Hello"));
+			Assert.That(actualPluginSettings2.Settings[0].Name, Is.EqualTo("Hello"));
+			Assert.That(actualPluginSettings2.Settings[0].Value, Is.EqualTo("World"));
 			Assert.That(actualPluginSettings2.Settings[0].FormType, Is.EqualTo(SettingFormType.Password));
 		}
 	}

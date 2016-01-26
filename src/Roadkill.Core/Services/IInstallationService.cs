@@ -7,6 +7,8 @@ namespace Roadkill.Core.Services
 	public interface IInstallationService
 	{
 		IEnumerable<RepositoryInfo> GetSupportedDatabases();
-		void Install(SettingsViewModel model);
+		void Install(ConfigurationViewModel model);
+		void SetUninstalled();
+		void ReloadAppDomain();
 	}
 }

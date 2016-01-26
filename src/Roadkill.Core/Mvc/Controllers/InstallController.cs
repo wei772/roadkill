@@ -30,17 +30,14 @@ namespace Roadkill.Core.Mvc.Controllers
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="applicationSettings">Use solely to detect whether Roadkill is already installed.</param>
-		public InstallController(IConfigurationStore configurationStore, IWebConfigManager webConfigManager, IInstallationService installationService)
+		public InstallController(IInstallationService installationService, IConfigurationStore configurationStore, UserServiceBase userService, IUserContext context, IWebConfigManager webConfigManager)
 		{
-			_webConfigManager = webConfigManager;
 			_installationService = installationService;
+			_webConfigManager = webConfigManager;
 
 			ConfigurationStore = configurationStore;
-
-			// These aren't needed for the installer
-			Context = null;
-			UserService = null;
+			UserService = userService;
+			Context = context;
 		}
 
 		protected override void OnActionExecuting(ActionExecutingContext filterContext)
@@ -56,23 +53,22 @@ namespace Roadkill.Core.Mvc.Controllers
 		/// </summary>
 		public ActionResult Unattended(string databaseName, string connectionString)
 		{
-			SettingsViewModel settingsModel = new SettingsViewModel();
-			settingsModel.DatabaseProvider = databaseName;
-			settingsModel.ConnectionString = connectionString;
-			settingsModel.AllowedFileTypes = "jpg,png,gif,zip,xml,pdf";
-			settingsModel.AttachmentsFolder = "~/App_Data/Attachments";
-			settingsModel.MarkupType = "Creole";
-			settingsModel.Theme = "Responsive";
-			settingsModel.UseObjectCache = true;
-			settingsModel.UseBrowserCache = true;
-			settingsModel.AdminEmail = "admin@localhost";
-			settingsModel.AdminPassword = "Password1";
-			settingsModel.AdminRoleName = "admins";
-			settingsModel.EditorRoleName = "editors";
-			settingsModel.SiteName = "my site";
-			settingsModel.SiteUrl = "http://localhost";
-
-			FinalizeInstall(settingsModel);
+			var model = new ConfigurationViewModel();
+			model.DatabaseProvider = databaseName;
+			model.ConnectionString = connectionString;
+			model.AllowedFileTypes = "jpg,png,gif,zip,xml,pdf";
+			model.AttachmentsFolder = "~/App_Data/Attachments";
+			model.MarkupType = "Creole";
+			model.Theme = "Responsive";
+			model.UseObjectCache = true;
+			model.UseBrowserCache = true;
+			model.AdminEmail = "admin@localhost";
+			model.AdminPassword = "Password1";
+			model.AdminRoleName = "admins";
+			model.EditorRoleName = "editors";
+			model.SiteName = "my site";
+			model.SiteUrl = "http://localhost";
+			_installationService.Install(model);
 
 			return Content("Unattended installation complete");
 		}
@@ -93,6 +89,17 @@ namespace Roadkill.Core.Mvc.Controllers
 			Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
 
 			return View("Index", LanguageViewModel.SupportedLocales());
+		}
+
+		/// <summary>
+		/// Resets the app pool and the installed state (for debugging /help + support).
+		/// </summary>
+		public ActionResult Reset()
+		{
+			_installationService.SetUninstalled();
+			_installationService.ReloadAppDomain();
+
+			return RedirectToAction("Index");
 		}
 
 		/// <summary>
@@ -118,9 +125,8 @@ namespace Roadkill.Core.Mvc.Controllers
 				_webConfigManager.UpdateLanguage(language);
 			}
 
-			var settingsModel = new SettingsViewModel();
-			var installationService = new InstallationService();
-			IEnumerable<RepositoryInfo> supportedDatabases = installationService.GetSupportedDatabases();
+			var settingsModel = new ConfigurationViewModel();
+			IEnumerable<RepositoryInfo> supportedDatabases = _installationService.GetSupportedDatabases();
 
 			settingsModel.SetSupportedDatabases(supportedDatabases);
 
@@ -130,9 +136,9 @@ namespace Roadkill.Core.Mvc.Controllers
 		/// <summary>
 		/// Displays the authentication choice step in the installation wizard.
 		/// </summary>
-		/// <remarks>The <see cref="SettingsViewModel"/> object that is POST'd is passed to the next step.</remarks>
+		/// <remarks>The <see cref="ConfigurationViewModel"/> object that is POST'd is passed to the next step.</remarks>
 		[HttpPost]
-		public ActionResult Step3(SettingsViewModel model)
+		public ActionResult Step3(ConfigurationViewModel model)
 		{
 			return View(model);
 		}
@@ -141,9 +147,9 @@ namespace Roadkill.Core.Mvc.Controllers
 		/// Displays either the Windows Authentication settings view, or the DB settings view depending on
 		/// the choice in Step3.
 		/// </summary>
-		/// <remarks>The <see cref="SettingsViewModel"/> object that is POST'd is passed to the next step.</remarks>
+		/// <remarks>The <see cref="ConfigurationViewModel"/> object that is POST'd is passed to the next step.</remarks>
 		[HttpPost]
-		public ActionResult Step3b(SettingsViewModel model)
+		public ActionResult Step3b(ConfigurationViewModel model)
 		{
 			model.LdapConnectionString = "LDAP://";
 			model.EditorRoleName = "Editor";
@@ -158,9 +164,9 @@ namespace Roadkill.Core.Mvc.Controllers
 		/// <summary>
 		/// Displays the final installation step, which provides choices for caching, themes etc.
 		/// </summary>
-		/// <remarks>The <see cref="SettingsViewModel"/> object that is POST'd is passed to the next step.</remarks>
+		/// <remarks>The <see cref="ConfigurationViewModel"/> object that is POST'd is passed to the next step.</remarks>
 		[HttpPost]
-		public ActionResult Step4(SettingsViewModel model)
+		public ActionResult Step4(ConfigurationViewModel model)
 		{
 			model.AllowedFileTypes = "jpg,png,gif,zip,xml,pdf";
 			model.AttachmentsFolder = "~/App_Data/Attachments";
@@ -173,56 +179,39 @@ namespace Roadkill.Core.Mvc.Controllers
 		}
 
 		/// <summary>
-		/// Validates the POST'd <see cref="SettingsViewModel"/> object. If the settings are valid,
+		/// Validates the POST'd <see cref="ConfigurationViewModel"/> object. If the settings are valid,
 		/// an attempt is made to install using this.
 		/// </summary>
 		/// <returns>The Step5 view is displayed.</returns>
 		[HttpPost]
 		[ValidateInput(false)]
-		public ActionResult Step5(SettingsViewModel model)
+		public ActionResult Step5(ConfigurationViewModel model)
 		{
 			try
 			{
 				// Any missing values are handled by data annotations. Those that are missed
 				// can be seen as fiddling errors which are down to the user.
-
 				if (ModelState.IsValid)
 				{
-					FinalizeInstall(model);
+					_installationService.Install(model);
 				}
 			}
 			catch (Exception e)
 			{
 				try
 				{
-					// TODO
-					throw e;
-					//_webConfigManager.ResetInstalledState();
+					_installationService.SetUninstalled();
 				}
 				catch (Exception ex)
 				{
 					// TODO-translation
-					ModelState.AddModelError("An error occurred installing", ex.Message + e);
+					ModelState.AddModelError("An error occurred rolling back the installation", ex.Message + e);
 				}
 
 				ModelState.AddModelError("An error occurred installing", e.Message + e);
 			}
 
 			return View(model);
-		}
-
-		internal void FinalizeInstall(SettingsViewModel model)
-		{
-			// Default these two properties for installations
-			model.IgnoreSearchIndexErrors = true;
-			model.IsPublicSite = true;
-
-			// TODO:
-			// Update the web.config first, so all connections can be referenced.
-			//_webConfigReaderWriter.Save(model);
-
-			// Install the database
-			_installationService.Install(model);
 		}
 	}
 }

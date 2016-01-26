@@ -367,7 +367,7 @@
     <Content Include="Assets\CSS\_jquery.fileupload.scss" />
     <Content Include="Assets\CSS\_tagmanager.scss" />
     <Content Include="Assets\CSS\_toastr.scss" />
-    <Content Include="App_Data\test.json">
+    <Content Include="App_Data\configuration.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="App_Data\plugins.json">

@@ -302,12 +302,12 @@ namespace Roadkill.Tests.Unit.DependencyResolution
 
 			// Act
 			UserViewModel userModel = container.GetInstance<UserViewModel>();
-			SettingsViewModel settingsModel = container.GetInstance<SettingsViewModel>();
+			ConfigurationViewModel configurationModel = container.GetInstance<ConfigurationViewModel>();
 			AttachmentRouteHandler routerHandler = container.GetInstance<AttachmentRouteHandler>();
 
 			// Assert
 			Assert.That(userModel, Is.TypeOf<UserViewModel>());
-			Assert.That(settingsModel, Is.TypeOf<SettingsViewModel>());
+			Assert.That(configurationModel, Is.TypeOf<ConfigurationViewModel>());
 			Assert.That(routerHandler, Is.TypeOf<AttachmentRouteHandler>());
 		}
 

@@ -1,0 +1,36 @@
+{
+  "Installed": true,
+  "ConnectionString": "Server=(local);Integrated Security=true;Connect Timeout=5;database=Roadkill",
+  "SecuritySettings": {
+    "ApiKeys": null,
+    "AdminRoleName": "Admin",
+    "EditorRoleName": "Editor",
+    "UseWindowsAuthentication": false,
+    "AllowUserSignup": false,
+    "IsRecaptchaEnabled": false,
+    "Settings": {}
+  },
+  "AttachmentSettings": {
+    "AttachmentsFolder": "~/App_Data/Attachments",
+    "AttachmentsRoutePath": "Attachments",
+    "AzureConnectionString": null,
+    "AzureContainer": null,
+    "AllowedFileTypes": "jpg,png,gif,zip,xml,pdf",
+    "OverwriteExistingFiles": false,
+    "Settings": {}
+  },
+  "Settings": {},
+  "IgnoreSearchIndexErrors": true,
+  "DatabaseProvider": "SqlServer2008",
+  "IsPublicSite": true,
+  "UseHtmlWhiteList": true,
+  "UseObjectCache": true,
+  "UseBrowserCache": true,
+  "MarkupType": "Markdown",
+  "SiteUrl": "http://localhost:9876",
+  "SiteName": "rwar",
+  "Theme": "Responsive",
+  "HeadContent": "",
+  "MenuMarkup": "* %mainpage%\r\n* %categories%\r\n* %allpages%\r\n* %newpage%\r\n* %managefiles%\r\n* %sitesettings%\r\n\r\n",
+  "PluginLastSaveDate": "2016-01-25T23:47:11.0119072Z"
+}

@@ -96,7 +96,7 @@ namespace Roadkill.Core.DependencyResolution.StructureMap
 
 			// MVC Related
 			scanner.AddAllTypesOf<UserViewModel>();
-			scanner.AddAllTypesOf<SettingsViewModel>();
+			scanner.AddAllTypesOf<ConfigurationViewModel>();
 			scanner.AddAllTypesOf<AttachmentRouteHandler>();
 			scanner.AddAllTypesOf<ISetterInjected>();
 			scanner.AddAllTypesOf<IAuthorizationAttribute>();

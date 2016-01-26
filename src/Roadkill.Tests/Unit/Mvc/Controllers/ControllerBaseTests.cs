@@ -15,14 +15,12 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		private MocksAndStubsContainer _container;
 		private IConfigurationStore _configurationStore;
 		private IConfiguration _configuration;
+		private WebConfigManagerStub _webconfigManager;
 
 		private IUserContext _context;
 		private UserServiceMock _userService;
 
-		private WebConfigManagerStub _webConfigManager;
-
 		private ControllerBaseInvoker _controller;
-		private DatabaseTesterMock _databaseTester;
 		private InstallationService _installationService;
 
 		[SetUp]
@@ -31,6 +29,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 			_container = new MocksAndStubsContainer();
 			_configurationStore = _container.ConfigurationStoreMock;
 			_configuration = _container.Configuration;
+			_webconfigManager = _container.WebConfigManager;
 
 			_context = _container.UserContext;
 			_userService = _container.UserService;
@@ -39,8 +38,6 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 			_controller.SetFakeControllerContext("~/");
 
 			// InstallController
-			_webConfigManager = new WebConfigManagerStub();
-			_databaseTester = _container.DatabaseTester;
 			_installationService = _container.InstallationService;
 		}
 
@@ -66,7 +63,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		{
 			// Arrange
 			_configuration.Installed = false;
-			InstallControllerInvoker installController = new InstallControllerInvoker(_configurationStore, _webConfigManager, _installationService, _databaseTester);
+			InstallControllerInvoker installController = new InstallControllerInvoker(_installationService, _configurationStore, _userService, _context, _webconfigManager);
 			ActionExecutingContext filterContext = new ActionExecutingContext();
 			filterContext.Controller = installController;
 

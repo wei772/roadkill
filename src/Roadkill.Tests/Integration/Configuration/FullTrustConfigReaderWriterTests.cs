@@ -175,7 +175,7 @@ namespace Roadkill.Tests.Integration.Configuration
 		//{
 		//	// Arrange
 		//	string configFilePath = GetConfigPath("test-empty.config");
-		//	SettingsViewModel viewModel = new SettingsViewModel()
+		//	ConfigurationViewModel viewModel = new ConfigurationViewModel()
 		//	{
 		//		AdminRoleName = "admin role name",
 		//		AttachmentsFolder = @"c:\AttachmentsFolder",

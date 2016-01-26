@@ -5,6 +5,7 @@ using System.Web.Mvc;
 using Moq;
 using MvcContrib.TestHelper;
 using NUnit.Framework;
+using Roadkill.Core;
 using Roadkill.Core.AmazingConfig;
 using Roadkill.Core.Mvc.Controllers;
 using Roadkill.Core.Mvc.ViewModels;
@@ -17,20 +18,25 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 	[Category("Unit")]
 	public class InstallControllerTests
 	{
-		private ConfigurationStoreMock _configurationStore;
 		private WebConfigManagerStub _webConfigManager;
 		private InstallController _installController;
 		private MocksAndStubsContainer _container;
 		private InstallationService _installationService;
 		private InstallerRepositoryMock _installerRepository;
 		private IConfiguration _configuration;
+		private ConfigurationStoreMock _configurationStore;
+		private UserServiceMock _userService;
+		private IUserContext _userContext;
 
 		[SetUp]
 		public void Setup()
 		{
 			_container = new MocksAndStubsContainer();
-
 			_configurationStore = _container.ConfigurationStoreMock;
+			_userService = _container.UserService;
+			_userContext = _container.UserContext;
+			_webConfigManager = _container.WebConfigManager;
+
 			_configuration = _container.Configuration;
 			_configuration.Installed = false;
 
@@ -38,7 +44,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 			_installationService = _container.InstallationService;
 			_installerRepository = _container.InstallerRepository;
 
-            _installController = new InstallController(_configurationStore, _webConfigManager, _installationService);
+            _installController = new InstallController(_installationService, _configurationStore, _userService, _userContext, _webConfigManager);
 		}
 
 		[Test]
@@ -92,7 +98,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 			ViewResult viewResult = result.AssertResultIs<ViewResult>();
 			viewResult.AssertViewRendered();
 
-			SettingsViewModel model = viewResult.ModelFromActionResult<SettingsViewModel>();
+			ConfigurationViewModel model = viewResult.ModelFromActionResult<ConfigurationViewModel>();
 			Assert.NotNull(model, "Null model");
 		}
 
@@ -114,7 +120,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void step3_should_return_viewresult_with_settingsviewmodel()
 		{
 			// Arrange
-			SettingsViewModel existingModel = new SettingsViewModel();
+			ConfigurationViewModel existingModel = new ConfigurationViewModel();
 			existingModel.ConnectionString = "connectionstring";
 			existingModel.SiteUrl = "siteurl";
 			existingModel.SiteName = "sitename";
@@ -126,7 +132,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 			ViewResult viewResult = result.AssertResultIs<ViewResult>();
 			viewResult.AssertViewRendered();
 
-			SettingsViewModel model = viewResult.ModelFromActionResult<SettingsViewModel>();
+			ConfigurationViewModel model = viewResult.ModelFromActionResult<ConfigurationViewModel>();
 			Assert.NotNull(model, "Null model");
 
 			/* The view is responsible for passing these across, 
@@ -140,7 +146,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void step3b_should_return_database_viewresult_when_windowsauth_is_false()
 		{
 			// Arrange
-			SettingsViewModel existingModel = new SettingsViewModel();
+			ConfigurationViewModel existingModel = new ConfigurationViewModel();
 			existingModel.UseWindowsAuth = false;
 
 			// Act
@@ -155,7 +161,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void step3b_should_return_windowsauth_viewresult_when_windowsauth_is_true()
 		{
 			// Arrange
-			SettingsViewModel existingModel = new SettingsViewModel();
+			ConfigurationViewModel existingModel = new ConfigurationViewModel();
 			existingModel.UseWindowsAuth = true;
 
 			// Act
@@ -170,7 +176,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void step3b_should_set_model_default_roles_and_ldap_connectionstring()
 		{
 			// Arrange
-			SettingsViewModel existingModel = new SettingsViewModel();
+			ConfigurationViewModel existingModel = new ConfigurationViewModel();
 
 			// Act
 			ActionResult result = _installController.Step3b(existingModel);
@@ -179,7 +185,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 			ViewResult viewResult = result.AssertResultIs<ViewResult>();
 			viewResult.AssertViewRendered();
 
-			SettingsViewModel model = viewResult.ModelFromActionResult<SettingsViewModel>();
+			ConfigurationViewModel model = viewResult.ModelFromActionResult<ConfigurationViewModel>();
 			Assert.NotNull(model, "Null model");
 
 			Assert.That(model.AdminRoleName, Is.EqualTo("Admin"));
@@ -191,7 +197,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void step4_should_set_model_defaults_for_attachments_theme_and_cache()
 		{
 			// Arrange
-			SettingsViewModel existingModel = new SettingsViewModel();
+			ConfigurationViewModel existingModel = new ConfigurationViewModel();
 
 			// Act
 			ActionResult result = _installController.Step4(existingModel);
@@ -200,7 +206,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 			ViewResult viewResult = result.AssertResultIs<ViewResult>();
 			viewResult.AssertViewRendered();
 
-			SettingsViewModel model = viewResult.ModelFromActionResult<SettingsViewModel>();
+			ConfigurationViewModel model = viewResult.ModelFromActionResult<ConfigurationViewModel>();
 			Assert.NotNull(model, "Null model");
 
 			Assert.That(model.AllowedFileTypes, Is.EqualTo("jpg,png,gif,zip,xml,pdf"));
@@ -215,7 +221,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void step5_should_finalize_setup()
 		{
 			// Arrange
-			SettingsViewModel existingModel = new SettingsViewModel();
+			ConfigurationViewModel existingModel = new ConfigurationViewModel();
 
 			// Act
 			ActionResult result = _installController.Step5(existingModel);
@@ -224,7 +230,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 			ViewResult viewResult = result.AssertResultIs<ViewResult>();
 			viewResult.AssertViewRendered();
 
-			SettingsViewModel model = viewResult.ModelFromActionResult<SettingsViewModel>();
+			ConfigurationViewModel model = viewResult.ModelFromActionResult<ConfigurationViewModel>();
 			Assert.NotNull(model, "Null model");
 		}
 
@@ -232,7 +238,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void step5_should_reset_install_state_and_add_modelstate_error_when_exception_is_thrown()
 		{
 			// Arrange
-			SettingsViewModel existingModel = null; // test using a null reference exception
+			ConfigurationViewModel existingModel = null; // test using a null reference exception
 
 			// Act
 			_installController.Step5(existingModel);
@@ -240,37 +246,9 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 			// Assert
 			// TODO:
 			//Assert.That(_webConfigManager.InstallStateReset, Is.True);
-
+			Assert.Fail("TODO");
 			string error = _installController.ModelState["An error occurred installing"].Errors[0].ErrorMessage;
 			Assert.That(error, Is.StringStarting("Object reference not set to an instance of an object"), error);
-		}
-
-		[Test]
-		public void finalize_should_set_publicsite_and_ignoresearcherrors_to_true()
-		{
-			// Arrange
-			SettingsViewModel existingModel = new SettingsViewModel();
-
-			// Act
-			_installController.FinalizeInstall(existingModel);
-
-			// Assert
-			Assert.That(existingModel.IgnoreSearchIndexErrors, Is.True);
-			Assert.That(existingModel.IsPublicSite, Is.True);
-		}
-
-		[Test]
-		public void finalize_should_save_config_settings()
-		{
-			// Arrange
-			SettingsViewModel existingModel = new SettingsViewModel();
-			existingModel.Theme = "Responsive"; // don't test everything, that's done elsewhere in the ConfigReaderWriterTests
-
-			// Act
-			_installController.FinalizeInstall(existingModel);
-
-			// Assert
-			Assert.That(_webConfigManager.Saved, Is.True);
 		}
 
 		[Test]
@@ -288,8 +266,10 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 			Assert.That(_installerRepository.AddAdminUserCalled, Is.True);
 			Assert.That(_installerRepository.DatabaseName, Is.EqualTo("mock datastore"));
 			Assert.That(_installerRepository.ConnectionString, Is.EqualTo("fake connection string"));
-			
+
 			// TODO
+			Assert.Fail("TODO");
+
 			//ApplicationSettings appSettings = _webConfigManager.ApplicationSettings; // check settings
 			//Assert.That(appSettings.UseObjectCache, Is.True);
 			//Assert.That(appSettings.UseBrowserCache, Is.True);
@@ -319,16 +299,16 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 		public void finalize_should_install_and_save_site_settings()
 		{
 			// Arrange
-			var model = new SettingsViewModel();
+			var model = new ConfigurationViewModel();
 			model.AdminEmail = "email";
 			model.AdminPassword = "password";
 			model.Theme = "ConcupiscentGoatOnHolidayTheme";
 
 			var installationServiceMock = new Mock<IInstallationService>();
-			_installController = new InstallController(_configurationStore, _webConfigManager, installationServiceMock.Object);
 
 			// Act
-			_installController.FinalizeInstall(model);
+			//_installController.FinalizeInstall(model);
+			Assert.Fail("TODO");
 
 			// Assert
 			Assert.That(model.IgnoreSearchIndexErrors, Is.True);

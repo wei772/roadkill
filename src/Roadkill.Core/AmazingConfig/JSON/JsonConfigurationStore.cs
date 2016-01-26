@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Web;
 using Newtonsoft.Json;
@@ -30,9 +31,13 @@ namespace Roadkill.Core.AmazingConfig
 			if (HttpContext.Current != null)
 				httpContext = new HttpContextWrapper(HttpContext.Current);
 
-			if (_configPath.StartsWith("~") && httpContext != null)
+			string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+
+			if (_configPath.StartsWith("~"))
 			{
-				_configPath = httpContext.Server.MapPath(_configPath);
+				_configPath = _configPath.Replace('/', Path.DirectorySeparatorChar);
+				_configPath = _configPath.Replace("~", baseDirectory);
+				//_configPath = httpContext.Server.MapPath(_configPath);
 			}
 
 			if (_pluginConfigPath.StartsWith("~") && httpContext != null)

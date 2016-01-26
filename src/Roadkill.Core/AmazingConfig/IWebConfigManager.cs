@@ -13,12 +13,9 @@ namespace Roadkill.Core.AmazingConfig
 		/// <exception cref="System.Configuration.ConfigurationException">An exception occurred while updating the UI language in the web.config</exception>
 		void UpdateLanguage(string uiLanguageCode);
 
-		/// <summary>
-		/// Saves the configuration settings. This will save a subset of the <see cref="SettingsViewModel" /> based on
-		/// the values that match those found in the <see cref="RoadkillSection" />
-		/// </summary>
-		/// <param name="settings">The application settings.</param>
-		/// <exception cref="InstallerException">An exception occurred while updating the settings to the web.config</exception>
-		void Save(SettingsViewModel settings);
+		void WriteForFormsAuth();
+		void WriteForWindowsAuth();
+
+		string IsWriteable();
 	}
 }

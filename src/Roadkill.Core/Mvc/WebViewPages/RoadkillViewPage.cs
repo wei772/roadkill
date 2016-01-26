@@ -9,6 +9,14 @@ namespace Roadkill.Core.Mvc.WebViewPages
 	{
 		[SetterProperty]
 		public IConfigurationStore ConfigurationStore { get; set; }
+
+		public IConfiguration Configuration
+		{
+			get
+			{
+				return ConfigurationStore.Load();
+			}
+		}
 		
 		[SetterProperty]
 		public IUserContext RoadkillContext { get; set; }

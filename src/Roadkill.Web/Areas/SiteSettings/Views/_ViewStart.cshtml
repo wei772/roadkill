@@ -1,12 +1,11 @@
-﻿@using Roadkill.Core.Configuration;
+﻿@using Roadkill.Core.AmazingConfig;
 @{
 	// A direct copy of ~/Views/_ViewStart.cshtml
-	Roadkill.Core.Mvc.Controllers.ControllerBase controller = this.ViewContext.Controller as Roadkill.Core.Mvc.Controllers.ControllerBase;
-	ApplicationSettings applicationSettings = controller.Configuration;
+	var controller = this.ViewContext.Controller as IRoadkillController;
+	IConfiguration config = controller.ConfigurationStore.Load();
 
-	if (applicationSettings.Installed)
+	if (config.Installed)
 	{
-		SiteSettings siteSettings = controller.SettingsService.GetSiteSettings();
-		Layout = siteSettings.ThemePath + "/Theme.cshtml";
+		Layout = config.ThemePath + "/Theme.cshtml";
 	}
 }

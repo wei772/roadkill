@@ -58,7 +58,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers.Admin
 
 			// Assert
 			Assert.That(result, Is.Not.Null, "ViewResult");
-			SettingsViewModel model = result.ModelFromActionResult<SettingsViewModel>();
+			ConfigurationViewModel model = result.ModelFromActionResult<ConfigurationViewModel>();
 			Assert.That(model, Is.Not.Null, "model");
 		}
 
@@ -66,7 +66,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers.Admin
 		public void index_post_should_return_viewresult_and_save_settings()
 		{
 			// Arrange
-			SettingsViewModel model = new SettingsViewModel();
+			ConfigurationViewModel model = new ConfigurationViewModel();
 			model.MenuMarkup = "some new markup";
 
 			// Act
@@ -74,7 +74,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers.Admin
 
 			// Assert
 			Assert.That(result, Is.Not.Null, "ViewResult");
-			SettingsViewModel resultModel = result.ModelFromActionResult<SettingsViewModel>();
+			ConfigurationViewModel resultModel = result.ModelFromActionResult<ConfigurationViewModel>();
 			Assert.That(resultModel, Is.Not.Null, "model");
 
 			Assert.That(_configuration.MenuMarkup, Is.EqualTo("some new markup"));
@@ -84,7 +84,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers.Admin
 		public void index_post_should_accept_httppost_only()
 		{
 			// Arrange
-			SettingsViewModel model = new SettingsViewModel();
+			ConfigurationViewModel model = new ConfigurationViewModel();
 
 			// Act
 			ViewResult result = _settingsController.Index(model) as ViewResult;
@@ -101,7 +101,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers.Admin
 			_siteCache.AddAdminMenu("admin menu");
 			_siteCache.AddLoggedInMenu("logged in menu");
 
-			SettingsViewModel model = new SettingsViewModel();
+			ConfigurationViewModel model = new ConfigurationViewModel();
 
 			// Act
 			ViewResult result = _settingsController.Index(model) as ViewResult;

@@ -34,7 +34,7 @@ namespace Roadkill.Tests.Unit.Services
 		public void install_should_create_schema_add_new_admin_user_and_save_settings()
 		{
 			// Arrange
-			var expectedModel = new SettingsViewModel()
+			var expectedModel = new ConfigurationViewModel()
 			{
 				ConnectionString = "connection string",
 				DatabaseProvider = "MongoDb",
@@ -82,7 +82,7 @@ namespace Roadkill.Tests.Unit.Services
 		public void install_should_not_add_adminuser_when_windows_auth_is_true()
 		{
 			// Arrange
-			var model = new SettingsViewModel();
+			var model = new ConfigurationViewModel();
 			model.UseWindowsAuth = true;
 
 			// Act

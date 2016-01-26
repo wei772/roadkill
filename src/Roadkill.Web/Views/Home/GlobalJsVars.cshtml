@@ -1,17 +1,19 @@
 ﻿@using Roadkill.Core.Converters;
-@using Roadkill.Core.Configuration;
-@{Layout=null;}
+@using Roadkill.Core.AmazingConfig;
+@{
+	Layout=null;
+}
 // Generated at: @DateTime.UtcNow.ToString()
 var ROADKILL_CORESCRIPTPATH = "@Url.Content("~/Assets/Scripts/")";
 var ROADKILL_COREASSETPATH = "@Url.Content("~/Assets/")";
-var ROADKILL_THEMEPATH =  "@Url.Content(SiteSettings.ThemePath)/";
+var ROADKILL_THEMEPATH =  "@Url.Content(Configuration.ThemePath)/";
 var ROADKILL_LINK_CONFIRM = "@SiteStrings.Shared_ConfirmLink";
 
 // Edit page constants
 var ROADKILL_TAGAJAXURL = "@Url.Action("AllTagsAsJson", "Pages")/";
 var ROADKILL_PREVIEWURL = "@Url.Action("GetPreview", "Pages")/";
-var ROADKILL_MARKUPTYPE = "@SiteSettings.MarkupType";
-var ROADKILL_WIKIMARKUPHELP = "@Url.Action(SiteSettings.MarkupType + "Reference", "Help")";
+var ROADKILL_MARKUPTYPE = "@Configuration.MarkupType";
+var ROADKILL_WIKIMARKUPHELP = "@Url.Action(Configuration.MarkupType + "Reference", "Help")";
 
 @{
 IMarkupParser parser = MarkupConverter.Parser;
@@ -27,9 +29,9 @@ var ROADKILL_EDIT_IMAGE_ENDTOKEN    = "@Html.Raw(parser.MarkupParserHelp.ImageEn
 var ROADKILL_EDIT_NUMBERLIST_TOKEN  = "@Html.Raw(parser.MarkupParserHelp.NumberedListToken)";
 var ROADKILL_EDIT_BULLETLIST_TOKEN  = "@Html.Raw(parser.MarkupParserHelp.BulletListToken)";
 var ROADKILL_EDIT_HEADING_TOKEN     = "@Html.Raw(parser.MarkupParserHelp.HeadingToken)";
-var ROADKILL_EDIT_LINK_URLPLACEHOLDER  = "@Html.Raw(SiteStrings.EditPage_LinkUrl_PlaceHolder)";
-var ROADKILL_EDIT_LINK_TEXTPLACEHOLDER  = "@Html.Raw(SiteStrings.EditPage_LinkText_PlaceHolder)";
 var ROADKILL_EDIT_IMAGE_TITLE       = "@Html.Raw(SiteStrings.EditPage_Image_Title)";
+var ROADKILL_EDIT_LINK_URLPLACEHOLDER   = "@Html.Raw(SiteStrings.EditPage_LinkUrl_PlaceHolder)";
+var ROADKILL_EDIT_LINK_TEXTPLACEHOLDER  = "@Html.Raw(SiteStrings.EditPage_LinkText_PlaceHolder)";
 
 // File manager configuration/locale strings
 var ROADKILL_FILEMANAGERURL = "@Url.Action("Index", "FileManager")";
@@ -38,7 +40,7 @@ var ROADKILL_FILEMANAGER_COLUMN_DATE = "@Html.Raw(SiteStrings.FileManager_Column
 var ROADKILL_FILEMANAGER_COLUMN_TYPE = "@Html.Raw(SiteStrings.FileManager_Column_Type)";
 var ROADKILL_FILEMANAGER_COLUMN_SIZE = "@Html.Raw(SiteStrings.FileManager_Column_Size)";
 var ROADKILL_FILESELECTURL = "@Url.Action("Select", "FileManager")";
-var ROADKILL_ATTACHMENTSPATH = "@Html.Raw(ApplicationSettings.AttachmentsUrlPath)";
+var ROADKILL_ATTACHMENTSPATH = "@Html.Raw(Configuration.AttachmentSettings.GetAttachmentsUrlPath())";
 var ROADKILL_FILEMANAGER_ADDFOLDER = "@SiteStrings.FileManager_AddFolder";
 var ROADKILL_FILEMANAGER_ADDFOLDER_CANCEL = "@SiteStrings.FileManager_AddFolder_Cancel";
 var ROADKILL_FILEMANAGER_ERROR_DIRECTORYLISTING = "@SiteStrings.FileManager_Error_DirectoryListing";

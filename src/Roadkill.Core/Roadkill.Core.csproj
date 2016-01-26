@@ -532,7 +532,7 @@
     <Compile Include="Exceptions\SecurityException.cs" />
     <Compile Include="Mvc\ViewModels\SearchResultViewModel.cs" />
     <Compile Include="Mvc\ViewModels\DirectoryViewModel.cs" />
-    <Compile Include="Mvc\ViewModels\SettingsViewModel.cs" />
+    <Compile Include="Mvc\ViewModels\ConfigurationViewModel.cs" />
     <Compile Include="Import\ScrewTurnImporter.cs" />
     <Compile Include="Import\IWikiImporter.cs" />
     <Compile Include="Services\SearchService.cs" />

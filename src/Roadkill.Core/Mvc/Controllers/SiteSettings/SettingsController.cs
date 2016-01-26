@@ -26,12 +26,12 @@ namespace Roadkill.Core.Mvc.Controllers
 		/// <summary>
 		/// The default settings page that displays the current Roadkill settings.
 		/// </summary>
-		/// <returns>A <see cref="SettingsViewModel"/> as the model.</returns>
+		/// <returns>A <see cref="ConfigurationViewModel"/> as the model.</returns>
 		public ActionResult Index()
 		{
 			throw new InvalidOperationException("TODO");
 
-			//SettingsViewModel model = new SettingsViewModel(Configuration, siteSettings);
+			//ConfigurationViewModel model = new ConfigurationViewModel(Configuration, siteSettings);
 			//model.SetSupportedDatabases(SettingsService.GetSupportedDatabases());
 			//return View(model);
 
@@ -39,13 +39,13 @@ namespace Roadkill.Core.Mvc.Controllers
 		}
 
 		/// <summary>
-		/// Saves the <see cref="SettingsViewModel"/> that is POST'd to the action.
+		/// Saves the <see cref="ConfigurationViewModel"/> that is POST'd to the action.
 		/// </summary>
 		/// <param name="model">The settings to save to the web.config/database.</param>
-		/// <returns>A <see cref="SettingsViewModel"/> as the model.</returns>
+		/// <returns>A <see cref="ConfigurationViewModel"/> as the model.</returns>
 		[HttpPost]
 		[ValidateInput(false)]
-		public ActionResult Index(SettingsViewModel model)
+		public ActionResult Index(ConfigurationViewModel model)
 		{
 			// TODO:
 			if (ModelState.IsValid)

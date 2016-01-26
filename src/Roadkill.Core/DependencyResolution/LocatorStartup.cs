@@ -72,7 +72,7 @@ namespace Roadkill.Core.DependencyResolution
 
 			// MVC: Models with ModelBinding that require DI
 			ModelBinders.Binders.Add(typeof(UserViewModel), new UserViewModelModelBinder());
-			ModelBinders.Binders.Add(typeof(SettingsViewModel), new SettingsViewModelBinder());
+			ModelBinders.Binders.Add(typeof(ConfigurationViewModel), new SettingsViewModelBinder());
 		}
 
 		public static void End()

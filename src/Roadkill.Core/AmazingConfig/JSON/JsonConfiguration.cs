@@ -45,11 +45,7 @@ namespace Roadkill.Core.AmazingConfig
 		#endregion
 
 		#region Built in Preferences
-		public bool AllowUserSignup { get; set; }
-		public bool IsRecaptchaEnabled { get; set; }
 		public string MarkupType { get; set; }
-		public string RecaptchaPrivateKey { get; set; }
-		public string RecaptchaPublicKey { get; set; }
 		public string SiteUrl { get; set; }
 		public string SiteName { get; set; }
 		public string Theme { get; set; }
@@ -87,14 +83,10 @@ namespace Roadkill.Core.AmazingConfig
 			UseHtmlWhiteList = true;
 
 			// Preferences
-			AllowUserSignup = false;
-			IsRecaptchaEnabled = false;
 			Theme = "Mediawiki";
 			MarkupType = "Markdown";
 			SiteName = "Your site";
-			SiteUrl = "";
-			RecaptchaPrivateKey = "";
-			RecaptchaPublicKey = "";
+			SiteUrl = "http://localhost";
 			HeadContent = "";
 			MenuMarkup = GetDefaultMenuMarkup();
 			PluginLastSaveDate = DateTime.UtcNow;

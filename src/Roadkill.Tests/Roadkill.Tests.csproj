@@ -304,7 +304,7 @@
     <Compile Include="Acceptance\Headless\RestApi\SearchControllerTests.cs" />
     <Compile Include="Acceptance\Headless\RestApi\UserControllerTests.cs" />
     <Compile Include="Acceptance\Headless\RestApi\WebApiTestBase.cs" />
-    <Compile Include="Integration\Configuration\JsonConfigurationTests.cs" />
+    <Compile Include="Unit\Configuration\JsonConfigurationTests.cs" />
     <Compile Include="Integration\Repository\LightSpeed\LightSpeedPageRepositoryTests.cs" />
     <Compile Include="Integration\Repository\LightSpeed\LightSpeedInstallerRepositoryTests.cs" />
     <Compile Include="Integration\Repository\MongoDb\MongoDbInstallerRepositoryTests.cs" />

@@ -110,7 +110,7 @@ namespace Roadkill.Tests.Unit.DependencyResolution
 			LocatorStartup.AfterInitializationInternal(container);
 
 			// Assert
-			Assert.True(ModelBinders.Binders.ContainsKey(typeof(SettingsViewModel)));
+			Assert.True(ModelBinders.Binders.ContainsKey(typeof(ConfigurationViewModel)));
 			Assert.True(ModelBinders.Binders.ContainsKey(typeof(UserViewModel)));
 		}
 	}

@@ -17,13 +17,13 @@ namespace Roadkill.Core.DependencyResolution.MVC
 	}
 
 	/// <summary>
-	/// Used by the MVC framework to create all instances of a <see cref="SettingsViewModel"/> view model object.
+	/// Used by the MVC framework to create all instances of a <see cref="ConfigurationViewModel"/> view model object.
 	/// </summary>
 	internal class SettingsViewModelBinder : DefaultModelBinder
 	{
 		protected override object CreateModel(ControllerContext controllerContext, ModelBindingContext bindingContext, Type modelType)
 		{
-			return LocatorStartup.Locator.GetInstance<SettingsViewModel>();
+			return LocatorStartup.Locator.GetInstance<ConfigurationViewModel>();
 		}
 	}
 }

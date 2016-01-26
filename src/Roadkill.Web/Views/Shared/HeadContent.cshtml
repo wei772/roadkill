@@ -5,7 +5,7 @@
 	@Url.BootstrapCSS()
 	@Url.JsBundle()
 	@Url.BootstrapJS()
-	<link href="@Url.Content(SiteSettings.ThemePath + "/Theme.css")" rel="stylesheet" type="text/css" />
-	<link href="@Url.Content(SiteSettings.ThemePath + "/Theme.print.css")" rel="stylesheet" type="text/css" media="print" />
-	@MvcHtmlString.Create(SiteSettings.HeadContent)
+	<link href="@Url.Content(Configuration.ThemePath + "/Theme.css")" rel="stylesheet" type="text/css" />
+	<link href="@Url.Content(Configuration.ThemePath + "/Theme.print.css")" rel="stylesheet" type="text/css" media="print" />
+	@MvcHtmlString.Create(Configuration.HeadContent)
 	<!-- End Roadkill core header -->

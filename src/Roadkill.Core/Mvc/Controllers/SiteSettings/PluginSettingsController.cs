@@ -97,7 +97,7 @@ namespace Roadkill.Core.Mvc.Controllers
 			//throw new InvalidOperationException("TODO");
 			////Configuration.SiteSettings settings = SettingsService.GetSiteSettings();
 			////settings.PluginLastSaveDate = DateTime.UtcNow;
-			////SettingsViewModel settingsViewModel = new SettingsViewModel(Configuration, settings);
+			////ConfigurationViewModel settingsViewModel = new ConfigurationViewModel(Configuration, settings);
 			////SettingsService.SaveSiteSettings(settingsViewModel);
 
 			//// Save and clear the cached settings

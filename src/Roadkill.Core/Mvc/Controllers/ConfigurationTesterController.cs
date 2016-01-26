@@ -20,15 +20,17 @@ namespace Roadkill.Core.Mvc.Controllers
 		private readonly IActiveDirectoryProvider _activeDirectoryProvider;
 		private readonly UserServiceBase _userService;
 		private readonly IDatabaseTester _databaseTester;
+		private readonly IWebConfigManager _webConfigManager;
 
 		public ConfigurationTesterController(IConfigurationStore configurationStore, IUserContext userContext, 
-			IActiveDirectoryProvider activeDirectoryProvider, UserServiceBase userService, IDatabaseTester databaseTester) 
+			IActiveDirectoryProvider activeDirectoryProvider, UserServiceBase userService, IDatabaseTester databaseTester, IWebConfigManager webConfigManager) 
 		{
 			_configuration = configurationStore.Load();
 			_userContext = userContext;
 			_activeDirectoryProvider = activeDirectoryProvider;
 			_userService = userService;
 			_databaseTester = databaseTester;
+			_webConfigManager = webConfigManager;
 		}
 
 		protected override void OnActionExecuting(ActionExecutingContext filterContext)
@@ -63,6 +65,19 @@ namespace Roadkill.Core.Mvc.Controllers
 				return Content("");
 
 			string errors = AttachmentPathUtil.AttachmentFolderExistsAndWriteable(folder, HttpContext);
+			return Json(new TestResult(errors), JsonRequestBehavior.AllowGet);
+		}
+
+		/// <summary>
+		/// This action is for JSON calls only. Attempts to write to the web.config file and save it.
+		/// </summary>
+		/// <returns>Returns a <see cref="TestResult"/> containing information about any errors.</returns>
+		public ActionResult TestWebConfig()
+		{
+			if (IsInstalledAndUserIsNotAdmin())
+				return Content("");
+
+			string errors = _webConfigManager.IsWriteable();
 			return Json(new TestResult(errors), JsonRequestBehavior.AllowGet);
 		}
 

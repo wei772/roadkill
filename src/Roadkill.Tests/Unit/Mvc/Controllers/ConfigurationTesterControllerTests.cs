@@ -23,6 +23,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 
 		private ConfigurationTesterController _configTesterController;
 		private DatabaseTesterMock _databaseTester;
+		private WebConfigManagerStub _webConfigManager;
 
 		[SetUp]
 		public void Setup()
@@ -30,7 +31,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 			_container = new MocksAndStubsContainer();
 			_configurationStore = _container.ConfigurationStoreMock;
 			_configuration = _container.Configuration;
-
+			_webConfigManager = _container.WebConfigManager;
 			_configuration.Installed = false;
 
 			_context = _container.UserContext;
@@ -39,7 +40,7 @@ namespace Roadkill.Tests.Unit.Mvc.Controllers
 
 			_databaseTester = _container.DatabaseTester;
 
-			_configTesterController = new ConfigurationTesterController(_configurationStore, _context, _activeDirectoryProviderMock, _userService, _databaseTester);
+			_configTesterController = new ConfigurationTesterController(_configurationStore, _context, _activeDirectoryProviderMock, _userService, _databaseTester, _webConfigManager);
 		}
 
 		[Test]

@@ -2,7 +2,6 @@
 using System.Configuration;
 using System.IO;
 using System.Web.Configuration;
-using Roadkill.Core.Mvc.ViewModels;
 
 namespace Roadkill.Core.AmazingConfig
 {
@@ -68,14 +67,22 @@ namespace Roadkill.Core.AmazingConfig
 			}
 		}
 
-		public virtual void Save(SettingsViewModel settings)
+		/// <summary>
+		/// Adds config settings for forms authentication.
+		/// </summary>
+		public void WriteForFormsAuth()
 		{
+			// TODO: Tests
 			try
 			{
-				if (settings.UseWindowsAuth)
-					WriteConfigForWindowsAuth();
-				else
-					WriteConfigForFormsAuth();
+				// Turn on forms authentication
+				AuthenticationSection authSection = _config.GetSection("system.web/authentication") as AuthenticationSection;
+				authSection.Mode = AuthenticationMode.Forms;
+				authSection.Forms.LoginUrl = "~/User/Login";
+
+				// Turn on anonymous auth
+				AnonymousIdentificationSection anonSection = _config.GetSection("system.web/anonymousIdentification") as AnonymousIdentificationSection;
+				anonSection.Enabled = true;
 
 				_config.Save(ConfigurationSaveMode.Minimal);
 			}
@@ -86,32 +93,39 @@ namespace Roadkill.Core.AmazingConfig
 		}
 
 		/// <summary>
-		/// Adds config settings for forms authentication.
-		/// </summary>
-		internal void WriteConfigForFormsAuth()
-		{
-			// Turn on forms authentication
-			AuthenticationSection authSection = _config.GetSection("system.web/authentication") as AuthenticationSection;
-			authSection.Mode = AuthenticationMode.Forms;
-			authSection.Forms.LoginUrl = "~/User/Login";
-
-			// Turn on anonymous auth
-			AnonymousIdentificationSection anonSection = _config.GetSection("system.web/anonymousIdentification") as AnonymousIdentificationSection;
-			anonSection.Enabled = true;
-		}
-
-		/// <summary>
 		/// Adds web.config settings for windows authentication.
 		/// </summary>
-		internal void WriteConfigForWindowsAuth()
+		public void WriteForWindowsAuth()
 		{
-			// Turn on Windows authentication
-			AuthenticationSection authSection = _config.GetSection("system.web/authentication") as AuthenticationSection;
-			authSection.Mode = AuthenticationMode.Windows;
+			try
+			{
+				// Turn on Windows authentication
+				AuthenticationSection authSection = _config.GetSection("system.web/authentication") as AuthenticationSection;
+				authSection.Mode = AuthenticationMode.Windows;
 
-			// Turn off anonymous auth
-			AnonymousIdentificationSection anonSection = _config.GetSection("system.web/anonymousIdentification") as AnonymousIdentificationSection;
-			anonSection.Enabled = false;
+				// Turn off anonymous auth
+				AnonymousIdentificationSection anonSection = _config.GetSection("system.web/anonymousIdentification") as AnonymousIdentificationSection;
+				anonSection.Enabled = false;
+
+				_config.Save(ConfigurationSaveMode.Minimal);
+			}
+			catch (ConfigurationErrorsException ex)
+			{
+				throw new InstallerException(ex, "An exception occurred while updating the settings to the web.config");
+			}
+		}
+
+		public string IsWriteable()
+		{
+			try
+			{
+				_config.Save(ConfigurationSaveMode.Minimal);
+				return "";
+			}
+			catch (Exception e)
+			{
+				return e.ToString();
+			}
 		}
 	}
 }

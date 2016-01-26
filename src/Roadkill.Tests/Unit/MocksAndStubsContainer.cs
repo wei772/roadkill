@@ -91,26 +91,18 @@ namespace Roadkill.Tests.Unit
 			SearchService = new SearchServiceMock(ConfigurationStoreMock, PageRepository, PluginFactory);
 			SearchService.PageContents = PageRepository.PageContents;
 			SearchService.Pages = PageRepository.Pages;
-			HistoryService = new PageHistoryService(ConfigurationStoreMock, PageRepository, UserContext,
-				PageViewModelCache, PluginFactory);
+			HistoryService = new PageHistoryService(ConfigurationStoreMock, PageRepository, UserContext, PageViewModelCache, PluginFactory);
 			FileService = new FileServiceMock();
-			PageService = new PageService(ConfigurationStoreMock, PageRepository, SearchService, HistoryService,
-				UserContext, ListCache, PageViewModelCache, SiteCache, PluginFactory);
+			PageService = new PageService(ConfigurationStoreMock, PageRepository, SearchService, HistoryService, UserContext, ListCache, PageViewModelCache, SiteCache, PluginFactory);
+			InstallationService = new InstallationService(ConfigurationStoreMock, WebConfigManager);
 
+			// IoC
 			StructureMapContainer = new Container(x =>
 			{
 				x.AddRegistry(new TestsRegistry(this));
 			});
 
 			Locator = new StructureMapServiceLocator(StructureMapContainer, false);
-
-			InstallationService = new InstallationService((databaseName, connectionString) =>
-			{
-				InstallerRepository.DatabaseName = databaseName;
-				InstallerRepository.ConnectionString = connectionString;
-
-				return InstallerRepository;
-			}, Locator);
 
 			// EmailTemplates
 			EmailClient = new EmailClientMock();

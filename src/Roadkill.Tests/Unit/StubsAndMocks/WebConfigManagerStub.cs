@@ -1,5 +1,4 @@
 ﻿using Roadkill.Core.AmazingConfig;
-using Roadkill.Core.Mvc.ViewModels;
 
 namespace Roadkill.Tests.Unit.StubsAndMocks
 {
@@ -22,9 +21,17 @@ namespace Roadkill.Tests.Unit.StubsAndMocks
 			UILanguageCode = uiLanguageCode;
 		}
 
-		public virtual void Save(SettingsViewModel settings)
+		public void WriteForFormsAuth()
 		{
-			Saved = true;
+		}
+
+		public void WriteForWindowsAuth()
+		{
+		}
+
+		public string IsWriteable()
+		{
+			return "";
 		}
 	}
 }

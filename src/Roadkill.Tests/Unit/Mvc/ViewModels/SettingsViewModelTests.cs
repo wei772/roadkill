@@ -51,7 +51,7 @@ namespace Roadkill.Tests.Unit.Mvc.ViewModels
 
 			
 		//	// Act
-		//	SettingsViewModel model = new SettingsViewModel(appSettings, siteSettings);
+		//	ConfigurationViewModel model = new ConfigurationViewModel(appSettings, siteSettings);
 
 		//	// Assert
 		//	Assert.That(model.AdminRoleName, Is.EqualTo(appSettings.AdminRoleName));
@@ -92,7 +92,7 @@ namespace Roadkill.Tests.Unit.Mvc.ViewModels
 
 
 		//	// Act
-		//	SettingsViewModel model = new SettingsViewModel(appSettings, siteSettings);
+		//	ConfigurationViewModel model = new ConfigurationViewModel(appSettings, siteSettings);
 
 		//	// Assert
 		//	Assert.That(model.AllowedFileTypes, Is.EqualTo("jpg,png,gif"));
@@ -120,7 +120,7 @@ namespace Roadkill.Tests.Unit.Mvc.ViewModels
 		//	};
 
 		//	// Act
-		//	SettingsViewModel model = new SettingsViewModel();
+		//	ConfigurationViewModel model = new ConfigurationViewModel();
 		//	model.FillFromApplicationSettings(appSettings);
 
 		//	// Assert
@@ -145,7 +145,7 @@ namespace Roadkill.Tests.Unit.Mvc.ViewModels
 		//	// Arrange
 		//	var respositoryFactory = new RepositoryFactoryMock();
 		//	List<RepositoryInfo> repositoryInfos = respositoryFactory.ListAll().ToList();
-  //          SettingsViewModel model = new SettingsViewModel();
+  //          ConfigurationViewModel model = new ConfigurationViewModel();
 
 		//	// Act
 		//	model.SetSupportedDatabases(repositoryInfos);
@@ -163,7 +163,7 @@ namespace Roadkill.Tests.Unit.Mvc.ViewModels
 		//public void markuptypesavailable_should_contain_known_markups()
 		//{
 		//	// Arrange
-		//	SettingsViewModel model = new SettingsViewModel();
+		//	ConfigurationViewModel model = new ConfigurationViewModel();
 
 		//	// Act + Assert
 		//	Assert.That(model.MarkupTypesAvailable, Contains.Item("Creole"));
@@ -175,7 +175,7 @@ namespace Roadkill.Tests.Unit.Mvc.ViewModels
 		//public void version_should_equal_applicationsettingsproductversion()
 		//{
 		//	// Arrange
-		//	SettingsViewModel model = new SettingsViewModel();
+		//	ConfigurationViewModel model = new ConfigurationViewModel();
 
 		//	// Act + Assert
 		//	Assert.That(model.Version, Is.EqualTo(NonConfigurableSettings.ProductVersion));
@@ -193,7 +193,7 @@ namespace Roadkill.Tests.Unit.Mvc.ViewModels
 		//	Directory.CreateDirectory(Path.Combine(themeDir, "Theme2"));
 		//	Directory.CreateDirectory(Path.Combine(themeDir, "Theme3"));
 			
-		//	SettingsViewModel model = new SettingsViewModel();			
+		//	ConfigurationViewModel model = new ConfigurationViewModel();			
 
 		//	// Act
 		//	List<string> themesAvailable = model.ThemesAvailable.ToList();

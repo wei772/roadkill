@@ -9,6 +9,7 @@ namespace Roadkill.Tests.Acceptance.Headless.RestApi
 {
 	[TestFixture]
 	[Category("Acceptance")]
+	[Parallelizable(ParallelScope.Children)]
 	public class PageControllerTests : WebApiTestBase
 	{
 		[Test]

@@ -2,7 +2,7 @@
   "Installed": true,
   "ConnectionString": "Server=(local);Integrated Security=true;Connect Timeout=5;database=Roadkill",
   "SecuritySettings": {
-    "ApiKeys": "apikey1,apikey2",
+    "ApiKeys": null,
     "AdminRoleName": "Admin",
     "EditorRoleName": "Editor",
     "UseWindowsAuthentication": false,

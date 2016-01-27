@@ -7,6 +7,7 @@ using Roadkill.Core.Database.LightSpeed;
 namespace Roadkill.Tests.Integration.Repository.LightSpeed
 {
 	[TestFixture]
+	[Parallelizable(ParallelScope.None)]
 	[Category("Integration")]
 	public class LightSpeedUserRepositoryTests : UserRepositoryTests
 	{

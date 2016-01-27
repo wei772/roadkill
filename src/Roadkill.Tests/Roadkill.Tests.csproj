@@ -287,6 +287,7 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Acceptance\Headless\RestApi\WebApiSetUpFixture.cs" />
     <Compile Include="Acceptance\Webdriver\LocalizationTests.cs" />
     <Compile Include="Acceptance\Webdriver\FileManagerTests.cs" />
     <Compile Include="Acceptance\Headless\RestApi\ApiKeysTests.cs" />
@@ -316,7 +317,7 @@
     <Compile Include="Integration\Repository\LightSpeed\LightSpeedUserRepositoryTests.cs" />
     <Compile Include="Integration\Import\ScrewturnImporterTests.cs" />
     <Compile Include="TestHelpers.cs" />
-    <Compile Include="Unit\Attachments\AttachmentPathUtilTests.cs" />
+    <Compile Include="Integration\AttachmentPathUtilTests.cs" />
     <Compile Include="Unit\Attachments\AttachmentFileHandlerTests.cs" />
     <Compile Include="Unit\Attachments\ResponseWrapperMock.cs" />
     <Compile Include="Unit\Cache\PageViewModelCacheTests.cs" />
@@ -431,7 +432,7 @@
     <Compile Include="Unit\Plugins\TocParserTests.cs" />
     <Compile Include="Unit\Text\MarkupSanitizerTests.cs" />
     <Compile Include="Unit\Text\MarkdownTests.cs" />
-    <Compile Include="Integration\Configuration\FullTrustConfigReaderWriterTests.cs" />
+    <Compile Include="Integration\Configuration\WebConfigManagerTests.cs" />
     <Compile Include="TestConstants.cs" />
     <Compile Include="Unit\Services\PageServiceTests.cs" />
     <Compile Include="Unit\Services\ActiveDirectoryUserManagerTests.cs" />
@@ -460,25 +461,6 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <Content Include="Integration\Configuration\TestConfigs\XML\test.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Integration\Configuration\TestConfigs\XML\test-missing-values.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Integration\Configuration\TestConfigs\XML\test-mongodb.config">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Integration\Configuration\TestConfigs\XML\test-no-roadkillsection.config">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Integration\Configuration\TestConfigs\XML\test-empty.config">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Integration\Configuration\TestConfigs\JSON\test-missing-child-settings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -497,6 +479,7 @@
     <Content Include="Integration\Configuration\TestConfigs\JSON\plugin-test.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Integration\Configuration\TestConfigs\XML\test.config" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

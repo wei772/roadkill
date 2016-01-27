@@ -17,6 +17,7 @@ namespace Roadkill.Tests.Integration.Import
 {
 	[TestFixture]
 	[Category("Integration")]
+	[Parallelizable]
 	public class ScrewturnImporterTests
 	{
 		private MocksAndStubsContainer _container;

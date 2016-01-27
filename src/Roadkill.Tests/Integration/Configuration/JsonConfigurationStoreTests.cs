@@ -6,6 +6,8 @@ using Roadkill.Core.AmazingConfig;
 
 namespace Roadkill.Tests.Integration.Configuration
 {
+	[Category("Integration")]
+	[Parallelizable]
 	public class JsonConfigurationStoreTests
 	{
 		private JsonConfigurationStore GetConfigurationStore(string configPath = "", string pluginConfigPath = "")

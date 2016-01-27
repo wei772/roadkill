@@ -29,7 +29,7 @@ namespace Roadkill.Tests
 			var serverConfig = new WebServerConfig(logger);
 
 			// Current directory: src\Roadkill.Tests\bin\Debug
-			string webRoot = Environment.CurrentDirectory + @"..\..\..\..\Roadkill.Web";
+			string webRoot = AppDomain.CurrentDomain.BaseDirectory + @"..\..\..\..\Roadkill.Web";
 			var dirInfo = new DirectoryInfo(webRoot);
 
 			serverConfig
@@ -42,6 +42,12 @@ namespace Roadkill.Tests
 				.AddApplication("/", dirInfo.FullName, TestConstants.WEB_SITENAME)
 				.WithLogging(false)
 				.Commit();
+		}
+
+		public static void RestartAppPool()
+		{
+			ServerManager serverManager = new ServerManager();
+			serverManager.ApplicationPools[TestConstants.WEB_SITENAME].Recycle();
 		}
 
 		public static void SetRoadkillConfigToUnInstalled()
@@ -79,7 +85,7 @@ namespace Roadkill.Tests
 			catch { }
 		}
 
-		public static void CopyDevWebConfigFromLibFolder()
+		public static void CopyDevWebConfig()
 		{
 			try
 			{
@@ -110,47 +116,14 @@ namespace Roadkill.Tests
 			}
 		}
 
-		public static void CopyDevConnectionStringsConfig()
+		public static void CopyDevConfiguration()
 		{
 			try
 			{
-				string sitePath = TestConstants.WEB_PATH;
-				string siteConnStringsConfig = Path.Combine(sitePath, "connectionStrings.config");
+				string sourcePath = Path.Combine(TestConstants.TESTSETUP_FOLDER, "Configs", "configuration.json");
+				string destPath = Path.Combine(TestConstants.WEB_PATH, "App_Data", "configuration.json");
 
-				string testsConnStringsPath = Path.Combine(TestConstants.TESTSETUP_FOLDER, "Configs", "connectionStrings.dev.config");
-
-				// Backup
-				try
-				{
-					string backupFile = siteConnStringsConfig + ".bak";
-					if (File.Exists(backupFile))
-						File.Delete(backupFile);
-
-					File.Copy(siteConnStringsConfig, siteConnStringsConfig + ".bak", true);
-				}
-				catch
-				{
-					// Ignore the failures, it's only a connection string
-				}
-
-				File.Copy(testsConnStringsPath, siteConnStringsConfig, true);
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine(e);
-			}
-		}
-
-		public static void CopyDevRoadkillConfig()
-		{
-			try
-			{
-				string sitePath = TestConstants.WEB_PATH;
-				string roadkillConfig = Path.Combine(sitePath, "Roadkill.config");
-
-				string testsRoadkillConfigPath = Path.Combine(TestConstants.TESTSETUP_FOLDER, "Configs", "Roadkill.dev.config");
-
-				File.Copy(testsRoadkillConfigPath, roadkillConfig, true);
+				File.Copy(sourcePath, destPath, true);
 			}
 			catch (Exception e)
 			{

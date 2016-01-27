@@ -8,6 +8,7 @@ namespace Roadkill.Tests.Integration.Repository
 {
 	[TestFixture]
 	[Category("Integration")]
+	[Parallelizable(ParallelScope.None)]
 	public abstract class PageRepositoryTests
 	{
 		private Page _page1;

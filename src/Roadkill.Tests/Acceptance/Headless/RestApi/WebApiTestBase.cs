@@ -16,24 +16,19 @@ namespace Roadkill.Tests.Acceptance.Headless.RestApi
 		protected static readonly Guid ADMIN_ID = TestConstants.ADMIN_ID;
 		protected string BaseUrl;
 
-		[TestFixtureSetUp]
-		public void TestFixtureSetUp()
-		{
-			TestHelpers.CreateIisTestSite();
-
-			string url = ConfigurationManager.AppSettings["url"];
-			if (string.IsNullOrEmpty(url))
-				url = TestConstants.WEB_BASEURL;
-			BaseUrl = url;
-		}
-
 		[SetUp]
 		public void Setup()
 		{
-			TestHelpers.CopyDevWebConfigFromLibFolder();
-			TestHelpers.CopyDevConnectionStringsConfig();
-			TestHelpers.CopyDevRoadkillConfig();
+			string url = ConfigurationManager.AppSettings["url"];
+			if (string.IsNullOrEmpty(url))
+				url = TestConstants.WEB_BASEURL;
+
+			BaseUrl = url;
+
+			TestHelpers.CopyDevWebConfig();
+			TestHelpers.CopyDevConfiguration();
 			TestHelpers.SqlServerSetup.RecreateTables();
+			TestHelpers.RestartAppPool();
 		}
 
 		protected IPageRepository GetRepository()

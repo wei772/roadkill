@@ -10,8 +10,7 @@ namespace Roadkill.Core.AmazingConfig
 	/// </summary>
 	public class WebConfigManager : IWebConfigManager
 	{
-		private readonly Configuration _config;
-
+		internal Configuration Configuration { get; set; }
 		public string ConfigFilePath { get;set; }
 
 		/// <summary>
@@ -28,13 +27,13 @@ namespace Roadkill.Core.AmazingConfig
 		{
 			if (string.IsNullOrEmpty(configFilePath))
 			{
-				_config = WebConfigurationManager.OpenWebConfiguration("~");
+				Configuration = WebConfigurationManager.OpenWebConfiguration("~");
 			}
 			else
 			{
 				if (configFilePath.ToLower() == "app.config")
 				{
-					_config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+					Configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
 				}
 				else
 				{
@@ -43,7 +42,7 @@ namespace Roadkill.Core.AmazingConfig
 
 					ExeConfigurationFileMap fileMap = new ExeConfigurationFileMap();
 					fileMap.ExeConfigFilename = configFilePath;
-					_config = ConfigurationManager.OpenMappedExeConfiguration(fileMap, ConfigurationUserLevel.None);
+					Configuration = ConfigurationManager.OpenMappedExeConfiguration(fileMap, ConfigurationUserLevel.None);
 				}
 			}
 
@@ -54,9 +53,9 @@ namespace Roadkill.Core.AmazingConfig
 		{
 			try
 			{
-				GlobalizationSection globalizationSection = _config.GetSection("system.web/globalization") as GlobalizationSection;
+				GlobalizationSection globalizationSection = Configuration.GetSection("system.web/globalization") as GlobalizationSection;
 				globalizationSection.UICulture = uiLanguageCode;
-				_config.Save(ConfigurationSaveMode.Minimal);
+				Configuration.Save(ConfigurationSaveMode.Minimal);
 			}
 			catch (ConfigurationErrorsException ex)
 			{
@@ -73,15 +72,15 @@ namespace Roadkill.Core.AmazingConfig
 			try
 			{
 				// Turn on forms authentication
-				AuthenticationSection authSection = _config.GetSection("system.web/authentication") as AuthenticationSection;
+				AuthenticationSection authSection = Configuration.GetSection("system.web/authentication") as AuthenticationSection;
 				authSection.Mode = AuthenticationMode.Forms;
 				authSection.Forms.LoginUrl = "~/User/Login";
 
 				// Turn on anonymous auth
-				AnonymousIdentificationSection anonSection = _config.GetSection("system.web/anonymousIdentification") as AnonymousIdentificationSection;
+				AnonymousIdentificationSection anonSection = Configuration.GetSection("system.web/anonymousIdentification") as AnonymousIdentificationSection;
 				anonSection.Enabled = true;
 
-				_config.Save(ConfigurationSaveMode.Minimal);
+				Configuration.Save(ConfigurationSaveMode.Minimal);
 			}
 			catch (ConfigurationErrorsException ex)
 			{
@@ -97,14 +96,14 @@ namespace Roadkill.Core.AmazingConfig
 			try
 			{
 				// Turn on Windows authentication
-				AuthenticationSection authSection = _config.GetSection("system.web/authentication") as AuthenticationSection;
+				AuthenticationSection authSection = Configuration.GetSection("system.web/authentication") as AuthenticationSection;
 				authSection.Mode = AuthenticationMode.Windows;
 
 				// Turn off anonymous auth
-				AnonymousIdentificationSection anonSection = _config.GetSection("system.web/anonymousIdentification") as AnonymousIdentificationSection;
+				AnonymousIdentificationSection anonSection = Configuration.GetSection("system.web/anonymousIdentification") as AnonymousIdentificationSection;
 				anonSection.Enabled = false;
 
-				_config.Save(ConfigurationSaveMode.Minimal);
+				Configuration.Save(ConfigurationSaveMode.Minimal);
 			}
 			catch (ConfigurationErrorsException ex)
 			{
@@ -116,7 +115,7 @@ namespace Roadkill.Core.AmazingConfig
 		{
 			try
 			{
-				_config.Save(ConfigurationSaveMode.Minimal);
+				Configuration.Save(ConfigurationSaveMode.Minimal);
 				return "";
 			}
 			catch (Exception e)

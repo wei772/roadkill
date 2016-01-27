@@ -6,6 +6,7 @@ using Roadkill.Core.Database.MongoDB;
 namespace Roadkill.Tests.Integration.Repository.MongoDb
 {
 	[TestFixture]
+	[Parallelizable(ParallelScope.None)]
 	[Category("Integration")]
 	public class MongoDbInstallerRepositoryTests : InstallerRepositoryTests
 	{

@@ -2,7 +2,6 @@
 	"SecuritySettings": {
 		"AllowUserSignup": false,
 		"ApiKeys": null,
-		"ApiKeysList": [ ],
 		"AdminRoleName": null,
 		"EditorRoleName": null,
 		"IsRecaptchaEnabled": false,

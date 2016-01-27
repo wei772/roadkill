@@ -58,6 +58,18 @@ namespace Roadkill.Tests.Unit.Configuration
 		}
 
 		[Test]
+		public void should_parse_api_keys()
+		{
+			// Arrange + Act
+			var configuration = new JsonConfiguration();
+			configuration.SecuritySettings.ApiKeys = "123,456";
+
+			// Assert
+			Assert.That(configuration.SecuritySettings.ApiKeysList.Count(), Is.EqualTo(2));
+			Assert.That(configuration.SecuritySettings.ApiKeys, Is.EqualTo("123,456"));
+		}
+
+		[Test]
 		public void GetAttachmentsDirectoryPath_should()
 		{
 			// Arrange

@@ -8,6 +8,7 @@ using Roadkill.Core.Database.Schema;
 namespace Roadkill.Tests.Integration.Repository.LightSpeed
 {
 	[TestFixture]
+	[Parallelizable(ParallelScope.None)]
 	[Category("Integration")]
 	public class LightSpeedInstallerRepositoryTests : InstallerRepositoryTests
 	{

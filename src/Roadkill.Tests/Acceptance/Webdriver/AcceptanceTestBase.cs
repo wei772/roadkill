@@ -8,6 +8,7 @@ namespace Roadkill.Tests.Acceptance.Webdriver
 	/// The base class for all Acceptance tests
 	/// </summary>
 	[Category("Acceptance")]
+	[Parallelizable(ParallelScope.None)]
 	public abstract class AcceptanceTestBase
 	{
 		public static readonly string ADMIN_EMAIL = TestConstants.ADMIN_EMAIL;
@@ -21,6 +22,13 @@ namespace Roadkill.Tests.Acceptance.Webdriver
 		protected string BaseUrl;
 		protected string LogoutUrl;
 		protected bool IsWindowsAuthTests;
+
+		[OneTimeSetUp]
+		public void TestFixtureSetup()
+		{
+			TestHelpers.CopyDevWebConfig();
+			TestHelpers.CopyDevConfiguration();
+		}
 
 		[SetUp]
 		public void Setup()
@@ -36,14 +44,6 @@ namespace Roadkill.Tests.Acceptance.Webdriver
 			IsWindowsAuthTests = (ConfigurationManager.AppSettings["useWindowsAuth"] == "true");
 			TestHelpers.SqlServerSetup.RecreateTables();
 			TestHelpers.DeleteAttachmentsFolder();
-		}
-
-		[TestFixtureSetUp]
-		public void TestFixtureSetup()
-		{
-			TestHelpers.CopyDevWebConfigFromLibFolder();
-			TestHelpers.CopyDevRoadkillConfig();
-			TestHelpers.CopyDevConnectionStringsConfig();
 		}
 
 		protected void CreatePageWithTags(params string[] tags)

@@ -106,6 +106,7 @@ namespace Roadkill.Core.Mvc.Setup
 
 		private static void RegisterSwashBuckle(HttpConfiguration config)
 		{
+			// Setup the "/swagger/ui/index" url.
 			config
 				.EnableSwagger(c =>
 				{

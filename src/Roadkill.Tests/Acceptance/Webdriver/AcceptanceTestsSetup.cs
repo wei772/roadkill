@@ -14,7 +14,7 @@ namespace Roadkill.Tests.Acceptance.Webdriver
 	{
 		public static IWebDriver Driver { get; private set; }
 
-		[SetUp]
+		[OneTimeSetUp]
 		public void Setup()
 		{
 			if (!TestHelpers.IsSqlServerRunning())
@@ -22,14 +22,14 @@ namespace Roadkill.Tests.Acceptance.Webdriver
 				Assert.Fail("SQL server isn't running - is the service started?");
 			}
 
-			TestHelpers.CopyDevWebConfigFromLibFolder();
-			TestHelpers.CopyDevConnectionStringsConfig();
-			TestHelpers.CopyDevRoadkillConfig();
+			TestHelpers.CreateIisTestSite();
+			TestHelpers.CopyDevWebConfig();
+			TestHelpers.CopyDevConfiguration();
 
 			Driver = LaunchChrome();
 		}
 
-		[TearDown]
+		[OneTimeTearDown]
 		public void TearDown()
 		{
 			Driver.Quit();

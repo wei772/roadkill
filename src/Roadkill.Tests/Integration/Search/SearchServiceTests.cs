@@ -15,6 +15,7 @@ namespace Roadkill.Tests.Integration.Search
 {
 	[TestFixture]
 	[Category("Integration")]
+	[Parallelizable]
 	public class SearchServiceTests
 	{
 		private IConfigurationStore _configurationStore;

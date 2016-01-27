@@ -13,16 +13,30 @@ namespace Roadkill.Core.AmazingConfig
 	/// </summary>
 	public class SecuritySettings
 	{
+		private string _apiKeys;
+
 		/// <summary>
 		/// Gets or sets the api keys (comma seperated) used for access to the REST api. If this is empty, then the REST api is disabled.
 		/// </summary>
-		public string ApiKeys { get; set; }
+		public string ApiKeys
+		{
+			get { return _apiKeys; }
+			set
+			{
+				_apiKeys = value;
+
+				if (!string.IsNullOrEmpty(_apiKeys))
+				{
+					ApiKeysList = new List<string>(_apiKeys.Split(new string[]{ "," }, StringSplitOptions.RemoveEmptyEntries));
+				}
+			}
+		}
 
 		/// <summary>
 		/// Contains a list API keys for the REST api. If this is empty, then the REST api is disabled.
 		/// </summary>
 		[JsonIgnore]
-		public IEnumerable<string> ApiKeysList { get; }
+		public IEnumerable<string> ApiKeysList { get; private set; }
 
 		/// <summary>
 		/// Whether the REST api is available - if api keys are set in the config.

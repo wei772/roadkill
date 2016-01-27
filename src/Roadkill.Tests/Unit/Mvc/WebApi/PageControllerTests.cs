@@ -51,6 +51,7 @@ namespace Roadkill.Tests.Unit.Mvc.WebApi
 			// Arrange
 			Page expectedPage = new Page() { Id = 7, Title = "new page" };
 			_pageRepositoryMock.Pages.Add(expectedPage);
+			_pageRepositoryMock.PageContents.Add(new PageContent() {Page = expectedPage, Text = "blah"});
 
 			// Act
 			PageViewModel actualPage = _pagesController.Get(7);

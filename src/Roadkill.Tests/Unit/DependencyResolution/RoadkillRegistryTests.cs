@@ -59,7 +59,7 @@ namespace Roadkill.Tests.Unit.DependencyResolution
 			});
 
 			// Change the config manager to use the app.config
-			container.Configure(x => x.For<IWebConfigManager>().Use(new WebConfigManager("Roadkill.Tests.dll.config")));
+			container.Configure(x => x.For<IWebConfigManager>().Use(new WebConfigManager("app.config")));
 
 			// Lightspeed mocking
 			container.Inject(typeof(IUnitOfWork), new UnitOfWork());

@@ -63,30 +63,27 @@ namespace Roadkill.Tests.Unit.Mvc.ViewModels
 		}
 
 		[Test]
-		[ExpectedException(typeof(ArgumentNullException))]
 		public void Constructor_Should_Throw_ArgumentException_When_User_Object_Is_Null()
 		{
 			// Arrange
 			User user = null;
 
 			// Act + Assert
-			UserViewModel model = new UserViewModel(user);
+			Assert.Throws<ArgumentNullException>(() => new UserViewModel(user));
 		}
 
 		[Test]
-		[ExpectedException(typeof(ArgumentNullException))]
 		public void Constructor_Should_Throw_ArgumentException_When_Settings_Is_Null()
 		{
 			// Arrange + Act + Assert
-			UserViewModel model = new UserViewModel(null, new UserServiceStub());
+			Assert.Throws<ArgumentNullException>(() => new UserViewModel(null, new UserServiceStub()));
 		}
 
 		[Test]
-		[ExpectedException(typeof(ArgumentNullException))]
 		public void Constructor_Should_Throw_ArgumentException_When_UserService_Is_Null()
 		{
 			// Arrange + Act + Assert
-			UserViewModel model = new UserViewModel(new ConfigurationStoreMock(), null);
+			Assert.Throws<ArgumentNullException>(() => new UserViewModel(new ConfigurationStoreMock(), null));
 		}
 
 		[Test]

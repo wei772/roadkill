@@ -43,7 +43,6 @@ namespace Roadkill.Tests.Unit.Mvc.ViewModels
 		}
 
 		[Test]
-		[ExpectedException(typeof(ArgumentNullException))]
 		public void Should_Throw_ArgumentNullException_When_ScoreDoc_Is_Null()
 		{
 			// Arrange
@@ -51,11 +50,10 @@ namespace Roadkill.Tests.Unit.Mvc.ViewModels
 			ScoreDoc scoreDoc = null;
 
 			// Act + Assert
-			SearchResultViewModel model = new SearchResultViewModel(document, scoreDoc);
+			Assert.Throws<ArgumentNullException>(() => new SearchResultViewModel(document, scoreDoc));
 		}
 
 		[Test]
-		[ExpectedException(typeof(ArgumentNullException))]
 		public void Should_Throw_ArgumentNullException_When_Document_Is_Null()
 		{
 			// Arrange
@@ -63,7 +61,7 @@ namespace Roadkill.Tests.Unit.Mvc.ViewModels
 			ScoreDoc scoreDoc = new ScoreDoc(0, 9.50f);
 
 			// Act + Assert
-			SearchResultViewModel model = new SearchResultViewModel(document, scoreDoc);
+			Assert.Throws<ArgumentNullException>(() => new SearchResultViewModel(document, scoreDoc));
 		}
 
 		[Test]
@@ -74,7 +72,6 @@ namespace Roadkill.Tests.Unit.Mvc.ViewModels
 		[TestCase("createdby")]
 		[TestCase("contentlength")]
 		[TestCase("createdon")]
-		[ExpectedException(typeof(SearchException))]
 		public void Should_Throw_SearchException_When_Field_Is_Missing(string fieldName)
 		{
 			// Arrange
@@ -92,7 +89,7 @@ namespace Roadkill.Tests.Unit.Mvc.ViewModels
 			ScoreDoc scoreDoc = new ScoreDoc(0, 1f);
 
 			// Act + Assert
-			SearchResultViewModel model = new SearchResultViewModel(document, scoreDoc);
+			Assert.Throws<SearchException>(() => new SearchResultViewModel(document, scoreDoc));
 		}
 
 		[Test]

@@ -105,42 +105,15 @@ namespace Roadkill.Tests.Unit.Extensions
 			Assert.That(htmlString.ToHtmlString(), Is.EqualTo(""));
 		}
 
-		[Test]
-		[Ignore]
-		public void DropDownBox1_Should()
-		{
-			// Can't mock DropDownList as it relies on private/internal implementations in System.Web.Mvc
-		}
-
-		[Test]
-		[Ignore]
-		public void DropDownBox2_Should()
-		{
-			// Can't mock DropDownList as it relies on private/internal implementations in System.Web.Mvc
-
-		}
-
-		[Test]
-		[Ignore]
-		public void DialogPartial_Should_()
-		{
-			// RenderPartials can't be tested without ridiculous amounts of setup
-		}
-
-		[Test]
-		[Ignore]
-		public void DialogPartial2_Should_()
-		{
-			// RenderPartialscan't be tested without ridiculous amounts of setup
-		}
-
-		[Ignore]
-		[Test]
-		public void sitesettingsnavigation_should_()
-		{
-			// RenderPartials can't be tested without ridiculous amounts of setup
-		}
-		
+		//
+		// Tests that are missing:
+		//
+		// Can't mock DropDownList as it relies on private/internal implementations in System.Web.Mvc
+		// Can't mock DropDownList as it relies on private/internal implementations in System.Web.Mvc
+		// RenderPartials can't be tested without ridiculous amounts of setup
+		// RenderPartials can't be tested without ridiculous amounts of setup
+		// RenderPartials can't be tested without ridiculous amounts of setup
 		// All Bootstrap Helpers are the same as above
+		//
 	}
 }

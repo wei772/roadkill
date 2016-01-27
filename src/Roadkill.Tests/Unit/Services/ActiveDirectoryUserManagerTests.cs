@@ -156,39 +156,35 @@ namespace Roadkill.Tests.Unit.Services
 		}
 
 		[Test]
-		[ExpectedException(typeof(SecurityException))]
 		public void Empty_Ldap_String_Should_Throw_SecurityException_In_Constructor()
 		{
 			// Arrange + act + assert
 			_configuration.SecuritySettings.LdapConnectionString = "";
-			ActiveDirectoryUserService service = new ActiveDirectoryUserService(_configurationStore, _repository, _adProviderMock.Object);
+			Assert.Throws<SecurityException>(() => new ActiveDirectoryUserService(_configurationStore, _repository, _adProviderMock.Object));
 		}
 
 		[Test]
-		[ExpectedException(typeof(SecurityException))]
 		public void Wrong_Format_Ldap_String_Should_Throw_SecurityException_In_Constructor()
 		{
 			// Arrange + act + assert
 			_configuration.SecuritySettings.LdapConnectionString = "iforgot.the.ldap.part.com";
-			ActiveDirectoryUserService service = new ActiveDirectoryUserService(_configurationStore, _repository, _adProviderMock.Object);
+			Assert.Throws<SecurityException>(() => new ActiveDirectoryUserService(_configurationStore, _repository, _adProviderMock.Object));
 		}
 
 		[Test]
-		[ExpectedException(typeof(SecurityException))]
 		public void No_Admin_Group_Should_Throw_SecurityException_In_Constructor()
 		{
 			// Arrange + act + assert
 			_configuration.SecuritySettings.AdminRoleName = "";
-			ActiveDirectoryUserService service = new ActiveDirectoryUserService(_configurationStore, _repository, _adProviderMock.Object);
+			Assert.Throws<SecurityException>(() => new ActiveDirectoryUserService(_configurationStore, _repository, _adProviderMock.Object));
 		}
 
 		[Test]
-		[ExpectedException(typeof(SecurityException))]
 		public void No_Editor_Group_Should_Throw_SecurityException_In_Constructor()
 		{
 			// Arrange + act + assert
 			_configuration.SecuritySettings.EditorRoleName = "";
-			ActiveDirectoryUserService service = new ActiveDirectoryUserService(_configurationStore, _repository, _adProviderMock.Object);
+			Assert.Throws<SecurityException>(() => new ActiveDirectoryUserService(_configurationStore, _repository, _adProviderMock.Object));
 		}
 	}
 }

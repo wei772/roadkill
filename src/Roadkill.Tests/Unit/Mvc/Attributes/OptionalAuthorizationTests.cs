@@ -124,7 +124,6 @@ namespace Roadkill.Tests.Unit.Mvc.Attributes
 		}
 
 		[Test]
-		[ExpectedException(typeof(SecurityException))]
 		public void Should_Throw_SecurityException_When_AuthorizationProvider_Is_Null()
 		{
 			// Arrange
@@ -136,7 +135,7 @@ namespace Roadkill.Tests.Unit.Mvc.Attributes
 			HttpContextBase context = GetHttpContext(principal);
 
 			// Act + Assert
-			attribute.CallAuthorize(context);
+			Assert.Throws<SecurityException>(() => attribute.CallAuthorize(context));
 		}
 
 		protected HttpContextBase GetHttpContext(PrincipalStub principal)

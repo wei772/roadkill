@@ -33,14 +33,13 @@ namespace Roadkill.Tests.Unit.Mvc.ViewModels
 		}
 
 		[Test]
-		[ExpectedException(typeof(ArgumentNullException))]
 		public void Constructor_Should_Throw_Exception_When_PageContent_Page_Is_Null()
 		{
 			// Arrange
 			PageContent content = new PageContent();
 
 			// Act + Assert
-			PageHistoryViewModel model = new PageHistoryViewModel(content);
+			Assert.Throws<ArgumentNullException>(() => new PageHistoryViewModel(content));
 		}
 
 		[Test]

@@ -32,19 +32,17 @@ namespace Roadkill.Tests.Unit.Security
 		}
 
 		[Test]
-		[ExpectedException(typeof(ArgumentNullException))]
 		public void Should_Throw_Argument_Null_Exception_For_Null_ApplicationSettings()
 		{
 			// Arrange + Act + Assert
-			AuthorizationProvider provider = new AuthorizationProvider(null, _userService);
+			Assert.Throws<ArgumentNullException>(() => new AuthorizationProvider(null, _userService));
 		}
 
 		[Test]
-		[ExpectedException(typeof(ArgumentNullException))]
 		public void Should_Throw_Argument_Null_Exception_For_Null_UserService()
 		{
 			// Arrange + Act + Assert
-			AuthorizationProvider provider = new AuthorizationProvider(_configurationStore, null);
+			Assert.Throws<ArgumentNullException>(() => new AuthorizationProvider(_configurationStore, null));
 		}
 
 		//

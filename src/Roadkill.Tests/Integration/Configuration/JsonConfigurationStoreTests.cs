@@ -10,7 +10,8 @@ namespace Roadkill.Tests.Integration.Configuration
 	{
 		private JsonConfigurationStore GetConfigurationStore(string configPath = "", string pluginConfigPath = "")
 		{
-			return new JsonConfigurationStore($@"Integration\Configuration\TestConfigs\JSON\{configPath}", $@"Integration\Configuration\TestConfigs\JSON\{pluginConfigPath}");
+			string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+			return new JsonConfigurationStore($@"{baseDir}\Integration\Configuration\TestConfigs\JSON\{configPath}", $@"{baseDir}\Integration\Configuration\TestConfigs\JSON\{pluginConfigPath}");
 		}
 
 		[Test]
@@ -70,7 +71,7 @@ namespace Roadkill.Tests.Integration.Configuration
 			Assert.That(actualConfiguration.Theme, Is.EqualTo("Mediawiki"));
 			Assert.That(actualConfiguration.MarkupType, Is.EqualTo("Markdown"));
 			Assert.That(actualConfiguration.SiteName, Is.EqualTo("Your site"));
-			Assert.That(actualConfiguration.SiteUrl, Is.EqualTo(""));
+			Assert.That(actualConfiguration.SiteUrl, Is.EqualTo("http://localhost"));
 			Assert.That(actualConfiguration.SecuritySettings.RecaptchaPrivateKey, Is.EqualTo(""));
 			Assert.That(actualConfiguration.SecuritySettings.RecaptchaPublicKey, Is.EqualTo(""));
 			Assert.That(actualConfiguration.HeadContent, Is.EqualTo(""));

@@ -110,6 +110,7 @@ namespace Roadkill.Core.AmazingConfig
 		{
 			AllowUserSignup = false;
 			AdminRoleName = "Admin";
+			ApiKeys = "";
 			ApiKeysList = new List<string>();
 			EditorRoleName = "Editor";
 			RecaptchaPrivateKey = "";

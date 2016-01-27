@@ -90,11 +90,10 @@ namespace Roadkill.Tests.Unit.Services
 		}
 
 		[Test]
-		[ExpectedException(typeof(SecurityException))]
 		public void Delete_With_Bad_Paths_Throws_Exception()
 		{
 			// Arrange + Act + Assert
-			_fileService.Delete("/.././", "hacker.txt");
+			Assert.Throws<SecurityException>(() => _fileService.Delete("/.././", "hacker.txt"));
 		}
 
 		[Test]
@@ -130,15 +129,13 @@ namespace Roadkill.Tests.Unit.Services
 		}
 
 		[Test]
-		[ExpectedException(typeof(FileException))]
 		public void DeleteFolder_Empty_Folder_Argument_Should_Throw_Exception()
 		{
 			// Arrange, Act, Assert
-			_fileService.DeleteFolder("");
+			Assert.Throws<FileException>(() => _fileService.DeleteFolder(""));
 		}
 
 		[Test]
-		[ExpectedException(typeof(FileException))]
 		public void DeleteFolder_Containing_Files_Should_Throw_FileException()
 		{
 			// Arrange
@@ -147,11 +144,10 @@ namespace Roadkill.Tests.Unit.Services
 			File.WriteAllText(fullPath, "test");
 
 			// Act, Assert
-			_fileService.DeleteFolder("folder1");
+			Assert.Throws<FileException>(() => _fileService.DeleteFolder("folder1"));
 		}
 
 		[Test]
-		[ExpectedException(typeof(FileException))]
 		public void DeleteFolder_With_Folder_That_Has_Subdirectories_Should_Throw_FileException()
 		{
 			// Arrange
@@ -159,23 +155,21 @@ namespace Roadkill.Tests.Unit.Services
 			Directory.CreateDirectory(Path.Combine(fullpath, "subfolder1"));
 
 			// Act, Assert
-			_fileService.DeleteFolder("folder1");
+			Assert.Throws<FileException>(() => _fileService.DeleteFolder("folder1"));
 		}
 
 		[Test]
-		[ExpectedException(typeof(FileException))]
 		public void DeleteFolder_With_Missing_Directory_Should_Throw_FileException()
 		{
 			// Arrange, Act, Assert
-			_fileService.DeleteFolder("folder1/folder2");
+			Assert.Throws<FileException>(() => _fileService.DeleteFolder("folder1/folder2"));
 		}
 
 		[Test]
-		[ExpectedException(typeof(SecurityException))]
 		public void DeleteFolder_With_Bad_Paths_Should_Throw_Exception()
 		{
 			// Arrange + Act + Assert
-			_fileService.DeleteFolder("/../../folder1");
+			Assert.Throws<SecurityException>(() => _fileService.DeleteFolder("/../../folder1"));
 		}
 
 		[Test]
@@ -236,19 +230,17 @@ namespace Roadkill.Tests.Unit.Services
 		}
 
 		[Test]
-		[ExpectedException(typeof(SecurityException))]
 		public void FolderInfo_With_Missing_Directory_Should_Throw_Exception()
 		{
 			// Arrange + Act + Assert
-			_fileService.FolderInfo("/missingfolder");
+			Assert.Throws<SecurityException>(() => _fileService.FolderInfo("/missingfolder"));
 		}
 
 		[Test]
-		[ExpectedException(typeof(SecurityException))]
 		public void FolderInfo_With_Bad_Folder_Path_Should_Throw_Exception()
 		{
 			// Arrange + Act + Assert
-			_fileService.FolderInfo(".././");
+			Assert.Throws<SecurityException>(() => _fileService.FolderInfo(".././"));
 		}
 
 		[Test]
@@ -282,27 +274,24 @@ namespace Roadkill.Tests.Unit.Services
 		}
 
 		[Test]
-		[ExpectedException(typeof(ArgumentNullException))]
 		public void CreateFolder_With_Empty_FolderName_Argument_Should_Throw_ArgumentNullException()
 		{
 			// Arrange + Act + Assert
-			_fileService.CreateFolder("/", "");
+			Assert.Throws<ArgumentNullException>(() => _fileService.CreateFolder("/", ""));
 		}
 
 		[Test]
-		[ExpectedException(typeof(SecurityException))]
 		public void CreateFolder_With_Missing_Parent_Directory_Should_Return_Error()
 		{
 			// Arrange + Act + Assert
-			_fileService.CreateFolder("folder1/folder2", "newfolder");
+			Assert.Throws<SecurityException>(() => _fileService.CreateFolder("folder1/folder2", "newfolder"));
 		}
 
 		[Test]
-		[ExpectedException(typeof(SecurityException))]
 		public void CreateFolder_With_Bad_Folder_Path_Should_Throw_Exception()
 		{
 			// Arrange + Act + Assert
-			_fileService.CreateFolder("/../../folder1", "../cheeky/path");
+			Assert.Throws<SecurityException>(() => _fileService.CreateFolder("/../../folder1", "../cheeky/path"));
 		}
 
 		[Test]
@@ -409,40 +398,36 @@ namespace Roadkill.Tests.Unit.Services
 		}
 
 		[Test]
-		[ExpectedException(typeof(SecurityException))]
 		public void FileUpload_With_Bad_Folder_Path_Should_Throw_Exception()
 		{
 			// Arrange
 			HttpFileCollectionBase fileCollection = CreateFileCollection();
 
 			// Act + Assert
-			_fileService.Upload("/../../bad/path", fileCollection);
+			Assert.Throws<SecurityException>(() => _fileService.Upload("/../../bad/path", fileCollection));
 		}
 
 		[Test]
-		[ExpectedException(typeof(SecurityException))]
 		public void FileUpload_With_Missing_Folder_Should_Throw_SecurityException()
 		{
 			// Arrange
 			HttpFileCollectionBase fileCollection = CreateFileCollection();
 
 			// Act + Assert
-			_fileService.Upload("/missingfolder", fileCollection);
+			Assert.Throws<SecurityException>(() => _fileService.Upload("/missingfolder", fileCollection));
 		}
 
 		[Test]
-		[ExpectedException(typeof(FileException))]
 		public void FileUpload_Should_Throw_FileException_When_File_Has_Bad_Extension()
 		{
 			// Arrange
 			HttpFileCollectionBase fileCollection = CreateFileCollection("virus.exe");
 
 			// Act + Assert
-			_fileService.Upload("/", fileCollection);
+			Assert.Throws<FileException>(() => _fileService.Upload("/", fileCollection));
 		}
 
 		[Test]
-		[ExpectedException(typeof(FileException))]
 		public void FileUpload_Should_Throw_FileException_When_File_Exists_And_OverWriteFiles_Setting_Is_False()
 		{
 			// Arrange
@@ -452,7 +437,7 @@ namespace Roadkill.Tests.Unit.Services
 			HttpFileCollectionBase fileCollection = CreateFileCollection("file1.png.exe");
 
 			// Act + Assert
-			_fileService.Upload("/", fileCollection);
+			Assert.Throws<FileException>(() => _fileService.Upload("/", fileCollection));
 		}
 
 		[Test]
@@ -474,9 +459,7 @@ namespace Roadkill.Tests.Unit.Services
 			try
 			{
 				_fileService.Upload("/", fileCollection);
-
 				Assert.Fail("FileException was not thrown");
-
 			}
 			catch (FileException)
 			{

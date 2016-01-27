@@ -133,11 +133,10 @@ namespace Roadkill.Tests.Unit.Services
 		}
 
 		[Test]
-		[ExpectedException(typeof(SecurityException))]
 		public void ChangePassword_With_EmptyPassword_ShouldFail()
 		{
 			CreateEditorWithAsserts();
-			_userService.ChangePassword("editor@localhost","");
+			Assert.Throws<SecurityException>(() => _userService.ChangePassword("editor@localhost", ""));
 		}
 
 		[Test]
@@ -301,7 +300,6 @@ namespace Roadkill.Tests.Unit.Services
 		}
 
 		[Test]
-		[ExpectedException(typeof(SecurityException))]
 		public void UpdateUser_With_Existing_Username_Fails()
 		{
 			CreateEditorWithAsserts();
@@ -314,12 +312,11 @@ namespace Roadkill.Tests.Unit.Services
 			model.Lastname = "Bishop";
 			model.NewEmail = "harold@localhost";
 			model.NewUsername = "editor2";
-			Assert.IsFalse(_userService.UpdateUser(model));
-			Assert.IsFalse(_userService.Authenticate("harold@localhost", "password"));
+			
+			Assert.Throws<SecurityException>(() => _userService.UpdateUser(model));
 		}
 
 		[Test]
-		[ExpectedException(typeof(SecurityException))]
 		public void UpdateUser_With_Existing_Email_Fails()
 		{
 			CreateEditorWithAsserts();
@@ -332,8 +329,7 @@ namespace Roadkill.Tests.Unit.Services
 			model.Lastname = "Bishop";
 			model.NewEmail = "editor2@localhost";
 			model.NewUsername = "harryB";
-			Assert.IsFalse(_userService.UpdateUser(model));
-			Assert.IsFalse(_userService.Authenticate("editor2@localhost", "password"));
+			Assert.Throws<SecurityException>(() => _userService.UpdateUser(model));
 		}
 
 		/// <summary>

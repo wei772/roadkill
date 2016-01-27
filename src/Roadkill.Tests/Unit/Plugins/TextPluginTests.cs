@@ -30,7 +30,6 @@ namespace Roadkill.Tests.Unit.Plugins
 		}
 
 		[Test]
-		[ExpectedException(typeof(PluginException))]
 		public void PluginVirtualPath_Should_Throw_Exception_When_Id_Is_Empty()
 		{
 			// Arrange
@@ -38,7 +37,7 @@ namespace Roadkill.Tests.Unit.Plugins
 			TextPluginStub plugin = new TextPluginStub(id, "name", "description");
 
 			// Act + Assert
-			string path = plugin.PluginVirtualPath;
+			Assert.Throws<PluginException>(() => { string path = plugin.PluginVirtualPath; });
 		}
 
 		[Test]

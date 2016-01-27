@@ -12,7 +12,7 @@ namespace Roadkill.Tests
 		public static readonly Guid ADMIN_ID = new Guid("aabd5468-1c0e-4277-ae10-a0ce00d2fefc");
 
 		public static readonly string ROOT_FOLDER;
-		public static readonly string LIB_FOLDER;
+		public static readonly string TESTSETUP_FOLDER;
 		public static readonly string PACKAGES_FOLDER;
 
 		public static readonly int WEB_PORT = 9876;
@@ -30,8 +30,8 @@ namespace Roadkill.Tests
 			string relativePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..");
 			ROOT_FOLDER = new DirectoryInfo(relativePath).FullName;
 
-			// LIB_FOLDER
-			LIB_FOLDER = Path.Combine(ROOT_FOLDER, "lib");
+			// TESTSETUP_FOLDER
+			TESTSETUP_FOLDER = Path.Combine(ROOT_FOLDER, "Tools", "Testing");
 
 			// PACKAGES_FOLDER
 			PACKAGES_FOLDER = Path.Combine(ROOT_FOLDER, "Packages");

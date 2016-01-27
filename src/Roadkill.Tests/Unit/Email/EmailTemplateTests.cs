@@ -61,7 +61,6 @@ namespace Roadkill.Tests.Unit.Email
 		}
 
 		[Test]
-		[ExpectedException(typeof(EmailException))]
 		public void Send_Should_Throw_EmailException_When_Model_Is_Null()
 		{
 			// Arrange
@@ -69,11 +68,10 @@ namespace Roadkill.Tests.Unit.Email
 			UserViewModel userModel = null;
 
 			// Act + Assert
-			emailTemplate.Send(userModel);
+			Assert.Throws<EmailException>(() => emailTemplate.Send(userModel));
 		}
 
 		[Test]
-		[ExpectedException(typeof(EmailException))]
 		public void Send_Should_Throw_EmailException_When_Model_Email_And_NewEmail_Is_Empty()
 		{
 			// Arrange
@@ -83,11 +81,10 @@ namespace Roadkill.Tests.Unit.Email
 			userModel.NewEmail = "";
 
 			// Act + Assert
-			emailTemplate.Send(userModel);
+			Assert.Throws<EmailException>(() => emailTemplate.Send(userModel));
 		}
 
 		[Test]
-		[ExpectedException(typeof(EmailException))]
 		public void Send_Should_Throw_EmailException_When_PlainTextView_Is_Empty()
 		{
 			// Arrange
@@ -98,7 +95,7 @@ namespace Roadkill.Tests.Unit.Email
 			userModel.NewEmail = "someone@localhost";
 
 			// Act + Assert
-			emailTemplate.Send(userModel);
+			Assert.Throws<EmailException>(() => emailTemplate.Send(userModel));
 		}
 
 		[Test]

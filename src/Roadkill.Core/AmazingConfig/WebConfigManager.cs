@@ -32,9 +32,6 @@ namespace Roadkill.Core.AmazingConfig
 			}
 			else
 			{
-				if (!File.Exists(configFilePath))
-					throw new ConfigurationException(null, "The config file {0} could not be found", configFilePath);
-
 				if (configFilePath.ToLower() == "app.config")
 				{
 					_config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);

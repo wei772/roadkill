@@ -42,15 +42,13 @@ namespace Roadkill.Tests.Unit.Mvc.ViewModels
 		}
 
 		[Test]
-		[ExpectedException(typeof(ArgumentNullException))]
 		public void PageContent_Constructor_Should_Throw_Exception_When_PageContent_IsNull()
 		{
 			// Arrange + Act + Assert
-			PageViewModel model = new PageViewModel(null, _markupConverter);
+			Assert.Throws<ArgumentNullException>(() => new PageViewModel(null, _markupConverter));
 		}
 
 		[Test]
-		[ExpectedException(typeof(ArgumentNullException))]
 		public void PageContent_Constructor_Should_Throw_Exception_When_PageContent_Page_IsNull()
 		{
 			// Arrange
@@ -58,11 +56,10 @@ namespace Roadkill.Tests.Unit.Mvc.ViewModels
 			content.Page = null;
 
 			// Act + Assert
-			PageViewModel model = new PageViewModel(content, _markupConverter);
+			Assert.Throws<ArgumentNullException>(() => new PageViewModel(content, _markupConverter));
 		}
 
 		[Test]
-		[ExpectedException(typeof(ArgumentNullException))]
 		public void PageContent_Constructor_Should_Throw_Exception_When_MarkupConverter_IsNull()
 		{
 			// Arrange
@@ -70,7 +67,7 @@ namespace Roadkill.Tests.Unit.Mvc.ViewModels
 			content.Page = new Page();
 
 			// Act + Assert
-			PageViewModel model = new PageViewModel(content, null);
+			Assert.Throws<ArgumentNullException>(() => new PageViewModel(content, null));
 		}
 
 		[Test]
@@ -153,7 +150,7 @@ namespace Roadkill.Tests.Unit.Mvc.ViewModels
 			Assert.That(model.Tags, Contains.Item("tag3"));
 
 			// (this extra html is from the plugin)
-			Assert.That(model.ContentAsHtml, Is.EqualTo("<p>some text <strong style='color:green'><iframe src='javascript:alert(test)'>in bold</strong>\n</p>"), model.ContentAsHtml);
+			Assert.That(model.ContentAsHtml, Is.EqualTo("<p>some text <strong style='color:green'><iframe src='javascript:alert(test)'>in bold</strong></p>\n"), model.ContentAsHtml);
 			
 			Assert.That(model.IsCacheable, Is.EqualTo(plugin.IsCacheable));
 			Assert.That(model.PluginHeadHtml, Is.EqualTo(plugin.HeadContent));

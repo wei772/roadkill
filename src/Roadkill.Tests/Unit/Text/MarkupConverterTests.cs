@@ -54,12 +54,12 @@ namespace Roadkill.Tests.Unit.Text
 		}
 
 		[Test]
-		[ExpectedException(typeof(NotImplementedException))]
 		public void Parser_Should_Throw_Exception_For_MediaWiki()
 		{
 			// Arrange, act + assert
 			_configuration.MarkupType = "MediaWiki";
-			_markupConverter = new MarkupConverter(_configurationStore, _pageRepository, _pluginFactory);
+			
+			Assert.Throws<NotImplementedException>(() => _markupConverter = new MarkupConverter(_configurationStore, _pageRepository, _pluginFactory));
 		}
 
 		[Test]

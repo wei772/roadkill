@@ -86,7 +86,7 @@ namespace Roadkill.Tests
 				string sitePath = TestConstants.WEB_PATH;
 				string siteWebConfig = Path.Combine(sitePath, "web.config");
 
-				string testsWebConfigPath = Path.Combine(TestConstants.LIB_FOLDER, "Configs", "web.config");
+				string testsWebConfigPath = Path.Combine(TestConstants.TESTSETUP_FOLDER, "Configs", "web.config");
 
 				// Be a good neighbour and backup the web.config
 				try
@@ -117,7 +117,7 @@ namespace Roadkill.Tests
 				string sitePath = TestConstants.WEB_PATH;
 				string siteConnStringsConfig = Path.Combine(sitePath, "connectionStrings.config");
 
-				string testsConnStringsPath = Path.Combine(TestConstants.LIB_FOLDER, "Configs", "connectionStrings.dev.config");
+				string testsConnStringsPath = Path.Combine(TestConstants.TESTSETUP_FOLDER, "Configs", "connectionStrings.dev.config");
 
 				// Backup
 				try
@@ -148,7 +148,7 @@ namespace Roadkill.Tests
 				string sitePath = TestConstants.WEB_PATH;
 				string roadkillConfig = Path.Combine(sitePath, "Roadkill.config");
 
-				string testsRoadkillConfigPath = Path.Combine(TestConstants.LIB_FOLDER, "Configs", "Roadkill.dev.config");
+				string testsRoadkillConfigPath = Path.Combine(TestConstants.TESTSETUP_FOLDER, "Configs", "Roadkill.dev.config");
 
 				File.Copy(testsRoadkillConfigPath, roadkillConfig, true);
 			}
@@ -207,7 +207,7 @@ namespace Roadkill.Tests
 
 			private static string ReadSqlServerScript()
 			{
-				string path = Path.Combine(TestConstants.LIB_FOLDER, "Test-databases", "roadkill-sqlserver.sql");
+				string path = Path.Combine(TestConstants.TESTSETUP_FOLDER, "Test-databases", "roadkill-sqlserver.sql");
 				return File.ReadAllText(path);
 			}
 		}

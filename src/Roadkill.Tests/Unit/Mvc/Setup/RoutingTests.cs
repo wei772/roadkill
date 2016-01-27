@@ -128,7 +128,6 @@ namespace Roadkill.Tests.Unit.Mvc.Setup
 		}
 
 		[Test]
-		[ExpectedException(typeof(ConfigurationException))]
 		public void AttachmentsRoute_Using_Files_Route_Should_Throw_Exception()
 		{
 			// Arrange
@@ -142,9 +141,9 @@ namespace Roadkill.Tests.Unit.Mvc.Setup
 
 			// Act
 			Routing.Register(RouteTable.Routes);
-			AttachmentRouteHandler.RegisterRoute(_configurationStore, routes, new FileServiceMock());
 
 			// Assert
+			Assert.Throws<ConfigurationException>(() => AttachmentRouteHandler.RegisterRoute(_configurationStore, routes, new FileServiceMock()));
 		}
 
 		[Test]

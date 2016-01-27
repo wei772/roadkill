@@ -2320,10 +2320,11 @@ tt	p://6&#9;6.000146.0x7.147/"">XSS</A>";
 			Assert.That(actual, Is.EqualTo(expected).IgnoreCase);
 		}
 
-		[Test(Description = "To be fixed post 1.6")]
-		[Ignore]
+		[Test]
+		[Ignore("TODO?")]
 		public void UrlWithScriptInHref()
 		{
+			//TODO
 			// Arrange
 			//issue #159
 			MarkupSanitizer sanitizer = CreateMarkupSanitizer();

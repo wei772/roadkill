@@ -376,7 +376,7 @@
     <None Include="Assets\Scripts\roadkill\typescript-ref\constants.ts" />
     <None Include="Assets\Scripts\roadkill\typescript-ref\references.ts" />
     <Content Include="Assets\Scripts\shared\head.js" />
-    <Content Include="gruntfile.js" />
+    <Content Include="gulpfile.js" />
     <Content Include="Plugins\ExternalLinksInNewWindow\externallinksinnewwindow.js" />
     <Content Include="Plugins\ClickableImages\clickableimages.js" />
     <Content Include="Plugins\ResizeImages\resizeimages.css" />

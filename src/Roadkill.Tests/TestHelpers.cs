@@ -171,7 +171,6 @@ namespace Roadkill.Tests
 						"DELETE FROM roadkill_pagecontent;" +
 						"DELETE FROM roadkill_pages;" +
 						"DELETE FROM roadkill_users;" +
-						"DELETE FROM roadkill_siteconfiguration;" +
 						"DBCC CHECKIDENT (roadkill_pages, RESEED, 1);";
 
 					command.ExecuteNonQuery();

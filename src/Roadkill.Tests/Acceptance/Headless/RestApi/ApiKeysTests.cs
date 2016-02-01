@@ -9,7 +9,7 @@ namespace Roadkill.Tests.Acceptance.Headless.RestApi
 {
 	[TestFixture]
 	[Category("Acceptance")]
-	[Parallelizable(ParallelScope.Fixtures)]
+	[Parallelizable(ParallelScope.None)]
 	public class ApiKeysTests : WebApiTestBase
 	{
 		private static void RemoveApiKeys()

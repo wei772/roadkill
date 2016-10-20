@@ -152,7 +152,7 @@ namespace Roadkill.Core.Configuration
 			AllowedFileTypes = "jpg, png, gif";
 			AllowUserSignup = false;
 			IsRecaptchaEnabled = false;
-			Theme = "Mediawiki";
+			Theme = "Responsive";
 			MarkupType = "Creole";
 			SiteName = "Your site";
 			SiteUrl = "";

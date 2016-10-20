@@ -120,9 +120,16 @@ namespace Roadkill.Core.Database.LightSpeed
 		#region IDisposable
 		public void Dispose()
 		{
-			_unitOfWork.SaveChanges();
-			_unitOfWork.Dispose();
-		}
+            try
+            {
+                _unitOfWork.SaveChanges();
+                _unitOfWork.Dispose();
+            }
+            catch (Exception ex)
+            {
+                //TODO System.ObjectDisposedException
+            }
+        }
 		#endregion
 	}
 }
